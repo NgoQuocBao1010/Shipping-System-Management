@@ -1,0 +1,31 @@
+
+Yêu cầu:
+    TOPIC 1: Quản lý danh sách nhân viên công ty
+
+    TOPIC 2: Quản lý các đơn giao nhận sản phẩm
+        - Thông tin chủ sản phẩm (có thể là khách hàng mới)
+        - Địa chỉ khách hàng chủ sp
+        - Thông tin người nhận sp
+        - Địa chỉ ng nhận sp
+
+
+    TOPIC 3: Đơn giá vận chuyển:
+        - Theo độ dài đường đi và giao hàng
+        - Theo độ dài đường nhận và giao hàng
+
+    TOPIC 4: , Leafleft Routing Machine để chức năng tìm đường, giám sát giao nhận hàng
+        https://leafletjs.com/reference-1.7.1.html
+    TOPIC 5: Báo cáo, thống kê
+
+
+Công cụ:
+1. Tính toán quãng đường trên gg maps api
+    https://developers.google.com/maps/documentation/distance-matrix/overview
+2. Lấy tên tỉnh, thành phố .. API
+    https://provinces.open-api.vn
+3. Phân cấp hành chính Việt Nam:
+    https://vi.wikipedia.org/wiki/Ph%C3%A2n_c%E1%BA%A5p_h%C3%A0nh_ch%C3%ADnh_Vi%E1%BB%87t_Nam
+    Phân cấp hành chính Việt Nam hiện nay theo Điều 110 Hiến pháp 2013 và Điều 2 Luật Tổ chức chính quyền địa phương gồm 3 cấp hành chính là:
+        - Cấp tỉnh: Tỉnh/ Thành phố trực thuộc trung ương
+        - Cấp huyện: Cấp huyện: Quận/ Huyện/ Thị xã/ Thành phố thuộc tỉnh/ Thành phố thuộc thành phố trực thuộc trung ương
+        - Cấp Xã: Xã/ Phường/ Thị trấn.

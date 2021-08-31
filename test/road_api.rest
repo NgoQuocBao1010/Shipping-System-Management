@@ -1,0 +1,3 @@
+GET https://provinces.open-api.vn/api/p/1?depth=3
+
+
