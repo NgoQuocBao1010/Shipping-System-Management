@@ -1,16 +1,23 @@
 <template>
     <div id="app">
-        <div id="nav" v-if="navigation">
-            <router-link to="/">Home</router-link> |
-            <router-link to="/about">About</router-link>
+        <Sidebar v-if="navigation" />
+        <div class="container">
+            <Navigation />
+            <router-view />
         </div>
-        <router-view />
     </div>
 </template>
 
 <script>
+import Sidebar from "./components/Sidebar.vue";
+import Navigation from "./components/Navigation.vue";
+
 export default {
     name: "App",
+    components: {
+        Sidebar,
+        Navigation,
+    },
     data() {
         return {
             navigation: null,
@@ -23,7 +30,7 @@ export default {
     },
     methods: {
         checkRoute() {
-            // Check if there is navigation bar in the route
+            // Hide and show navigation bar depending on the page
             const routesWithNoNav = ["Login", "Register", "ResetPassword"];
 
             if (routesWithNoNav.includes(this.$route.name)) {
@@ -54,14 +61,12 @@ export default {
     --dark-color: #362222;
     --white: #ffffff;
 }
-.app {
+#app {
     display: flex;
-    flex-direction: column;
     min-height: 100vh;
 }
 .container {
-    max-width: 1440px;
-    margin: 0 auto;
+    width: 100%;
 }
 button {
     padding: 0.5rem 2rem;
