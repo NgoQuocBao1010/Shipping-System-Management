@@ -53,9 +53,6 @@ export default {
             return this.$route.name;
         },
     },
-    created() {
-        console.log(this.expand);
-    },
 };
 </script>
 
@@ -72,7 +69,7 @@ export default {
     overflow-x: hidden;
 
     &.active {
-        width: 300px;
+        width: 15rem;
     }
 
     .logo {

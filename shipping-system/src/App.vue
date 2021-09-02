@@ -3,7 +3,7 @@
         <Sidebar v-if="navigation" />
         <div class="container">
             <Navigation />
-            <router-view />
+            <router-view class="container__content" />
         </div>
     </div>
 </template>
@@ -67,10 +67,23 @@ export default {
 }
 .container {
     width: 100%;
+    max-height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+
+    &__content {
+        padding: 2rem;
+        flex: 1 1 80%;
+        overflow-y: scroll;
+    }
 }
+
+.btn,
 button {
     padding: 0.5rem 2rem;
     border: none;
+    text-decoration: none;
     border-radius: 20px;
     font-size: 16px;
     color: #fff;
@@ -84,6 +97,22 @@ button {
 
     &:hover {
         background-color: var(--secondary-color);
+    }
+}
+
+select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    -ms-appearance: none;
+    appearance: none;
+    outline: 0;
+    box-shadow: none;
+    border: 0 !important;
+    background: var(--primary-color);
+    background-image: none;
+
+    &::-ms-expand {
+        display: none;
     }
 }
 </style>

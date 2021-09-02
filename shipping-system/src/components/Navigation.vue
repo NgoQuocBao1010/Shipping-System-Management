@@ -6,10 +6,11 @@
             alt=""
         />
 
-        <form class="search__container">
+        <form @submit.prevent="search" class="search__container">
             <input
                 class="search__input"
                 type="text"
+                v-model="searchContent"
                 placeholder="Enter order ID, customer name ..."
             />
         </form>
@@ -22,7 +23,15 @@
 export default {
     name: "Navigation",
     data() {
-        return {};
+        return {
+            searchContent: "",
+        };
+    },
+    methods: {
+        search() {
+            console.log(this.searchContent);
+            this.searchContent = "";
+        },
     },
 };
 </script>

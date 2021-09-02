@@ -7,7 +7,6 @@
                 <div class="input">
                     <input type="text" placeholder="Email" v-model="email" />
                     <i class="far fa-envelope icon"></i>
-                    <!-- <email class="icon" /> -->
                 </div>
                 <div v-show="error" class="error">{{ this.errorMsg }}</div>
             </div>
