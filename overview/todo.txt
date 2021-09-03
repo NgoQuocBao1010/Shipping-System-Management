@@ -29,3 +29,5 @@ Công cụ:
         - Cấp tỉnh: Tỉnh/ Thành phố trực thuộc trung ương
         - Cấp huyện: Cấp huyện: Quận/ Huyện/ Thị xã/ Thành phố thuộc tỉnh/ Thành phố thuộc thành phố trực thuộc trung ương
         - Cấp Xã: Xã/ Phường/ Thị trấn.
+4. Thuật ngữ tiếng Anh:
+    https://melodylogistics.com/thuat-ngu-tieng-anh-logistics-va-van-tai-quoc-te-161.html

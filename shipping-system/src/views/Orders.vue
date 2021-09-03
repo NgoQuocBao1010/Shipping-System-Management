@@ -71,16 +71,23 @@
             </div>
         </div>
 
-        <div class="orders__content"></div>
+        <div class="orders__content">
+            <OrderTable :orders="orders" />
+        </div>
     </div>
 </template>
 
 <script>
 import moment from "moment";
+import { mapState } from "vuex";
+
+import OrderTable from "../components/OrderTable";
 
 export default {
     name: "Orders",
-    components: {},
+    components: {
+        OrderTable,
+    },
     data() {
         return {
             status: "all",
@@ -89,10 +96,8 @@ export default {
             toDate: null,
         };
     },
-    watch: {
-        status(newVal, oldVal) {
-            console.log(newVal);
-        },
+    computed: {
+        ...mapState(["orders"]),
     },
     methods: {
         getToday() {
@@ -101,7 +106,7 @@ export default {
     },
     created() {
         this.toDate = this.getToday();
-        this.fromDate = moment().subtract("weeks", 1).format("YYYY-MM-DD");
+        this.fromDate = moment().subtract(1, "weeks").format("YYYY-MM-DD");
     },
 };
 </script>
@@ -172,8 +177,8 @@ export default {
                         position: relative;
                         display: flex;
                         width: 10rem;
-                        height: 2em;
-                        line-height: 2;
+                        height: 1.5em;
+                        line-height: 1.5;
                         background: transparent;
                         overflow: hidden;
                         border: 1px solid var(--primary-color);
@@ -216,6 +221,16 @@ export default {
                                     height: 2em;
                                     line-height: 2;
                                     width: 8rem;
+                                    font-size: 12px;
+                                    font-weight: 600;
+                                    padding: 0 2px;
+                                    color: var(--primary-color);
+
+                                    @media only screen and (min-width: 1200px) {
+                                        font-size: 1rem;
+                                        width: 12rem;
+                                        padding: 0 0.5rem;
+                                    }
                                 }
                             }
                         }

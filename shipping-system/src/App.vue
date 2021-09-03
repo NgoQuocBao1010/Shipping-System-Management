@@ -115,4 +115,30 @@ select {
         display: none;
     }
 }
+
+.order-processing,
+.order-delivering,
+.order-delivered,
+.order-failed {
+    padding: 5px 10px;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 20px;
+    color: #fff;
+    text-align: center;
+    text-transform: capitalize;
+}
+
+.order-processing,
+.order-delivering {
+    background-color: var(--secondary-color);
+}
+
+.order-delivered {
+    background-color: lightgreen;
+}
+
+.order-failed {
+    background-color: rgb(238, 78, 78);
+}
 </style>
