@@ -15,7 +15,12 @@
             />
         </form>
 
-        <i class="fas fa-bell notification"></i>
+        <div class="nav__icons">
+            <i class="fas fa-bell notification"></i>
+            <router-link :to="{ name: 'Profile' }">
+                <img class="avatar" src="../assets/test/user-icon.jpg" alt="" />
+            </router-link>
+        </div>
     </div>
 </template>
 
@@ -95,10 +100,25 @@ export default {
         }
     }
 
-    .notification {
-        font-size: 1.5rem;
-        color: var(--primary-color);
-        cursor: pointer;
+    &__icons {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+
+        gap: 1rem;
+
+        .notification {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            cursor: pointer;
+        }
+
+        .avatar {
+            max-height: 40px;
+            aspect-ratio: 1 / 1;
+            border-radius: 50%;
+        }
     }
 }
 </style>

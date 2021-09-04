@@ -28,13 +28,6 @@ export default {
                     stacked: true,
                     // stackType: "100%",
                 },
-                // title: {
-                //     text: "Monthly Stock Pricing",
-                //     align: "center",
-                //     style: {
-                //         fontSize: "20px",
-                //     },
-                // },
                 responsive: [
                     {
                         breakpoint: 480,
@@ -67,7 +60,6 @@ export default {
     watch: {
         rangeOption(newVal, oldVal) {
             this.generateChart();
-            console.log(this.chartOptions.title.text);
         },
     },
     methods: {
@@ -151,6 +143,7 @@ export default {
 <style lang="scss" scoped>
 .wrapper {
     width: 100%;
+    min-width: 500px;
     max-width: 700px;
 
     .title {

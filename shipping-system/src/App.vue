@@ -116,6 +116,10 @@ select {
     }
 }
 
+input::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+}
+
 .order-processing,
 .order-delivering,
 .order-delivered,

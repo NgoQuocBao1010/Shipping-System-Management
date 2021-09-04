@@ -10,7 +10,12 @@
             <div class="column">Status</div>
         </div>
         <div class="content">
-            <div class="row" v-for="order in orders" :key="order.id">
+            <div
+                class="row"
+                v-for="order in orders"
+                :key="order.id"
+                @click="goToDetail(order.id)"
+            >
                 <div class="column">{{ order.id }}</div>
                 <div class="column">{{ order.date }}</div>
                 <div class="column">{{ order.placeOfReceipt }}</div>
@@ -43,7 +48,11 @@ export default {
     props: {
         orders: Array,
     },
-    methods: {},
+    methods: {
+        goToDetail(id) {
+            this.$router.push({ name: "OrderDetail", params: { id: id } });
+        },
+    },
 };
 </script>
 

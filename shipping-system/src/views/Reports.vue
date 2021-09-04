@@ -1,7 +1,39 @@
 <template>
     <div class="report">
         <div class="report__content">
-            <div class="daily"></div>
+            <div class="daily">
+                <div class="title">Reports Today orders</div>
+                <div class="report-detail">
+                    <div class="row">
+                        <div class="column">
+                            <div class="column__header">Processing</div>
+                            <div class="column__order">
+                                <router-link to="#">0 orders</router-link>
+                            </div>
+                        </div>
+                        <div class="column">
+                            <div class="column__header">Delivering</div>
+                            <div class="column__order">
+                                <router-link to="#">0 orders</router-link>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="column">
+                            <div class="column__header">Delivered</div>
+                            <div class="column__order">
+                                <router-link to="#">0 orders</router-link>
+                            </div>
+                        </div>
+                        <div class="column">
+                            <div class="column__header">Failed</div>
+                            <div class="column__order">
+                                <router-link to="#">0 orders</router-link>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="range">
                 <div class="select">
                     <i class="fas fa-caret-down"></i>
@@ -81,9 +113,49 @@ export default {
                 }
             }
         }
+
         .daily {
-            background: lightblue;
+            padding: 1rem 2rem;
             flex: 1 1 300px;
+
+            .title {
+                font-size: 1.2rem;
+                font-weight: 900;
+                text-align: center;
+                margin-bottom: 2rem;
+            }
+
+            .report-detail {
+                background: var(--secondary-color);
+                border-radius: 20px;
+                padding: 1rem 2rem;
+
+                .row {
+                    display: flex;
+                    margin-bottom: 2rem;
+
+                    .column {
+                        flex: 1;
+                        font-weight: 600;
+
+                        &__order {
+                            font-weight: 900;
+                            font-size: 1.5rem;
+
+                            a {
+                                text-decoration: none;
+                                color: white;
+
+                                transition: 0.2s all ease;
+
+                                &:hover {
+                                    color: rgb(245, 238, 238);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }
