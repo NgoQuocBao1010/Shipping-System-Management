@@ -1,11 +1,17 @@
 <template>
-    <div class="orders">
-        <div class="orders__header">
-            <div class="title">Report Pagte</div>
-        </div>
-
-        <div class="orders__content">
-            <BarChart />
+    <div class="report">
+        <div class="report__content">
+            <div class="daily"></div>
+            <div class="range">
+                <div class="select">
+                    <i class="fas fa-caret-down"></i>
+                    <select name="rangeOption" v-model="rangeOption">
+                        <option value="year">Number of Orders this year</option>
+                        <option value="week">Number of Orders this week</option>
+                    </select>
+                </div>
+                <BarChart :rangeOption="rangeOption" />
+            </div>
         </div>
     </div>
 </template>
@@ -19,15 +25,18 @@ export default {
         BarChart,
     },
     data() {
-        return {};
+        return {
+            rangeOption: "year",
+        };
     },
     computed: {},
     methods: {},
+    created() {},
 };
 </script>
 
 <style lang="scss" scoped>
-.orders {
+.report {
     &__header {
         margin-bottom: 0.8rem;
 
@@ -40,8 +49,42 @@ export default {
         padding: 2rem 0;
         display: flex;
         flex-wrap: wrap;
-        justify-content: center;
-        gap: 1.5rem;
+
+        .range {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            flex: 1 1 300px;
+
+            .select {
+                position: relative;
+                cursor: pointer;
+
+                select {
+                    padding: 1rem 2rem;
+                    font-size: 1.2rem;
+                    font-weight: 900;
+                    width: max-content;
+                    cursor: pointer;
+                    border-radius: 10000px;
+                    background: transparent;
+                }
+
+                i {
+                    position: absolute;
+                    right: 10px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    font-size: 1.5rem;
+                    z-index: -1;
+                }
+            }
+        }
+        .daily {
+            background: lightblue;
+            flex: 1 1 300px;
+        }
     }
 }
 </style>

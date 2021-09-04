@@ -6,9 +6,6 @@
             :options="chartOptions"
             :series="series"
         ></apexcharts>
-        <div>
-            <button @click="updateChart">Update!</button>
-        </div>
     </div>
 </template>
 
@@ -20,14 +17,24 @@ export default {
     components: {
         apexcharts: VueApexCharts,
     },
-    data: function () {
+    props: {
+        rangeOption: String,
+    },
+    data() {
         return {
             chartOptions: {
                 chart: {
                     type: "bar",
                     stacked: true,
-                    stackType: "100%",
+                    // stackType: "100%",
                 },
+                // title: {
+                //     text: "Monthly Stock Pricing",
+                //     align: "center",
+                //     style: {
+                //         fontSize: "20px",
+                //     },
+                // },
                 responsive: [
                     {
                         breakpoint: 480,
@@ -41,16 +48,7 @@ export default {
                     },
                 ],
                 xaxis: {
-                    categories: [
-                        "2011 Q1",
-                        "2011 Q2",
-                        "2011 Q3",
-                        "2011 Q4",
-                        "2012 Q1",
-                        "2012 Q2",
-                        "2012 Q3",
-                        "2012 Q4",
-                    ],
+                    categories: null,
                 },
                 colors: ["#1190CB", "#FF2626"],
                 fill: {
@@ -62,32 +60,91 @@ export default {
                     offsetY: 50,
                 },
             },
-            series: [
+            series: null,
+            categories: null,
+        };
+    },
+    watch: {
+        rangeOption(newVal, oldVal) {
+            this.generateChart();
+            console.log(this.chartOptions.title.text);
+        },
+    },
+    methods: {
+        getRandomInt(min, max) {
+            min = Math.ceil(min);
+            max = Math.floor(max);
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        },
+        generateRandomIntArr(length, minLimit, maxLimit) {
+            let arr = [];
+
+            for (let i = 0; i < length; i++) {
+                arr.push(this.getRandomInt(minLimit, maxLimit));
+            }
+
+            return arr;
+        },
+        generateChart() {
+            const rangeCategories = {
+                year: [
+                    "January",
+                    "February",
+                    "March",
+                    "April",
+                    "May",
+                    "June",
+                    "July",
+                    "August",
+                    "September",
+                    "October",
+                    "November",
+                    "December",
+                ],
+                week: [
+                    "Monday",
+                    "Tuesday",
+                    "Wednesday",
+                    "Thursday",
+                    "Friday",
+                    "Saturday",
+                    "Sunday",
+                ],
+            };
+
+            this.categories = rangeCategories[this.rangeOption];
+
+            this.chartOptions = {
+                ...this.chartOptions,
+                ...{
+                    xaxis: {
+                        categories: this.categories,
+                    },
+                },
+            };
+
+            this.series = [
                 {
                     name: "Delivered",
-                    data: [44, 55, 41, 67, 22, 43, 21, 49],
+                    data: this.generateRandomIntArr(
+                        this.categories.length,
+                        5,
+                        20
+                    ),
                 },
                 {
                     name: "Failed",
-                    data: [13, 23, 20, 8, 13, 27, 33, 12],
-                },
-            ],
-        };
-    },
-    methods: {
-        updateChart() {
-            const max = 90;
-            const min = 20;
-            const newData = this.series[0].data.map(() => {
-                return Math.floor(Math.random() * (max - min + 1)) + min;
-            });
-            // In the same way, update the series option
-            this.series = [
-                {
-                    data: newData,
+                    data: this.generateRandomIntArr(
+                        this.categories.length,
+                        1,
+                        10
+                    ),
                 },
             ];
         },
+    },
+    created() {
+        this.generateChart();
     },
 };
 </script>
@@ -95,9 +152,11 @@ export default {
 .wrapper {
     width: 100%;
     max-width: 700px;
-    .chart {
-        width: 100%;
+
+    .title {
+        background: lightcoral;
     }
+
     button {
         background: #26e6a4;
         border: 0;
