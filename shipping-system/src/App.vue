@@ -55,16 +55,19 @@ export default {
     box-sizing: border-box;
     font-family: "Quicksand", sans-serif;
 }
+
 :root {
     --primary-color: #1190cb;
     --secondary-color: #7dccff;
     --dark-color: #362222;
     --white: #ffffff;
 }
+
 #app {
     display: flex;
     min-height: 100vh;
 }
+
 .container {
     width: 100%;
     max-height: 100vh;
@@ -91,12 +94,23 @@ button {
     cursor: pointer;
     transition: 0.3s ease-in-out all;
 
+    i {
+        margin-right: 5px;
+        font-size: 0.8rem;
+    }
+
     &:focus {
         outline: none;
     }
 
     &:hover {
         background-color: var(--secondary-color);
+    }
+
+    &.small {
+        padding: 0.5rem 1rem;
+        border-radius: 5px;
+        font-size: 12px;
     }
 }
 
@@ -108,7 +122,7 @@ select {
     outline: 0;
     box-shadow: none;
     border: 0 !important;
-    background: var(--primary-color);
+    // background: var(--primary-color);
     background-image: none;
 
     &::-ms-expand {
@@ -144,5 +158,28 @@ input::-webkit-calendar-picker-indicator {
 
 .order-failed {
     background-color: rgb(238, 78, 78);
+}
+
+.role {
+    font-size: 0.8rem;
+    width: 80px;
+    padding: 0.2rem 0.5rem;
+    margin: 0.2rem 0;
+    text-align: center;
+    text-transform: capitalize;
+    font-weight: 600;
+    border-radius: 20px;
+
+    &.manager {
+        background-color: rgb(255, 184, 184);
+    }
+
+    &.driver {
+        background-color: var(--secondary-color);
+    }
+
+    &.customer {
+        background-color: lightgreen;
+    }
 }
 </style>

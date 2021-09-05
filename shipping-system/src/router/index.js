@@ -5,6 +5,7 @@ import Profile from "../views/Profile.vue";
 import Reports from "../views/Reports.vue";
 import Orders from "../views/Orders.vue";
 import OrderDetail from "../views/OrderDetail.vue";
+import OrderCreate from "../views/OrderCreate.vue";
 import Management from "../views/Management.vue";
 import Login from "../views/Login.vue";
 import Register from "../views/Register.vue";
@@ -13,6 +14,7 @@ import ResetPassword from "../views/ResetPassword.vue";
 Vue.use(VueRouter);
 
 const routes = [
+    // Home
     {
         path: "/",
         name: "Home",
@@ -21,6 +23,7 @@ const routes = [
             name: "Home",
         },
     },
+    // Profile
     {
         path: "/profile",
         name: "Profile",
@@ -29,6 +32,7 @@ const routes = [
             name: "Profile",
         },
     },
+    // Orders
     {
         path: "/orders",
         name: "Orders",
@@ -37,8 +41,9 @@ const routes = [
             name: "Orders",
         },
     },
+    // Order detail
     {
-        path: "/orders/:id",
+        path: "/orders/detail/:id",
         name: "OrderDetail",
         component: OrderDetail,
         props: true,
@@ -46,6 +51,16 @@ const routes = [
             name: "Order Detail",
         },
     },
+    // Order create
+    {
+        path: "/orders/create/",
+        name: "OrderCreate",
+        component: OrderCreate,
+        meta: {
+            name: "OrderCreate",
+        },
+    },
+    // Report
     {
         path: "/reports",
         name: "Reports",
@@ -54,6 +69,7 @@ const routes = [
             name: "Report",
         },
     },
+    // Management
     {
         path: "/management",
         name: "Management",
@@ -62,6 +78,7 @@ const routes = [
             name: "Manangement",
         },
     },
+    // Login
     {
         path: "/login",
         name: "Login",
@@ -70,6 +87,7 @@ const routes = [
             name: "Login",
         },
     },
+    // Register
     {
         path: "/register",
         name: "Register",
@@ -78,6 +96,7 @@ const routes = [
             name: "Register",
         },
     },
+    // Reset password
     {
         path: "/reset-password",
         name: "ResetPassword",

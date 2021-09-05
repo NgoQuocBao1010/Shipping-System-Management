@@ -6,7 +6,7 @@
         <div class="card__info">
             <div class="header">
                 <p class="header__name">John Doe</p>
-                <div class="header__role">Manager</div>
+                <div class="role driver">driver</div>
             </div>
             <div class="line"></div>
             <div class="content">
@@ -17,10 +17,10 @@
                 </p>
 
                 <div class="content__btn">
-                    <router-link to="#" class="btn">
+                    <router-link to="#" class="btn small">
                         <i class="fas fa-plus-circle"></i>Add Task
                     </router-link>
-                    <router-link to="#" class="btn">
+                    <router-link to="#" class="btn small">
                         <i class="fas fa-user-circle"></i>Profile
                     </router-link>
                 </div>
@@ -79,16 +79,6 @@ export default {
                 font-weight: bold;
                 font-size: 1.2rem;
             }
-
-            &__role {
-                font-size: 0.8rem;
-                width: 80px;
-                padding: 0.2rem 0.5rem;
-                margin: 0.2rem 0;
-                text-align: center;
-                border-radius: 20px;
-                background-color: rgb(255, 184, 184);
-            }
         }
 
         .content {
@@ -105,14 +95,6 @@ export default {
             &__btn {
                 .btn {
                     margin-right: 1rem;
-                    padding: 0.5rem 1rem;
-                    border-radius: 5px;
-                    font-size: 12px;
-
-                    i {
-                        margin-right: 5px;
-                        font-size: 0.8rem;
-                    }
                 }
             }
         }

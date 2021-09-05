@@ -16,6 +16,13 @@
         </form>
 
         <div class="nav__icons">
+            <router-link
+                :to="{ name: 'OrderCreate' }"
+                class="btn"
+                v-show="makeOrder"
+            >
+                <i class="fas fa-pen"></i>Make order
+            </router-link>
             <i class="fas fa-bell notification"></i>
             <router-link :to="{ name: 'Profile' }">
                 <img class="avatar" src="../assets/test/user-icon.jpg" alt="" />
@@ -30,7 +37,17 @@ export default {
     data() {
         return {
             searchContent: "",
+            makeOrder: null,
         };
+    },
+    watch: {
+        $route(to, from) {
+            if (to.name === "Orders") {
+                this.makeOrder = true;
+            } else {
+                this.makeOrder = false;
+            }
+        },
     },
     methods: {
         search() {
@@ -106,7 +123,13 @@ export default {
         justify-content: center;
         height: 100%;
 
-        gap: 1rem;
+        gap: 1.2rem;
+
+        .btn {
+            font-size: 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+        }
 
         .notification {
             font-size: 1.5rem;

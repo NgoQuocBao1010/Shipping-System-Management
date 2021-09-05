@@ -1,7 +1,9 @@
 <template>
     <div class="profile">
         <div class="profile__header">
-            <h1 class="title">Profile Information</h1>
+            <h1 class="title">
+                Profile Information <span class="role manager">Manager</span>
+            </h1>
         </div>
         <form class="profile__content">
             <div class="input">
@@ -58,7 +60,7 @@ export default {
             address: "số 2, Phan Đình Phùng , Ninh Kiều, Cần Thơ",
             date: "2000-05-01",
             email: "jdoe@gmail.com",
-            edit: true,
+            edit: false,
         };
     },
 };
@@ -73,6 +75,10 @@ export default {
 
         .title {
             font-size: 1.5rem;
+
+            display: flex;
+            align-items: center;
+            gap: 3rem;
         }
     }
 
