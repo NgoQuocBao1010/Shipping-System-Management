@@ -9,6 +9,8 @@
 </template>
 
 <script>
+import axios from "axios";
+
 import Sidebar from "./components/Sidebar.vue";
 import Navigation from "./components/Navigation.vue";
 
@@ -40,9 +42,19 @@ export default {
 
             this.navigation = true;
         },
+        testingBackend() {
+            const url = `http://127.0.0.1:8000/api`;
+            axios
+                .get(url)
+                .then((response) => {
+                    console.log(response);
+                })
+                .catch((error) => console.log(error));
+        },
     },
     created() {
         this.checkRoute();
+        this.testingBackend();
     },
 };
 </script>
