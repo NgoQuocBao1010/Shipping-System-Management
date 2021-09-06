@@ -1,3 +1,11 @@
-GET https://provinces.open-api.vn/api/p/1?depth=3
+GET https://provinces.open-api.vn/api/p/2/?depth=3
+
+
+### 
+GET https://provinces.open-api.vn/api/?depth=2
+
+
+###
+GET https://provinces.open-api.vn/api/d/1/?depth=2
 
 

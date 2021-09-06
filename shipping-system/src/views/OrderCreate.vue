@@ -36,28 +36,31 @@
                             />
                         </div>
                         <div class="row">
-                            <label for="city1">Province/City</label>
+                            <label for="city1">District - Province</label>
                             <div class="select">
                                 <i class="fas fa-chevron-down"></i>
-                                <select name="city1">
-                                    <option value="all">TP Cần Thơ</option>
-                                    <option value="processing">
-                                        TP Hồ Chí Minh
-                                    </option>
-                                    <option value="delivering">
-                                        TP Hà Nội
+                                <select name="city1" v-model="district1">
+                                    <option
+                                        v-for="district in districts"
+                                        :key="district.disCode"
+                                        :value="district.disCode"
+                                    >
+                                        {{ district.name }}
                                     </option>
                                 </select>
                             </div>
                         </div>
                         <div class="row">
-                            <label for="district1">District</label>
+                            <label for="district1">Sub District</label>
                             <div class="select">
                                 <i class="fas fa-chevron-down"></i>
-                                <select name="district1">
-                                    <option value="all">Cái Răng</option>
-                                    <option value="processing">
-                                        Ninh Kiều
+                                <select name="district1" v-model="subDis1">
+                                    <option
+                                        v-for="subDistrict in subDistricts1"
+                                        :key="subDistrict.code"
+                                        :value="subDistrict.code"
+                                    >
+                                        {{ subDistrict.name }}
                                     </option>
                                 </select>
                             </div>
@@ -100,28 +103,31 @@
                             />
                         </div>
                         <div class="row">
-                            <label for="city1">Province/City</label>
+                            <label for="city1">District - Province</label>
                             <div class="select">
                                 <i class="fas fa-chevron-down"></i>
-                                <select name="city1">
-                                    <option value="all">TP Cần Thơ</option>
-                                    <option value="processing">
-                                        TP Hồ Chí Minh
-                                    </option>
-                                    <option value="delivering">
-                                        TP Hà Nội
+                                <select name="city1" v-model="district2">
+                                    <option
+                                        v-for="district in districts"
+                                        :key="district.disCode"
+                                        :value="district.disCode"
+                                    >
+                                        {{ district.name }}
                                     </option>
                                 </select>
                             </div>
                         </div>
                         <div class="row">
-                            <label for="district1">District</label>
+                            <label for="district1">Sub District</label>
                             <div class="select">
                                 <i class="fas fa-chevron-down"></i>
-                                <select name="district1">
-                                    <option value="all">Cái Răng</option>
-                                    <option value="processing">
-                                        Ninh Kiều
+                                <select name="district1" v-model="subDis2">
+                                    <option
+                                        v-for="subDistrict in subDistricts2"
+                                        :key="subDistrict.code"
+                                        :value="subDistrict.code"
+                                    >
+                                        {{ subDistrict.name }}
                                     </option>
                                 </select>
                             </div>
@@ -205,19 +211,90 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
     name: "OrderCreate",
     data() {
         return {
+            // consignor information
             consignorName: "",
             consignorNumber: "",
+            address1: "",
+            district1: "",
+            subDis1: "default",
+
+            // consignee information
+            consigneeName: "",
+            consigneeNumber: "",
+            address2: "",
+            district2: "",
+            subDis2: "default",
+
             products: 1,
+
+            districts: [],
+            subDistricts1: [],
+            subDistricts2: [],
         };
     },
+    watch: {
+        district1(newVal, oldVal) {
+            if (newVal) {
+                this.subDis1 = "";
+
+                this.getSubDistricts(newVal)
+                    .then((response) => {
+                        this.subDistricts1 = response.data.wards;
+                    })
+                    .catch((error) => console.log(error));
+            }
+        },
+        district2(newVal, oldVal) {
+            if (newVal) {
+                this.subDis2 = "";
+
+                this.getSubDistricts(newVal)
+                    .then((response) => {
+                        this.subDistricts2 = response.data.wards;
+                    })
+                    .catch((error) => console.log(error));
+            }
+        },
+    },
     methods: {
+        getAllProvinces() {
+            const url = `https://provinces.open-api.vn/api/?depth=2`;
+
+            axios
+                .get(url)
+                .then((response) => {
+                    const provinces = response.data;
+
+                    for (let province of provinces) {
+                        for (let district of province.districts) {
+                            const disObj = {
+                                proCode: province.code,
+                                disCode: district.code,
+                                name: `${district.name} - ${province.name}`,
+                            };
+                            this.districts.push(disObj);
+                        }
+                    }
+                })
+                .catch((error) => console.log(error));
+        },
+        getSubDistricts(districtCode) {
+            const url = `https://provinces.open-api.vn/api/d/${districtCode}/?depth=2`;
+
+            return axios.get(url);
+        },
         submit() {
             console.log("Submitting...");
         },
+    },
+    mounted() {
+        this.getAllProvinces();
     },
 };
 </script>

@@ -55,6 +55,10 @@ export default {
             this.searchContent = "";
         },
     },
+    mounted() {
+        if (this.$route.name === "Orders") this.makeOrder = true;
+        else this.makeOrder = false;
+    },
 };
 </script>
 
