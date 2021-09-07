@@ -11,6 +11,8 @@ import Login from "../views/Login.vue";
 import Register from "../views/Register.vue";
 import ResetPassword from "../views/ResetPassword.vue";
 
+import store from "../store/index";
+
 Vue.use(VueRouter);
 
 const routes = [
@@ -21,6 +23,7 @@ const routes = [
         component: Home,
         meta: {
             name: "Home",
+            guest: true,
         },
     },
     // Profile
@@ -30,6 +33,7 @@ const routes = [
         component: Profile,
         meta: {
             name: "Profile",
+            guest: false,
         },
     },
     // Orders
@@ -39,6 +43,7 @@ const routes = [
         component: Orders,
         meta: {
             name: "Orders",
+            guest: false,
         },
     },
     // Order detail
@@ -49,6 +54,7 @@ const routes = [
         props: true,
         meta: {
             name: "Order Detail",
+            guest: false,
         },
     },
     // Order create
@@ -58,6 +64,7 @@ const routes = [
         component: OrderCreate,
         meta: {
             name: "OrderCreate",
+            guest: false,
         },
     },
     // Report
@@ -67,6 +74,7 @@ const routes = [
         component: Reports,
         meta: {
             name: "Report",
+            guest: false,
         },
     },
     // Management
@@ -76,6 +84,7 @@ const routes = [
         component: Management,
         meta: {
             name: "Manangement",
+            guest: false,
         },
     },
     // Login
@@ -85,6 +94,7 @@ const routes = [
         component: Login,
         meta: {
             name: "Login",
+            guest: true,
         },
     },
     // Register
@@ -94,6 +104,7 @@ const routes = [
         component: Register,
         meta: {
             name: "Register",
+            guest: true,
         },
     },
     // Reset password
@@ -103,6 +114,7 @@ const routes = [
         component: ResetPassword,
         meta: {
             name: "Reset Password",
+            guest: true,
         },
     },
 ];
@@ -112,9 +124,23 @@ const router = new VueRouter({
     routes,
 });
 
+// Routing resctrition
+router.beforeEach((to, from, next) => {
+    if (!store.state.authenticated && !to.meta.guest) {
+        return next({ name: "Home" });
+    }
+
+    if (store.state.authenticated && to.meta.guest) {
+        return next({ name: "Reports" });
+    }
+
+    return next();
+});
+
+// Changing name
 router.beforeEach((to, from, next) => {
     document.title = `${to.meta.name} | Kaz S.S`;
-    next();
+    return next();
 });
 
 export default router;

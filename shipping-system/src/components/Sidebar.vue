@@ -29,14 +29,6 @@ export default {
         return {
             pages: [
                 {
-                    name: "Home",
-                    iconClass: "fas fa-house-user",
-                },
-                {
-                    name: "Management",
-                    iconClass: "fas fa-users",
-                },
-                {
                     name: "Reports",
                     iconClass: "fas fa-clipboard-list",
                 },
@@ -44,6 +36,14 @@ export default {
                     name: "Orders",
                     iconClass: "fas fa-shipping-fast",
                 },
+                {
+                    name: "Management",
+                    iconClass: "fas fa-users",
+                },
+                // {
+                //     name: "Home",
+                //     iconClass: "fas fa-house-user",
+                // },
             ],
             expand: false,
         };
@@ -88,7 +88,11 @@ export default {
         top: 0;
         left: 0;
         width: 100%;
-        padding-left: 1rem;
+        padding-left: 0.5rem;
+
+        @media only screen and (min-width: 1200px) {
+            padding-left: 1rem;
+        }
         padding-top: 10rem;
 
         .link {
@@ -114,7 +118,10 @@ export default {
                 display: flex;
                 text-decoration: none;
                 color: #fff;
-                font-size: 16px;
+                font-size: 14px;
+                @media only screen and (min-width: 1200px) {
+                    font-size: 1rem;
+                }
                 font-weight: 500;
 
                 .icon {
@@ -126,7 +133,11 @@ export default {
                     text-align: center;
 
                     i {
-                        font-size: 1.5rem;
+                        font-size: 1.2rem;
+
+                        @media only screen and (min-width: 1200px) {
+                            font-size: 1.5rem;
+                        }
                     }
                 }
 

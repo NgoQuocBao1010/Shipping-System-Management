@@ -2,13 +2,14 @@
     <div id="app">
         <Sidebar v-if="navigation" />
         <div class="container">
-            <Navigation />
+            <Navigation v-if="navigation" />
             <router-view class="container__content" />
         </div>
     </div>
 </template>
 
 <script>
+import { mapActions } from "vuex";
 import axios from "axios";
 
 import Sidebar from "./components/Sidebar.vue";
@@ -31,9 +32,15 @@ export default {
         },
     },
     methods: {
+        ...mapActions(["login"]),
         checkRoute() {
             // Hide and show navigation bar depending on the page
-            const routesWithNoNav = ["Login", "Register", "ResetPassword"];
+            const routesWithNoNav = [
+                "Login",
+                "Register",
+                "ResetPassword",
+                "Home",
+            ];
 
             if (routesWithNoNav.includes(this.$route.name)) {
                 this.navigation = false;
@@ -42,19 +49,19 @@ export default {
 
             this.navigation = true;
         },
-        testingBackend() {
-            const url = `http://127.0.0.1:8000/api`;
-            axios
-                .get(url)
-                .then((response) => {
-                    console.log(response);
-                })
-                .catch((error) => console.log(error));
-        },
     },
     created() {
         this.checkRoute();
-        this.testingBackend();
+
+        // localStorage.clear();
+    },
+    mounted() {
+        const token = localStorage.getItem("authToken");
+
+        if (token !== "null") {
+            this.login(token);
+            this.$router.push({ name: "Reports" });
+        }
     },
 };
 </script>

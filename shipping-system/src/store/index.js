@@ -1,5 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import axios from "axios";
 
 Vue.use(Vuex);
 
@@ -46,8 +47,28 @@ export default new Vuex.Store({
                 status: 0,
             },
         ],
+        user: null,
+        authenticated: false,
     },
-    mutations: {},
-    actions: {},
+    mutations: {
+        authenticate(state, token) {
+            state.authenticated = true;
+            axios.defaults.headers.common["Authorization"] = `Token ${token}`;
+            localStorage.setItem("authToken", token);
+        },
+        logout(state) {
+            state.user = null;
+            state.token = null;
+            state.authenticated = false;
+            axios.defaults.headers.common["Authorization"] = "";
+            localStorage.setItem("authToken", "");
+        },
+    },
+    actions: {
+        login(context, token) {
+            context.commit("authenticate", token);
+            console.log("Getting profile");
+        },
+    },
     modules: {},
 });

@@ -1,6 +1,6 @@
 <template>
     <div class="form-wrap">
-        <form class="login">
+        <form @submit.prevent="signIn" class="login">
             <p class="login-register">
                 Don't have an account?
                 <router-link class="router-link" :to="{ name: 'Register' }">
@@ -10,18 +10,22 @@
             <h2>Login to Kaz Shipping System</h2>
             <div class="inputs">
                 <div class="input">
-                    <input type="text" placeholder="Email" v-model="email" />
+                    <input
+                        type="text"
+                        required
+                        placeholder="Email"
+                        v-model="email"
+                    />
                     <i class="far fa-envelope icon"></i>
-                    <!-- <email class="icon" /> -->
                 </div>
                 <div class="input">
                     <input
                         type="password"
+                        required
                         placeholder="Password"
                         v-model="password"
                     />
                     <i class="fas fa-lock icon"></i>
-                    <!-- <password class="icon" /> -->
                 </div>
                 <div v-show="error" class="error">{{ this.errorMsg }}</div>
             </div>
@@ -31,7 +35,7 @@
             >
                 Forgot your password?
             </router-link>
-            <button @click.prevent="signIn">Sign In</button>
+            <button type="submit">Sign In</button>
             <div class="angle"></div>
         </form>
         <div class="background"></div>
@@ -39,6 +43,9 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
+import axios from "axios";
+
 export default {
     name: "Login",
     data() {
@@ -50,8 +57,26 @@ export default {
         };
     },
     methods: {
-        signIn() {
-            console.log("Signing in ...");
+        ...mapActions(["login"]),
+        async signIn() {
+            try {
+                const formInfo = {
+                    email: this.email,
+                    password: this.password,
+                };
+
+                const url = `http://127.0.0.1:8000/account/login`;
+                const response = await axios.post(url, formInfo);
+                const authToken = response.data.response;
+
+                this.login(authToken);
+
+                this.$router.push({ name: "Reports" });
+            } catch (e) {
+                console.log(e);
+                this.error = true;
+                this.errorMsg = e.response.data.message;
+            }
         },
     },
 };
@@ -121,6 +146,12 @@ export default {
                     position: absolute;
                     left: 6px;
                 }
+            }
+            .error {
+                font-size: 12px;
+                font-weight: 500;
+                color: red;
+                text-align: center;
             }
         }
         .forgot-password {

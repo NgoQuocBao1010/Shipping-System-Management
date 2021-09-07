@@ -59,6 +59,9 @@ export default {
         register() {
             console.log("Registering ...");
         },
+        passwordValidation(password) {
+            return /\d/.test(password) && password.length >= 5 ? true : false;
+        },
     },
 };
 </script>
