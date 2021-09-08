@@ -1,11 +1,13 @@
 from django.contrib.auth import get_user_model, authenticate, login
 from django.http import JsonResponse
 from rest_framework import status
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 
-from .serializers import UserSerializer
+from .models import Profile
+from .serializers import UserSerializer, ProfileSerializer
 
 User = get_user_model()
 
@@ -36,4 +38,35 @@ def loginApi(request):
         return JsonResponse(
             status=status.HTTP_401_UNAUTHORIZED,
             data={"status": "false", "message": "Invalid email or password"},
+        )
+
+
+@api_view(["GET"])
+def profileApi(request):
+    if request.user.is_authenticated:
+        profile = Profile.objects.get(user=request.user)
+
+        # Update profile
+        if request.method == "POST":
+            serializer = ProfileSerializer(profile, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+            else:
+                print(f"[SERVER]: Error updating profile {serializer.errors}")
+
+            return JsonResponse(
+                status=status.HTTP_200_OK, data={"message": "Profile updated!"}
+            )
+
+        # Get profile
+        else:
+            serializer = ProfileSerializer(
+                profile, many=False, context={"request": request}
+            )
+            return Response(serializer.data)
+
+    else:
+        return JsonResponse(
+            status=status.HTTP_401_UNAUTHORIZED,
+            data={"message": "You are not authorized to view this profile"},
         )

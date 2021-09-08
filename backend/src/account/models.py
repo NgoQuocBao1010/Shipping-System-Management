@@ -75,6 +75,7 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     fullName = models.CharField(max_length=255, blank=True, null=True)
     gender = models.CharField(max_length=50, choices=GENDERS, blank=True, null=True)
+    dateOfBirth = models.DateField(null=True, blank=True)
     phone = models.CharField(max_length=20, blank=True, null=True)
     address = models.CharField(max_length=255, blank=True, null=True)
     provinceId = models.IntegerField(null=True, blank=True)

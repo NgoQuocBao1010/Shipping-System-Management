@@ -13,7 +13,6 @@
                 </router-link>
             </li>
         </ul>
-
         <i
             class="fas fa-chevron-right toggle-arrow"
             :class="{ active: expand }"

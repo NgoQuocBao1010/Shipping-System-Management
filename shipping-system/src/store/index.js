@@ -48,26 +48,45 @@ export default new Vuex.Store({
             },
         ],
         user: null,
+        token: null,
         authenticated: false,
     },
     mutations: {
         authenticate(state, token) {
             state.authenticated = true;
-            axios.defaults.headers.common["Authorization"] = `Token ${token}`;
+            state.token = token;
+            // axios.defaults.headers.common["Authorization"] = `Token ${token}`;
             localStorage.setItem("authToken", token);
+
+            console.log("Authenticated");
+        },
+        getUserProfile(state, profile) {
+            state.user = profile;
         },
         logout(state) {
             state.user = null;
             state.token = null;
             state.authenticated = false;
-            axios.defaults.headers.common["Authorization"] = "";
+            // axios.defaults.headers.common["Authorization"] = "";
             localStorage.setItem("authToken", "");
         },
     },
     actions: {
-        login(context, token) {
-            context.commit("authenticate", token);
-            console.log("Getting profile");
+        async login(context, token) {
+            try {
+                context.commit("authenticate", token);
+                const response = await axios.get(
+                    "http://127.0.0.1:8000/account/profile",
+                    {
+                        headers: {
+                            Authorization: `Token ${context.state.token}`,
+                        },
+                    }
+                );
+                context.commit("getUserProfile", response.data);
+            } catch (e) {
+                console.log(e);
+            }
         },
     },
     modules: {},

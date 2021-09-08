@@ -52,13 +52,10 @@ export default {
     },
     created() {
         this.checkRoute();
-
-        // localStorage.clear();
     },
     mounted() {
         const token = localStorage.getItem("authToken");
-
-        if (token !== "null") {
+        if (token !== "null" && token !== "") {
             this.login(token);
             this.$router.push({ name: "Reports" });
         }

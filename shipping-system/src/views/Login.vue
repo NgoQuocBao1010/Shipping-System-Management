@@ -67,7 +67,7 @@ export default {
 
                 const url = `http://127.0.0.1:8000/account/login`;
                 const response = await axios.post(url, formInfo);
-                const authToken = response.data.response;
+                const authToken = response.data.auth_token;
 
                 this.login(authToken);
 

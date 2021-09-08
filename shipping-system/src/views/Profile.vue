@@ -3,9 +3,12 @@
         <div class="profile__header">
             <h1 class="title">
                 Profile Information <span class="role manager">Manager</span>
+                <button class="small" @click="signOut">
+                    <i class="fas fa-sign-out-alt"></i>Logout
+                </button>
             </h1>
         </div>
-        <form class="profile__content">
+        <form @submit.prevent="submit" class="profile__content">
             <div class="input">
                 <label for="name">Full Name: </label>
                 <input
@@ -14,16 +17,38 @@
                     type="text"
                     v-model="fullName"
                     :readonly="!edit"
+                    required
                 />
             </div>
             <div class="input">
                 <label for="email">Email: </label>
                 <input
-                    :class="{ active: edit }"
                     name="email"
-                    type="enail"
+                    type="email"
                     v-model="email"
+                    readonly="true"
+                    required
+                />
+            </div>
+            <div class="input">
+                <label for="phone">Phone Number: </label>
+                <input
+                    :class="{ active: edit }"
+                    name="phone"
+                    type="text"
+                    v-model="phone"
                     :readonly="!edit"
+                    required
+                />
+            </div>
+            <div class="input">
+                <label for="dob">Date of birth: </label>
+                <input
+                    name="dob"
+                    type="date"
+                    v-model="dateOfBirth"
+                    :readonly="!edit"
+                    :class="{ active: edit }"
                 />
             </div>
             <div class="input">
@@ -37,31 +62,174 @@
                 />
             </div>
             <div class="input">
-                <label for="dob">Date of birth: </label>
-                <input
-                    name="dob"
-                    type="date"
-                    v-model="date"
-                    :readonly="!edit"
-                    :class="{ active: edit }"
-                />
+                <label for="subdistrict">Sub-district</label>
+                <div class="select" :class="{ active: edit }">
+                    <i class="fas fa-chevron-down"></i>
+                    <select
+                        name="subdistrict"
+                        v-model="subDistrictId"
+                        :disabled="!edit"
+                    >
+                        <option
+                            v-for="subDistrict in subDistricts"
+                            :key="subDistrict.code"
+                            :value="subDistrict.code"
+                        >
+                            {{ subDistrict.name }}
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="input">
+                <label for="province">Province - District</label>
+                <div class="select" :class="{ active: edit }">
+                    <i class="fas fa-chevron-down"></i>
+                    <select
+                        name="province"
+                        v-model="districtId"
+                        :disabled="!edit"
+                    >
+                        <option
+                            v-for="dstr in districts"
+                            :key="dstr.disCode"
+                            :value="dstr.disCode"
+                        >
+                            {{ dstr.name }}
+                        </option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="edit-buttons">
+                <div class="btn small" @click="edit = true" v-show="!edit">
+                    <i class="far fa-edit"></i>Edit
+                </div>
+                <div class="btn small editing" v-show="edit">
+                    <i class="far fa-edit"></i>Editing ...
+                </div>
+                <button
+                    class="btn small"
+                    type="submit"
+                    @click="edit = false"
+                    v-show="edit"
+                >
+                    <i class="fas fa-save"></i>Save
+                </button>
             </div>
         </form>
     </div>
 </template>
 
 <script>
+import { mapState, mapMutations } from "vuex";
+import axios from "axios";
+
 export default {
     name: "Profile",
     components: {},
     data() {
         return {
-            fullName: "John Doe",
-            address: "số 2, Phan Đình Phùng , Ninh Kiều, Cần Thơ",
-            date: "2000-05-01",
-            email: "jdoe@gmail.com",
+            fullName: "",
+            email: "",
+            dateOfBirth: "",
+            phone: "",
+            address: "",
+            provinceId: null,
+            districtId: null,
+            subDistrictId: null,
             edit: false,
+
+            districts: [],
+            subDistricts: [],
         };
+    },
+    computed: {
+        ...mapState(["user"]),
+    },
+    watch: {
+        districtId(newVal, oldVal) {
+            if (oldVal) {
+                this.provinceId = this.districts.find(
+                    (info) => info.disCode === newVal
+                ).proCode;
+
+                this.subDistrictId = "";
+
+                this.getSubDistricts(newVal)
+                    .then((response) => {
+                        this.subDistricts = response.data.wards;
+                    })
+                    .catch((error) => console.log(error));
+            }
+        },
+    },
+    methods: {
+        ...mapMutations(["logout"]),
+        getAllProvinces() {
+            const url = `https://provinces.open-api.vn/api/?depth=2`;
+            axios
+                .get(url)
+                .then((response) => {
+                    const provinces = response.data;
+
+                    for (let province of provinces) {
+                        for (let district of province.districts) {
+                            const disObj = {
+                                proCode: province.code,
+                                disCode: district.code,
+                                name: `${district.name} - ${province.name}`,
+                            };
+                            this.districts.push(disObj);
+                        }
+                    }
+                })
+                .catch((error) => console.log(error));
+        },
+        getSubDistricts(districtCode) {
+            const url = `https://provinces.open-api.vn/api/d/${districtCode}/?depth=2`;
+
+            return axios.get(url);
+        },
+        signOut() {
+            this.logout();
+            this.$router.push({ name: "Home" });
+        },
+        submit() {
+            const formInfo = {
+                email: this.email,
+                fullName: this.fullName,
+                gender: this.gender,
+                dateOfBirth: this.dateOfBirth,
+                phone: this.phone,
+                address: this.address,
+                provinceId: this.provinceId,
+                districtId: this.districtId,
+                subDistrictId: this.subDistrictId,
+            };
+
+            console.log(formInfo);
+        },
+    },
+    mounted() {
+        ({
+            email: this.email,
+            fullName: this.fullName,
+            gender: this.gender,
+            dateOfBirth: this.dateOfBirth,
+            phone: this.phone,
+            address: this.address,
+            provinceId: this.provinceId,
+            districtId: this.districtId,
+            subDistrictId: this.subDistrictId,
+        } = this.user);
+
+        // Get address information from API
+        this.getAllProvinces();
+        this.getSubDistricts(this.districtId)
+            .then((response) => {
+                this.subDistricts = response.data.wards;
+            })
+            .catch((error) => console.log(error));
     },
 };
 </script>
@@ -72,6 +240,7 @@ export default {
         display: flex;
         justify-content: space-between;
         margin-bottom: 0.8rem;
+        position: relative;
 
         .title {
             font-size: 1.5rem;
@@ -79,6 +248,13 @@ export default {
             display: flex;
             align-items: center;
             gap: 3rem;
+        }
+
+        button {
+            background: rgb(223, 71, 71);
+            font-weight: 600;
+            position: absolute;
+            right: 10px;
         }
     }
 
@@ -88,6 +264,7 @@ export default {
         flex-direction: column;
         box-shadow: rgba(17, 17, 26, 0.05) 0px 1px 0px,
             rgba(17, 17, 26, 0.1) 0px 0px 8px;
+        position: relative;
 
         .input {
             display: flex;
@@ -102,7 +279,7 @@ export default {
                 flex: 1 1 300px;
                 max-width: 400px;
                 line-height: 2;
-                padding: 5px;
+                padding: 0 5px;
                 margin-bottom: 1rem;
                 font-size: 1rem;
                 font-weight: 600;
@@ -113,6 +290,7 @@ export default {
                     outline: none;
                 }
 
+                &.active,
                 &.active:focus {
                     border: none;
                     outline: 2px solid black;
@@ -121,6 +299,73 @@ export default {
                 &[type="password"] {
                     letter-spacing: 3px;
                     font-size: 1.2rem;
+                }
+            }
+
+            .select {
+                padding: 8px 5px;
+                width: 100%;
+                max-width: 400px;
+                font-size: var(--input-font-size);
+                font-weight: 600;
+                line-height: 1.2rem;
+                outline: none;
+                border-bottom: 1px solid black !important;
+                position: relative;
+
+                &:focus {
+                    border: 1px solid black !important;
+                    outline: none;
+                }
+
+                i {
+                    position: absolute;
+                    cursor: pointer;
+                    right: 10px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    z-index: -1;
+                    opacity: 0;
+                }
+
+                select {
+                    cursor: initial;
+                    width: 100%;
+                    font-size: var(--input-font-size);
+                    font-weight: 600;
+                    line-height: 1.2rem;
+                    background: transparent;
+
+                    &:disabled {
+                        opacity: 1;
+                        color: black;
+                    }
+                }
+
+                &.active {
+                    i {
+                        opacity: 1;
+                    }
+
+                    select {
+                        cursor: pointer;
+                    }
+                }
+            }
+        }
+
+        .edit-buttons {
+            position: absolute;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+
+            > * {
+                margin: 0.5rem 0;
+                font-weight: bold;
+
+                &.editing {
+                    background: rgb(51, 187, 51);
                 }
             }
         }
