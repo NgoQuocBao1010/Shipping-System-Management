@@ -144,7 +144,7 @@ export default {
         };
     },
     computed: {
-        ...mapState(["user"]),
+        ...mapState(["user", "token"]),
     },
     watch: {
         districtId(newVal, oldVal) {
@@ -164,7 +164,7 @@ export default {
         },
     },
     methods: {
-        ...mapMutations(["logout"]),
+        ...mapMutations(["logout", "updateUserProfile"]),
         getAllProvinces() {
             const url = `https://provinces.open-api.vn/api/?depth=2`;
             axios
@@ -194,8 +194,8 @@ export default {
             this.logout();
             this.$router.push({ name: "Home" });
         },
-        submit() {
-            const formInfo = {
+        async submit() {
+            const profileForm = {
                 email: this.email,
                 fullName: this.fullName,
                 gender: this.gender,
@@ -207,7 +207,19 @@ export default {
                 subDistrictId: this.subDistrictId,
             };
 
-            console.log(formInfo);
+            try {
+                const url = "http://127.0.0.1:8000/account/profile";
+                const response = await axios.post(url, profileForm, {
+                    headers: {
+                        Authorization: `Token ${this.token}`,
+                    },
+                });
+
+                if (response.status === 200)
+                    this.updateUserProfile(profileForm);
+            } catch (e) {
+                console.log(e);
+            }
         },
     },
     mounted() {
@@ -223,13 +235,16 @@ export default {
             subDistrictId: this.subDistrictId,
         } = this.user);
 
+        this.districtId = this.districtId === null ? -1 : this.districtId;
+
         // Get address information from API
         this.getAllProvinces();
-        this.getSubDistricts(this.districtId)
-            .then((response) => {
-                this.subDistricts = response.data.wards;
-            })
-            .catch((error) => console.log(error));
+        if (this.districtId !== -1)
+            this.getSubDistricts(this.districtId)
+                .then((response) => {
+                    this.subDistricts = response.data.wards;
+                })
+                .catch((error) => console.log(error));
     },
 };
 </script>
@@ -305,6 +320,7 @@ export default {
             .select {
                 padding: 8px 5px;
                 width: 100%;
+                margin-bottom: 1rem;
                 max-width: 400px;
                 font-size: var(--input-font-size);
                 font-weight: 600;
@@ -343,6 +359,9 @@ export default {
                 }
 
                 &.active {
+                    border-bottom: none !important;
+                    border: 2px solid black !important;
+
                     i {
                         opacity: 1;
                     }
@@ -366,6 +385,7 @@ export default {
 
                 &.editing {
                     background: rgb(51, 187, 51);
+                    cursor: initial;
                 }
             }
         }

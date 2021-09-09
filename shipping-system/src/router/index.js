@@ -92,6 +92,7 @@ const routes = [
         path: "/login",
         name: "Login",
         component: Login,
+        props: true,
         meta: {
             name: "Login",
             guest: true,

@@ -55,19 +55,17 @@ export default new Vuex.Store({
         authenticate(state, token) {
             state.authenticated = true;
             state.token = token;
-            // axios.defaults.headers.common["Authorization"] = `Token ${token}`;
             localStorage.setItem("authToken", token);
 
             console.log("Authenticated");
         },
-        getUserProfile(state, profile) {
+        updateUserProfile(state, profile) {
             state.user = profile;
         },
         logout(state) {
             state.user = null;
             state.token = null;
             state.authenticated = false;
-            // axios.defaults.headers.common["Authorization"] = "";
             localStorage.setItem("authToken", "");
         },
     },
@@ -83,7 +81,7 @@ export default new Vuex.Store({
                         },
                     }
                 );
-                context.commit("getUserProfile", response.data);
+                context.commit("updateUserProfile", response.data);
             } catch (e) {
                 console.log(e);
             }

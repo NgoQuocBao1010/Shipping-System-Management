@@ -10,18 +10,22 @@
             <h2>Register to Kaz Shipping System</h2>
             <div class="inputs">
                 <div class="input">
-                    <input type="text" placeholder="Email" v-model="email" />
+                    <input
+                        type="email"
+                        placeholder="Email"
+                        v-model="email"
+                        required
+                    />
                     <i class="far fa-envelope icon"></i>
-                    <!-- <email class="icon" /> -->
                 </div>
                 <div class="input">
                     <input
                         type="password"
                         placeholder="Password"
                         v-model="password"
+                        required
                     />
                     <i class="fas fa-lock icon"></i>
-                    <!-- <password class="icon" /> -->
                 </div>
                 <div class="input">
                     <input
@@ -30,7 +34,6 @@
                         v-model="password2"
                     />
                     <i class="fas fa-lock icon"></i>
-                    <!-- <password class="icon" /> -->
                 </div>
                 <div v-show="error" class="error">{{ this.errorMsg }}</div>
             </div>
@@ -44,6 +47,7 @@
 </template>
 
 <script>
+import axios from "axios";
 export default {
     name: "Register",
     data() {
@@ -56,11 +60,59 @@ export default {
         };
     },
     methods: {
-        register() {
-            console.log("Registering ...");
+        async register() {
+            if (!this.validateEmail(this.email)) {
+                this.error = true;
+                this.errorMsg = "Please provide a valid email";
+                return;
+            }
+
+            if (!this.passwordValidation(this.password)) {
+                this.error = true;
+                this.errorMsg =
+                    "Password needs to be at least 5 letter long and contains numeric values";
+                return;
+            }
+
+            if (this.password !== this.password2) {
+                this.error = true;
+                this.errorMsg = "Password fields don't match!";
+                return;
+            }
+
+            this.error = false;
+            this.errorMsg = "";
+
+            const registerInfo = {
+                email: this.email,
+                password: this.password,
+            };
+
+            try {
+                const url = "http://127.0.0.1:8000/account/register";
+                const response = await axios.post(url, registerInfo);
+
+                if (response.status === 200) {
+                    this.$router.replace({
+                        name: "Login",
+                        params: { newUserCreated: true },
+                    });
+                }
+            } catch (e) {
+                if (e.response.status === 400) {
+                    this.error = true;
+                    this.errorMsg = `${e.response.data.errors.email[0]}, please try another email`;
+                }
+            }
         },
+        // Validation input
         passwordValidation(password) {
             return /\d/.test(password) && password.length >= 5 ? true : false;
+        },
+        validateEmail(email) {
+            const re =
+                /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            return re.test(String(email).toLowerCase());
         },
     },
 };

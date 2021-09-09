@@ -1,11 +1,14 @@
 <template>
     <div class="form-wrap">
         <form @submit.prevent="signIn" class="login">
-            <p class="login-register">
+            <p class="login-register" v-show="!newUserCreated">
                 Don't have an account?
                 <router-link class="router-link" :to="{ name: 'Register' }">
                     Register
                 </router-link>
+            </p>
+            <p class="account-created" v-show="newUserCreated">
+                Account Created Successfully
             </p>
             <h2>Login to Kaz Shipping System</h2>
             <div class="inputs">
@@ -48,6 +51,9 @@ import axios from "axios";
 
 export default {
     name: "Login",
+    props: {
+        newUserCreated: Boolean,
+    },
     data() {
         return {
             error: null,
@@ -73,7 +79,7 @@ export default {
 
                 this.$router.push({ name: "Reports" });
             } catch (e) {
-                console.log(e);
+                console.log(e.response);
                 this.error = true;
                 this.errorMsg = e.response.data.message;
             }
@@ -100,6 +106,11 @@ export default {
         .router-link {
             color: #000;
         }
+    }
+    .account-created {
+        margin-bottom: 32px;
+        font-weight: bold;
+        color: var(--primary-color);
     }
     form {
         padding: 0 10px;
