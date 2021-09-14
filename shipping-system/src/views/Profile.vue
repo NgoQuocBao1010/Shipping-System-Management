@@ -100,6 +100,7 @@
                 </div>
             </div>
 
+            <loading-animation class="animation" v-show="animate" />
             <div class="edit-buttons">
                 <div class="btn small" @click="edit = true" v-show="!edit">
                     <i class="far fa-edit"></i>Edit
@@ -124,9 +125,13 @@
 import { mapState, mapMutations } from "vuex";
 import axios from "axios";
 
+import LoadingAnimation from "../components/LoadingAnimation.vue";
+
 export default {
     name: "Profile",
-    components: {},
+    components: {
+        LoadingAnimation,
+    },
     data() {
         return {
             fullName: "",
@@ -138,6 +143,7 @@ export default {
             districtId: null,
             subDistrictId: null,
             edit: false,
+            animate: false,
 
             districts: [],
             subDistricts: [],
@@ -172,6 +178,10 @@ export default {
                 .then((response) => {
                     const provinces = response.data;
 
+                    // Get info from api then rearrange it to get the info for Can Tho city to the front
+                    let results = [];
+                    let ctInfo = [];
+
                     for (let province of provinces) {
                         for (let district of province.districts) {
                             const disObj = {
@@ -179,9 +189,13 @@ export default {
                                 disCode: district.code,
                                 name: `${district.name} - ${province.name}`,
                             };
-                            this.districts.push(disObj);
+
+                            if (province.code === 92) ctInfo.push(disObj);
+                            else results.push(disObj);
                         }
                     }
+
+                    this.districts = [...ctInfo, ...results];
                 })
                 .catch((error) => console.log(error));
         },
@@ -208,6 +222,7 @@ export default {
             };
 
             try {
+                this.animate = true;
                 const url = "http://127.0.0.1:8000/account/profile";
                 const response = await axios.post(url, profileForm, {
                     headers: {
@@ -215,8 +230,11 @@ export default {
                     },
                 });
 
-                if (response.status === 200)
+                if (response.status === 200) {
                     this.updateUserProfile(profileForm);
+                }
+
+                this.animate = false;
             } catch (e) {
                 console.log(e);
             }
@@ -375,6 +393,7 @@ export default {
 
         .edit-buttons {
             position: absolute;
+            top: 40px;
             right: 20px;
             display: flex;
             flex-direction: column;
@@ -388,6 +407,12 @@ export default {
                     cursor: initial;
                 }
             }
+        }
+
+        .animation {
+            position: absolute;
+            top: 15px;
+            right: 30px;
         }
     }
 }

@@ -73,6 +73,7 @@ def profileApi(request):
             return Response(serializer.data)
 
     else:
+        print("[SERVER]: Invalid token", request.headers)
         return JsonResponse(
             status=status.HTTP_401_UNAUTHORIZED,
             data={"message": "You are not authorized to view this profile"},

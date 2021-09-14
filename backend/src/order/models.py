@@ -5,28 +5,22 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 
-class Consignor(models.Model):
+class Customer(models.Model):
+    CUSTOMER_ROLES = (
+        ("cnor", "Consignor"),
+        ("cnee", "Consignee"),
+    )
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    address = models.CharField(max_length=255, blank=True)
+    role = models.CharField(choices=CUSTOMER_ROLES, max_length=25)
+    name = models.CharField(max_length=100, blank=True, null=True)
+    phone = models.CharField(max_length=20, blank=True, null=True)
     address = models.CharField(max_length=255, blank=True, null=True)
     provinceId = models.IntegerField(null=True, blank=True)
     districtId = models.IntegerField(null=True, blank=True)
     subDistrictId = models.IntegerField(null=True, blank=True)
 
     def __str__(self):
-        return f"Consignor {self.user}"
-
-
-class Consignee(models.Model):
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    address = models.CharField(max_length=255, blank=True)
-    address = models.CharField(max_length=255, blank=True, null=True)
-    provinceId = models.IntegerField(null=True, blank=True)
-    districtId = models.IntegerField(null=True, blank=True)
-    subDistrictId = models.IntegerField(null=True, blank=True)
-
-    def __str__(self):
-        return f"Consignee {self.user}"
+        return f"{self.get_role_display()}: {self.name}"
 
 
 class ShippingType(models.Model):
@@ -47,8 +41,7 @@ class ShipDistance(models.Model):
     class Meta:
         constraints = [
             CheckConstraint(
-                check = Q(upperLimit__gt=F("lowerLimit")),
-                name="check_valid_limit"
+                check=Q(upperLimit__gt=F("lowerLimit")), name="check_valid_limit"
             )
         ]
 
@@ -67,11 +60,21 @@ class Order(models.Model):
     paymentMethod = models.IntegerField(null=True, choices=PAYMENT_METHODS)
     shippingType = models.ForeignKey(ShippingType, on_delete=models.CASCADE, null=True)
     shipDistance = models.ForeignKey(ShipDistance, on_delete=models.CASCADE, null=True)
+    consignor = models.ForeignKey(
+        Customer, null=True, on_delete=models.SET_NULL, related_name="consignor"
+    )
+    consignee = models.ForeignKey(
+        Customer, null=True, on_delete=models.SET_NULL, related_name="consignee"
+    )
 
     def __get_price(self):
-        price = self.shipDistance.price if self.shippingType.shipValue == 0 else self.shipDistance.price * 115 / 100
+        price = (
+            self.shipDistance.price
+            if self.shippingType.shipValue == 0
+            else self.shipDistance.price * 115 / 100
+        )
         return int(price * 1000)
-    
+
     price = property(__get_price)
 
     def __str__(self):
@@ -86,4 +89,3 @@ class ProductOrder(models.Model):
 
     def __str__(self):
         return f"Product {self.name}"
-

@@ -14,6 +14,7 @@
                                 type="text"
                                 name="name1"
                                 placeholder="Enter full name"
+                                v-model="consignorName"
                             />
                         </div>
                         <div class="row">
@@ -23,6 +24,7 @@
                                 inputmode="numeric"
                                 name="phone1"
                                 placeholder="Enter phone number"
+                                v-model="consignorNumber"
                             />
                         </div>
                     </div>
@@ -33,6 +35,7 @@
                                 type="text"
                                 name="address1"
                                 placeholder="Enter address"
+                                v-model="address1"
                             />
                         </div>
                         <div class="row">
@@ -67,6 +70,10 @@
                         </div>
                     </div>
                 </div>
+                <div class="errors" v-show="error1">
+                    Please fill all the information
+                    <i class="fas fa-exclamation-circle"></i>
+                </div>
             </div>
             <div class="line"></div>
 
@@ -81,6 +88,7 @@
                                 type="text"
                                 name="name1"
                                 placeholder="Enter full name"
+                                v-model="consigneeName"
                             />
                         </div>
                         <div class="row">
@@ -90,6 +98,7 @@
                                 inputmode="numeric"
                                 name="phone1"
                                 placeholder="Enter phone number"
+                                v-model="consigneeNumber"
                             />
                         </div>
                     </div>
@@ -100,6 +109,7 @@
                                 type="text"
                                 name="address1"
                                 placeholder="Enter address"
+                                v-model="address2"
                             />
                         </div>
                         <div class="row">
@@ -133,6 +143,10 @@
                             </div>
                         </div>
                     </div>
+                </div>
+                <div class="errors" v-show="error2">
+                    Please fill all the information
+                    <i class="fas fa-exclamation-circle"></i>
                 </div>
             </div>
             <div class="line"></div>
@@ -223,6 +237,7 @@ export default {
             address1: "",
             district1: "",
             subDis1: "default",
+            error1: false,
 
             // consignee information
             consigneeName: "",
@@ -230,6 +245,7 @@ export default {
             address2: "",
             district2: "",
             subDis2: "default",
+            error2: false,
 
             products: 1,
 
@@ -290,7 +306,55 @@ export default {
             return axios.get(url);
         },
         submit() {
-            console.log("Submitting...");
+            // Consignor info
+            if (
+                this.consignorName &&
+                this.consignorNumber &&
+                this.address1 &&
+                this.district1 &&
+                this.subDis1
+            ) {
+                const consignor = {
+                    name: this.consignorName,
+                    phone: this.consignorNumber,
+                    address: this.address1,
+                    district: this.district1,
+                    subDis: this.subDis1,
+                };
+
+                this.error1 = false;
+                console.log("Getting consignor information");
+            } else {
+                this.error1 = true;
+                console.log("Error");
+                return;
+            }
+
+            // Consignee info
+            if (
+                this.consigneeName &&
+                this.consigneeNumber &&
+                this.address2 &&
+                this.district2 &&
+                this.subDis2
+            ) {
+                const consignee = {
+                    name: this.consigneeName,
+                    phone: this.consigneeNumber,
+                    address: this.address2,
+                    district: this.district2,
+                    subDis: this.subDis2,
+                };
+
+                this.error2 = false;
+                console.log("Getting consignee information");
+            } else {
+                this.error2 = true;
+                console.log("Error");
+                return;
+            }
+
+            // Package information
         },
     },
     mounted() {
@@ -449,6 +513,12 @@ export default {
                         }
                     }
                 }
+            }
+
+            .errors {
+                color: red;
+                font-weight: bold;
+                font-size: 0.75rem;
             }
         }
     }
