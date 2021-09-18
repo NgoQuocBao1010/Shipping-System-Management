@@ -154,28 +154,47 @@
             <!-- Package's Info -->
             <div class="order-form__section">
                 <div class="title">
-                    Package Information - {{ products }} Products
-                    <span class="btn small" @click="products++">
+                    Package Information - {{ products.length }} Products
+                    <span class="btn small" @click="addProduct">
                         <i class="fas fa-plus-circle"></i>Add product
                     </span>
                 </div>
                 <div class="inputs one-row">
-                    <div class="column" v-for="index in products" :key="index">
+                    <div
+                        class="column"
+                        v-for="(product, index) in products"
+                        :key="index"
+                    >
                         <div class="row">
                             <label for="name1">Product Name</label>
-                            <input type="text" name="name1" />
+                            <input
+                                type="text"
+                                name="name1"
+                                v-model="product.name"
+                            />
                         </div>
                         <div class="row">
-                            <label for="price">Product Price</label>
-                            <input type="number" name="price" />
+                            <label for="price">
+                                Product Price (Thousand Vietnam Dong)
+                            </label>
+                            <input
+                                type="number"
+                                name="price"
+                                v-model="product.price"
+                            />
                         </div>
 
                         <i
                             class="fas fa-trash"
-                            @click="products--"
-                            v-show="products > 1"
+                            @click="products.splice(index, 1)"
+                            v-show="products.length > 1"
                         ></i>
                     </div>
+                </div>
+                <div class="errors" v-show="error3">
+                    Please fill out all the information, value of the product
+                    should be bigger than 10.000 VND
+                    <i class="fas fa-exclamation-circle"></i>
                 </div>
             </div>
             <div class="line"></div>
@@ -185,6 +204,16 @@
                 <div class="title">Shipping Information</div>
                 <div class="inputs">
                     <div class="column">
+                        <div class="row">
+                            <label for="payment-method">Payment Method</label>
+                            <div class="select">
+                                <i class="fas fa-chevron-down"></i>
+                                <select name="payment-method">
+                                    <option value="0">Pay by consignor</option>
+                                    <option value="1">Pay by consignee</option>
+                                </select>
+                            </div>
+                        </div>
                         <div class="row">
                             <label for="warning">Shipping Warning</label>
                             <div class="select">
@@ -200,6 +229,16 @@
                                     <option value="delivering">
                                         Customer allows to try product
                                     </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label for="type">Shipping Type</label>
+                            <div class="select">
+                                <i class="fas fa-chevron-down"></i>
+                                <select name="type">
+                                    <option value="0">Standard</option>
+                                    <option value="1">Advance</option>
                                 </select>
                             </div>
                         </div>
@@ -225,12 +264,18 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 import axios from "axios";
 
 export default {
     name: "OrderCreate",
     data() {
         return {
+            // Api districts value
+            districts: [],
+            subDistricts1: [],
+            subDistricts2: [],
+
             // consignor information
             consignorName: "",
             consignorNumber: "",
@@ -247,12 +292,15 @@ export default {
             subDis2: "default",
             error2: false,
 
-            products: 1,
+            // package information
+            products: [{ price: 0, name: "" }],
+            error3: false,
 
-            districts: [],
-            subDistricts1: [],
-            subDistricts2: [],
+            // shipping information
         };
+    },
+    computed: {
+        ...mapState(["token"]),
     },
     watch: {
         district1(newVal, oldVal) {
@@ -281,11 +329,14 @@ export default {
     methods: {
         getAllProvinces() {
             const url = `https://provinces.open-api.vn/api/?depth=2`;
-
             axios
                 .get(url)
                 .then((response) => {
                     const provinces = response.data;
+
+                    // Get info from api then rearrange it to get the info for Can Tho city to the front
+                    let results = [];
+                    let ctInfo = [];
 
                     for (let province of provinces) {
                         for (let district of province.districts) {
@@ -294,9 +345,11 @@ export default {
                                 disCode: district.code,
                                 name: `${district.name} - ${province.name}`,
                             };
-                            this.districts.push(disObj);
+                            if (province.code === 92) ctInfo.push(disObj);
+                            else results.push(disObj);
                         }
                     }
+                    this.districts = [...ctInfo, ...results];
                 })
                 .catch((error) => console.log(error));
         },
@@ -305,8 +358,17 @@ export default {
 
             return axios.get(url);
         },
-        submit() {
-            // Consignor info
+        addProduct() {
+            this.products.push({
+                name: "",
+                price: 0,
+            });
+        },
+        async submit() {
+            let consignor = null;
+            let consignee = null;
+
+            // Validate consignor info
             if (
                 this.consignorName &&
                 this.consignorNumber &&
@@ -314,7 +376,7 @@ export default {
                 this.district1 &&
                 this.subDis1
             ) {
-                const consignor = {
+                consignor = {
                     name: this.consignorName,
                     phone: this.consignorNumber,
                     address: this.address1,
@@ -323,14 +385,11 @@ export default {
                 };
 
                 this.error1 = false;
-                console.log("Getting consignor information");
             } else {
                 this.error1 = true;
-                console.log("Error");
-                return;
             }
 
-            // Consignee info
+            // Validate consignee info
             if (
                 this.consigneeName &&
                 this.consigneeNumber &&
@@ -338,7 +397,7 @@ export default {
                 this.district2 &&
                 this.subDis2
             ) {
-                const consignee = {
+                consignee = {
                     name: this.consigneeName,
                     phone: this.consigneeNumber,
                     address: this.address2,
@@ -347,14 +406,37 @@ export default {
                 };
 
                 this.error2 = false;
-                console.log("Getting consignee information");
             } else {
                 this.error2 = true;
-                console.log("Error");
-                return;
             }
 
             // Package information
+            for (let product of this.products) {
+                if (product.name === "" || product.price <= 0) {
+                    this.error3 = true;
+                    return;
+                }
+            }
+
+            this.error3 = false;
+            if (!this.error1 && !this.error2 && !this.error3) {
+                const order = {
+                    consignor,
+                    consignee,
+                    products: this.products,
+                };
+
+                try {
+                    const url = "http://127.0.0.1:8000/order/create/";
+                    const response = await axios.post(url, order, {
+                        headers: {
+                            Authorization: `Token ${this.token}`,
+                        },
+                    });
+                } catch (err) {
+                    console.log(err);
+                }
+            }
         },
     },
     mounted() {

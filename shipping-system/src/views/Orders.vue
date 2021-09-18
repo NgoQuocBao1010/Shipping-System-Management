@@ -136,8 +136,8 @@ export default {
                 align-items: center;
                 gap: 1rem;
 
-                @media only screen and (min-width: 1200px) {
-                    gap: 3rem;
+                @media only screen and (min-width: 1440px) {
+                    gap: 2rem;
                 }
 
                 .part {
@@ -161,14 +161,14 @@ export default {
                         padding: 0 0.5em;
                         color: black;
                         cursor: pointer;
-                        font-size: 10px;
+                        font-size: 16px;
                         font-weight: 600;
 
                         &::-ms-expand {
                             display: none;
                         }
 
-                        @media only screen and (min-width: 1200px) {
+                        @media only screen and (min-width: 1440px) {
                             font-size: 0.8rem;
                         }
                     }
@@ -176,7 +176,7 @@ export default {
                     .select {
                         position: relative;
                         display: flex;
-                        width: 10rem;
+                        width: 12rem;
                         height: 1.5em;
                         line-height: 1.5;
                         background: transparent;
@@ -200,7 +200,7 @@ export default {
                             transition: 0.25s all ease;
                         }
 
-                        @media only screen and (min-width: 1200px) {
+                        @media only screen and (min-width: 1440px) {
                             width: 15rem;
                         }
                     }
@@ -220,13 +220,13 @@ export default {
                                 input {
                                     height: 2em;
                                     line-height: 2;
-                                    width: 8rem;
-                                    font-size: 12px;
+                                    width: 10rem;
+                                    font-size: 16px;
                                     font-weight: 600;
                                     padding: 0 2px;
                                     color: var(--primary-color);
 
-                                    @media only screen and (min-width: 1200px) {
+                                    @media only screen and (min-width: 1440px) {
                                         font-size: 1rem;
                                         width: 12rem;
                                         padding: 0 0.5rem;

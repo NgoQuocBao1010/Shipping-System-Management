@@ -50,22 +50,35 @@ class ShipDistance(models.Model):
 
 
 class Order(models.Model):
+    STATUS = (
+        (0, "Failed"),
+        (1, "Processing"),
+        (2, "Delivering"),
+        (3, "Delivered"),
+    )
     PAYMENT_METHODS = (
         (0, "Pay by consignor"),
         (1, "Pay by consignee"),
     )
+    PRODUCT_PREVIEW = (
+        (0, "Customer not allow to observe products"),
+        (1, "Customer allow to observe products but not to try them"),
+        (2, "Customer allow to try products"),
+    )
 
-    dateCreated = models.DateTimeField(auto_now_add=True)
-    note = models.TextField(null=True, blank=True)
-    paymentMethod = models.IntegerField(null=True, choices=PAYMENT_METHODS)
-    shippingType = models.ForeignKey(ShippingType, on_delete=models.CASCADE, null=True)
-    shipDistance = models.ForeignKey(ShipDistance, on_delete=models.CASCADE, null=True)
     consignor = models.ForeignKey(
         Customer, null=True, on_delete=models.SET_NULL, related_name="consignor"
     )
     consignee = models.ForeignKey(
         Customer, null=True, on_delete=models.SET_NULL, related_name="consignee"
     )
+    paymentMethod = models.IntegerField(null=True, choices=PAYMENT_METHODS)
+    productPreview = models.IntegerField(null=True, choices=PRODUCT_PREVIEW)
+    status = models.IntegerField(null=True, choices=STATUS)
+    shippingType = models.ForeignKey(ShippingType, on_delete=models.CASCADE, null=True)
+    shipDistance = models.ForeignKey(ShipDistance, on_delete=models.CASCADE, null=True)
+    note = models.TextField(null=True, blank=True)
+    dateCreated = models.DateTimeField(auto_now_add=True)
 
     def __get_price(self):
         price = (
