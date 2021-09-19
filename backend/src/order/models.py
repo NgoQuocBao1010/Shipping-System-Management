@@ -23,14 +23,6 @@ class Customer(models.Model):
         return f"{self.get_role_display()}: {self.name}"
 
 
-class ShippingType(models.Model):
-    shipValue = models.IntegerField(null=True)
-    shipType = models.CharField(max_length=50, blank=True, null=True)
-
-    def __str__(self):
-        return f"{self.shipType}"
-
-
 class ShipDistance(models.Model):
     MAX_VALUE = 1000
 
@@ -65,6 +57,10 @@ class Order(models.Model):
         (1, "Customer allow to observe products but not to try them"),
         (2, "Customer allow to try products"),
     )
+    SHIPPING_TYPE = (
+        (0, "Standard"),
+        (1, "Advanced"),
+    )
 
     consignor = models.ForeignKey(
         Customer, null=True, on_delete=models.SET_NULL, related_name="consignor"
@@ -72,18 +68,21 @@ class Order(models.Model):
     consignee = models.ForeignKey(
         Customer, null=True, on_delete=models.SET_NULL, related_name="consignee"
     )
+    status = models.IntegerField(default=1, choices=STATUS)
     paymentMethod = models.IntegerField(null=True, choices=PAYMENT_METHODS)
     productPreview = models.IntegerField(null=True, choices=PRODUCT_PREVIEW)
-    status = models.IntegerField(null=True, choices=STATUS)
-    shippingType = models.ForeignKey(ShippingType, on_delete=models.CASCADE, null=True)
+    shippingType = models.IntegerField(null=True, choices=SHIPPING_TYPE)
     shipDistance = models.ForeignKey(ShipDistance, on_delete=models.CASCADE, null=True)
     note = models.TextField(null=True, blank=True)
     dateCreated = models.DateTimeField(auto_now_add=True)
 
     def __get_price(self):
+        if not self.shipDistance:
+            return "Unknow"
+
         price = (
             self.shipDistance.price
-            if self.shippingType.shipValue == 0
+            if self.shippingType == 0
             else self.shipDistance.price * 115 / 100
         )
         return int(price * 1000)
@@ -91,7 +90,7 @@ class Order(models.Model):
     price = property(__get_price)
 
     def __str__(self):
-        return f"Order {self.id}, price {self.price} VND"
+        return f"Order {self.id} ({self.status}), price {self.price} VND"
 
 
 class ProductOrder(models.Model):

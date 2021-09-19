@@ -80,7 +80,6 @@ export default {
         this.order = this.orders.find(
             (order) => order.id === Number.parseInt(this.id)
         );
-        console.log(this.order);
     },
 };
 </script>

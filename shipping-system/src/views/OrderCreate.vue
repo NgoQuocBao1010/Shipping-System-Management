@@ -204,39 +204,44 @@
                 <div class="title">Shipping Information</div>
                 <div class="inputs">
                     <div class="column">
+                        <!-- Payment method -->
                         <div class="row">
                             <label for="payment-method">Payment Method</label>
                             <div class="select">
                                 <i class="fas fa-chevron-down"></i>
-                                <select name="payment-method">
+                                <select name="payment-method" v-model="payment">
                                     <option value="0">Pay by consignor</option>
                                     <option value="1">Pay by consignee</option>
                                 </select>
                             </div>
                         </div>
+                        <!-- Customer preview -->
                         <div class="row">
-                            <label for="warning">Shipping Warning</label>
+                            <label for="preview">
+                                Product Preview when Deliver
+                            </label>
                             <div class="select">
                                 <i class="fas fa-chevron-down"></i>
-                                <select name="warning">
-                                    <option value="all">
+                                <select name="preview" v-model="preview">
+                                    <option value="0">
                                         Customer allows to observe but not to
                                         try the product
                                     </option>
-                                    <option value="processing">
+                                    <option value="1">
                                         Customer not allows to observe product
                                     </option>
-                                    <option value="delivering">
+                                    <option value="2">
                                         Customer allows to try product
                                     </option>
                                 </select>
                             </div>
                         </div>
+                        <!-- Shipping Type -->
                         <div class="row">
                             <label for="type">Shipping Type</label>
                             <div class="select">
                                 <i class="fas fa-chevron-down"></i>
-                                <select name="type">
+                                <select name="type" v-model="shippingType">
                                     <option value="0">Standard</option>
                                     <option value="1">Advance</option>
                                 </select>
@@ -249,6 +254,7 @@
                             <textarea
                                 name="note"
                                 placeholder="Other note"
+                                v-model="note"
                             ></textarea>
                         </div>
                     </div>
@@ -297,6 +303,10 @@ export default {
             error3: false,
 
             // shipping information
+            payment: 0,
+            preview: 0,
+            shippingType: 0,
+            note: "",
         };
     },
     computed: {
@@ -376,12 +386,17 @@ export default {
                 this.district1 &&
                 this.subDis1
             ) {
+                let province1 = this.districts.find(
+                    (info) => info.disCode === this.district1
+                ).proCode;
+
                 consignor = {
                     name: this.consignorName,
                     phone: this.consignorNumber,
                     address: this.address1,
-                    district: this.district1,
-                    subDis: this.subDis1,
+                    provinceId: province1,
+                    districtId: this.district1,
+                    subDistrictId: this.subDis1,
                 };
 
                 this.error1 = false;
@@ -397,12 +412,16 @@ export default {
                 this.district2 &&
                 this.subDis2
             ) {
+                let province2 = this.districts.find(
+                    (info) => info.disCode === this.district2
+                ).proCode;
                 consignee = {
                     name: this.consigneeName,
                     phone: this.consigneeNumber,
                     address: this.address2,
-                    district: this.district2,
-                    subDis: this.subDis2,
+                    provinceId: province2,
+                    districtId: this.district2,
+                    subDistrictId: this.subDis2,
                 };
 
                 this.error2 = false;
@@ -424,6 +443,12 @@ export default {
                     consignor,
                     consignee,
                     products: this.products,
+                    info: {
+                        paymentMethod: this.payment,
+                        productPreview: this.preview,
+                        shippingType: this.shippingType,
+                        note: this.note,
+                    },
                 };
 
                 try {
