@@ -72,18 +72,21 @@ export default new Vuex.Store({
     actions: {
         async login(context, token) {
             try {
-                context.commit("authenticate", token);
                 const response = await axios.get(
                     "http://127.0.0.1:8000/account/profile",
                     {
                         headers: {
-                            Authorization: `Token ${context.state.token}`,
+                            Authorization: `Token ${token}`,
                         },
                     }
                 );
+                context.commit("authenticate", token);
                 context.commit("updateUserProfile", response.data);
+
+                return true;
             } catch (e) {
-                console.log(e);
+                console.log(e.response);
+                return false;
             }
         },
     },

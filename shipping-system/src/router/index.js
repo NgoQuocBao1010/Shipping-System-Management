@@ -126,16 +126,29 @@ const router = new VueRouter({
 });
 
 // Routing resctrition
-router.beforeEach((to, from, next) => {
-    if (!store.state.authenticated && !to.meta.guest) {
-        return next({ name: "Home" });
+// router.beforeEach((to, from, next) => {
+//     if (!store.state.authenticated && !to.meta.guest) {
+//         return next({ name: "Home" });
+//     }
+
+//     if (store.state.authenticated && to.meta.guest) {
+//         return next({ name: "Reports" });
+//     }
+
+//     return next();
+// });
+
+router.beforeEach(async (to, from, next) => {
+    if (!store.state.authenticated) {
+        const token = localStorage.getItem("authToken");
+        if (token !== "null" && token !== "") {
+            const login = await store.dispatch("login", token);
+            console.log("Result", login);
+            next();
+        }
     }
 
-    if (store.state.authenticated && to.meta.guest) {
-        return next({ name: "Reports" });
-    }
-
-    return next();
+    next({ name: "Login" });
 });
 
 // Changing name

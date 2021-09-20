@@ -77,7 +77,7 @@ export default {
 
                 this.login(authToken);
 
-                this.$router.push({ name: "Reports" });
+                this.$router.replace({ name: "Reports" });
             } catch (e) {
                 console.log(e.response);
                 this.error = true;

@@ -50,6 +50,7 @@ def registerApi(request):
 
 @api_view(["GET", "POST"])
 def profileApi(request):
+    print(request)
     if request.user.is_authenticated:
         profile = Profile.objects.get(user=request.user)
 
