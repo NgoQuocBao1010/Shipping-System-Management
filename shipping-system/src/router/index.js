@@ -7,6 +7,7 @@ import Orders from "../views/Orders.vue";
 import OrderDetail from "../views/OrderDetail.vue";
 import OrderCreate from "../views/OrderCreate.vue";
 import Management from "../views/Management.vue";
+import TestMap from "../views/Map.vue";
 import Login from "../views/Login.vue";
 import Register from "../views/Register.vue";
 import ResetPassword from "../views/ResetPassword.vue";
@@ -84,6 +85,16 @@ const routes = [
         component: Management,
         meta: {
             name: "Manangement",
+            guest: false,
+        },
+    },
+    // Management
+    {
+        path: "/test",
+        name: "Map",
+        component: TestMap,
+        meta: {
+            name: "TestMap",
             guest: false,
         },
     },
