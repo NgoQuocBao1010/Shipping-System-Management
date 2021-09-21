@@ -80,6 +80,7 @@ export default new Vuex.Store({
                         },
                     }
                 );
+
                 context.commit("authenticate", token);
                 context.commit("updateUserProfile", response.data);
 

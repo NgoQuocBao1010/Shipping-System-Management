@@ -75,9 +75,9 @@ export default {
                 const response = await axios.post(url, formInfo);
                 const authToken = response.data.auth_token;
 
-                this.login(authToken);
+                await this.login(authToken);
 
-                this.$router.replace({ name: "Reports" });
+                this.$router.push({ name: "Reports" });
             } catch (e) {
                 console.log(e.response);
                 this.error = true;
