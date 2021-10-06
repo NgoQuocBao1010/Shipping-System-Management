@@ -1,10 +1,8 @@
 <template>
     <div class="nav">
-        <img
-            class="logo"
-            src="../assets/logo/Color logo - no background.png"
-            alt=""
-        />
+        <router-link class="logo" :to="{ name: 'Reports' }">
+            <img src="../assets/logo/Color logo - no background.png" alt="" />
+        </router-link>
 
         <form @submit.prevent="search" class="search__container">
             <input
@@ -65,6 +63,7 @@ export default {
 <style lang="scss" scoped>
 .nav {
     width: 100%;
+    height: 8vh;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -74,11 +73,16 @@ export default {
 
     .logo {
         width: 8%;
+        cursor: pointer;
+
+        img {
+            width: 100%;
+        }
     }
 
     .search {
         &__container {
-            width: 40%;
+            width: 50%;
             max-width: 400px;
         }
 

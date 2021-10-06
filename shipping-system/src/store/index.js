@@ -52,17 +52,17 @@ export default new Vuex.Store({
         authenticated: false,
     },
     mutations: {
-        authenticate(state, token) {
+        authenticate(state, authInfo) {
+            // Authenticate: Store auth token and user information
             state.authenticated = true;
-            state.token = token;
-            localStorage.setItem("authToken", token);
+            state.token = authInfo.token;
+            localStorage.setItem("authToken", authInfo.token);
 
+            state.user = authInfo.profile;
             console.log("Authenticated");
         },
-        updateUserProfile(state, profile) {
-            state.user = profile;
-        },
         logout(state) {
+            // Logging out: Set all auth information to null
             state.user = null;
             state.token = null;
             state.authenticated = false;
@@ -71,6 +71,7 @@ export default new Vuex.Store({
     },
     actions: {
         async login(context, token) {
+            // API call to get user token and information
             try {
                 const response = await axios.get(
                     "http://127.0.0.1:8000/account/profile",
@@ -81,12 +82,16 @@ export default new Vuex.Store({
                     }
                 );
 
-                context.commit("authenticate", token);
-                context.commit("updateUserProfile", response.data);
+                const authInfo = {
+                    token,
+                    profile: response.data,
+                };
 
+                context.commit("authenticate", authInfo);
                 return true;
             } catch (e) {
-                console.log(e.response);
+                console.log("Error login in: ", e.response);
+                context.commit("logout");
                 return false;
             }
         },

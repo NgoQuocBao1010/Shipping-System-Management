@@ -88,7 +88,7 @@ const routes = [
             guest: false,
         },
     },
-    // Management
+    // Test Map
     {
         path: "/test",
         name: "Map",
@@ -138,6 +138,7 @@ const router = new VueRouter({
 
 // Routing resctrition
 router.beforeEach(async (to, from, next) => {
+    // Restricting pages depends on user login status
     // Not Authenticated
     if (!store.state.authenticated) {
         let login = false;

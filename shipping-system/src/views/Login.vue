@@ -79,7 +79,7 @@ export default {
 
                 this.$router.push({ name: "Reports" });
             } catch (e) {
-                console.log(e.response);
+                console.log("Error loggin in", e);
                 this.error = true;
                 this.errorMsg = e.response.data.message;
             }
