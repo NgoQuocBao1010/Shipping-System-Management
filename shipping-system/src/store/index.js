@@ -57,9 +57,12 @@ export default new Vuex.Store({
     mutations: {
         authenticate(state, authInfo) {
             // Authenticate: Store auth token and user information
-            state.authenticated = true;
-            state.token = authInfo.token;
-            localStorage.setItem("authToken", authInfo.token);
+
+            if (authInfo.token) {
+                state.authenticated = true;
+                state.token = authInfo.token;
+                localStorage.setItem("authToken", authInfo.token);
+            }
 
             state.user = authInfo.profile;
             console.log("Authenticated");

@@ -170,7 +170,7 @@ export default {
         },
     },
     methods: {
-        ...mapMutations(["logout", "updateUserProfile"]),
+        ...mapMutations(["logout", "authenticate"]),
         getAllProvinces() {
             const url = `https://provinces.open-api.vn/api/?depth=2`;
             axios
@@ -231,7 +231,7 @@ export default {
                 });
 
                 if (response.status === 200) {
-                    this.updateUserProfile(profileForm);
+                    this.authenticate({ profile: profileForm });
                 }
 
                 this.animate = false;

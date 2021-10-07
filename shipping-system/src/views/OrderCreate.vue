@@ -40,26 +40,44 @@
                         <div class="row">
                             <Dropdown
                                 v-if="provinces"
-                                v-model="test"
-                                :values="provinces"
+                                v-model="consignor.districtId"
+                                :options="provinces"
+                                label="District - Province"
+                                placeholder="Enter your province"
                             />
                         </div>
                         <div class="row">
-                            <label for="district1">Sub District</label>
+                            <label v-show="!subDistrict1" for="district1">
+                                Sub District
+                            </label>
+                            <input
+                                type="text"
+                                placeholder="Please pick your province first"
+                                disabled
+                                v-show="!subDistrict1"
+                            />
+                            <Dropdown
+                                v-if="subDistrict1"
+                                v-model="consignor.subDistrictId"
+                                :options.sync="subDistrict1"
+                                label="Subdistrict"
+                                placeholder="Enter your ward name ..."
+                            />
                         </div>
                     </div>
                 </div>
-                <div class="errors" v-show="consignor.error">
+                <div class="errors" v-show="error1">
                     Please fill all the information
                     <i class="fas fa-exclamation-circle"></i>
                 </div>
             </div>
+
+            <!-- Submit -->
             <div class="line"></div>
             <div class="order-form__section">
                 <button type="submit">Submit</button>
             </div>
         </form>
-        {{ test }}
     </div>
 </template>
 
@@ -83,19 +101,65 @@ export default {
                 districtId: null,
                 subDistrictId: null,
             },
-            error: null,
-            test: "",
+            error1: null,
+            subDistrict1: null,
         };
     },
     computed: {
         ...mapState(["user", "provinces"]),
     },
-    watch: {},
+    watch: {
+        "consignor.districtId"(newVal, oldVal) {
+            if (newVal) {
+                this.getSubDistrict(newVal);
+
+                if (oldVal) this.consignor.subDistrictId = null;
+            }
+        },
+    },
     methods: {
-        async submit() {},
+        async getSubDistrict(districtId) {
+            try {
+                const url = `https://provinces.open-api.vn/api/d/${districtId}/?depth=2`;
+                const response = await axios.get(url);
+
+                let wards = [];
+                response.data.wards.forEach((ward) => {
+                    const wardObj = {
+                        name: ward.name,
+                        id: ward.code,
+                    };
+                    wards.push(wardObj);
+                });
+
+                this.subDistrict1 = wards;
+            } catch (err) {
+                console.log(`Error getting subdistrict`, err);
+            }
+        },
+        async submit() {
+            if (this.validateCustomerInfo(this.consignor)) {
+            }
+        },
+        validateCustomerInfo(info) {
+            const isEmpty = !Object.values(info).every(
+                (x) => x !== null && x !== ""
+            );
+            console.log(isEmpty);
+            return isEmpty;
+        },
     },
     created() {
-        this.consignor = this.user;
+        const { fullName, phone, address, districtId, subDistrictId, ...rest } =
+            this.user;
+
+        this.consignor = {
+            fullName,
+            phone,
+            address,
+            districtId,
+            subDistrictId,
+        };
     },
 };
 </script>
