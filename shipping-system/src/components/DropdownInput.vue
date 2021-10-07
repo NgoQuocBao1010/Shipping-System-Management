@@ -13,6 +13,9 @@
             />
 
             <div class="options" v-show="showOptions" ref="options">
+                <div class="no-info" v-show="filterArr.length === 0">
+                    There is no result
+                </div>
                 <div
                     class="option"
                     v-for="(val, index) in filterArr"
@@ -20,7 +23,7 @@
                     @click="updateValue(val, index)"
                     :class="{ active: val === value }"
                 >
-                    {{ val }}
+                    {{ val.name }}
                 </div>
             </div>
         </div>
@@ -30,6 +33,14 @@
 <script>
 export default {
     name: "Dropdown",
+    model: {
+        prop: "title",
+        event: "change",
+    },
+    props: {
+        title: String,
+        values: Array,
+    },
     data() {
         return {
             showOptions: false,
@@ -47,9 +58,18 @@ export default {
             selectVal: "",
         };
     },
+    watch: {
+        selectVal(newVal, oldVal) {
+            this.$emit("change", newVal);
+        },
+    },
     methods: {
         updateOptions(e) {
             const newVal = e.target.value;
+
+            this.filterArr = this.arr.filter((val) => {
+                return val.trim().toLowerCase().includes(newVal.toLowerCase());
+            });
         },
         closeDropdown() {
             // Detect if option is choosen before close
@@ -61,14 +81,14 @@ export default {
             this.selectVal = value;
             this.closeDropdown();
 
-            this.filterArr.splice(index, 1);
+            this.filterArr = this.arr.filter((val) => val !== value);
             this.filterArr = [value, ...this.filterArr];
 
             this.$refs.options.scrollTop = 0;
         },
     },
     created() {
-        this.filterArr = this.arr;
+        this.filterArr = this.values;
     },
 };
 </script>
@@ -146,6 +166,13 @@ export default {
                 &.active {
                     background: var(--primary-color);
                 }
+            }
+
+            .no-info {
+                padding: 10px 16px;
+                background: #fff;
+                text-align: center;
+                font-weight: 900;
             }
         }
     }

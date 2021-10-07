@@ -344,7 +344,7 @@ export default {
                 .then((response) => {
                     const provinces = response.data;
 
-                    // Get info from api then rearrange it to get the info for Can Tho city to the front
+                    // Get info from api then rearrange them to get the info for Can Tho city to the front
                     let results = [];
                     let ctInfo = [];
 

@@ -32,7 +32,7 @@ export default {
         },
     },
     methods: {
-        ...mapActions(["login"]),
+        ...mapActions(["getProvinceInfo"]),
         checkRoute() {
             // Hide and show navigation bar depending on the page
             const routesWithNoNav = [
@@ -52,8 +52,8 @@ export default {
     },
     created() {
         this.checkRoute();
+        this.getProvinceInfo();
     },
-    mounted() {},
 };
 </script>
 

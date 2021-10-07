@@ -38,7 +38,11 @@
                             />
                         </div>
                         <div class="row">
-                            <Dropdown />
+                            <Dropdown
+                                v-if="provinces"
+                                v-model="test"
+                                :values="provinces"
+                            />
                         </div>
                         <div class="row">
                             <label for="district1">Sub District</label>
@@ -55,6 +59,7 @@
                 <button type="submit">Submit</button>
             </div>
         </form>
+        {{ test }}
     </div>
 </template>
 
@@ -79,10 +84,11 @@ export default {
                 subDistrictId: null,
             },
             error: null,
+            test: "",
         };
     },
     computed: {
-        ...mapState(["token", "user"]),
+        ...mapState(["user", "provinces"]),
     },
     watch: {},
     methods: {
