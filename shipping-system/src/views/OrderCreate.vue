@@ -85,6 +85,8 @@
 import { mapState } from "vuex";
 import axios from "axios";
 
+import { required, email, minLength, sameAs } from "vuelidate/lib/validators";
+
 import Dropdown from "../components/DropdownInput.vue";
 
 export default {
@@ -117,8 +119,18 @@ export default {
             }
         },
     },
+    validations: {
+        consignor: {
+            fullName: { required },
+            phone: { required },
+            address: { required },
+            districtId: { required },
+            subDistrictId: { required },
+        },
+    },
     methods: {
         async getSubDistrict(districtId) {
+            // Get wards of district after a district is chosen
             try {
                 const url = `https://provinces.open-api.vn/api/d/${districtId}/?depth=2`;
                 const response = await axios.get(url);
@@ -138,15 +150,9 @@ export default {
             }
         },
         async submit() {
-            if (this.validateCustomerInfo(this.consignor)) {
-            }
-        },
-        validateCustomerInfo(info) {
-            const isEmpty = !Object.values(info).every(
-                (x) => x !== null && x !== ""
-            );
-            console.log(isEmpty);
-            return isEmpty;
+            this.$v.$touch();
+            console.log(this.$v.$error);
+            console.log(this.$v.consignor.phone.required);
         },
     },
     created() {

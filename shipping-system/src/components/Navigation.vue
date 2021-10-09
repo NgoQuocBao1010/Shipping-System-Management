@@ -89,6 +89,9 @@ export default {
         &__input {
             width: 100%;
             padding: 12px 24px;
+            @media only screen and (min-width: 1200px) {
+                padding: 6px 12px;
+            }
 
             background-color: transparent;
             transition: transform 250ms ease-in-out;
@@ -116,6 +119,9 @@ export default {
             &:hover,
             &:focus {
                 padding: 12px 0;
+                @media only screen and (min-width: 1200px) {
+                    padding: 6px 0;
+                }
                 outline: 0;
                 border: 1px solid transparent;
                 border-bottom: 1px solid #7dccff;
