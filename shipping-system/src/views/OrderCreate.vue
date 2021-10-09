@@ -66,11 +66,196 @@
                         </div>
                     </div>
                 </div>
-                <div class="errors" v-show="error1">
-                    Please fill all the information
+                <div class="errors" v-show="error.consignor">
+                    {{ error.consignor }}
                     <i class="fas fa-exclamation-circle"></i>
                 </div>
             </div>
+
+            <!-- Consignee Info -->
+            <div class="order-form__section">
+                <div class="title">Consignee Information</div>
+                <div class="inputs">
+                    <div class="column">
+                        <div class="row">
+                            <label for="name1">Consignee's Name</label>
+                            <input
+                                type="text"
+                                name="name2"
+                                placeholder="Enter full name"
+                                v-model="consignee.fullName"
+                            />
+                        </div>
+                        <div class="row">
+                            <label for="phone2">Phone number</label>
+                            <input
+                                type="tel"
+                                inputmode="numeric"
+                                name="phone2"
+                                placeholder="Enter phone number"
+                                v-model="consignee.phone"
+                            />
+                        </div>
+                    </div>
+                    <div class="column">
+                        <div class="row">
+                            <label for="address2">Address</label>
+                            <input
+                                type="text"
+                                name="address2"
+                                placeholder="Enter address"
+                                v-model="consignee.address"
+                            />
+                        </div>
+                        <div class="row">
+                            <Dropdown
+                                v-if="provinces"
+                                v-model="consignee.districtId"
+                                :options="provinces"
+                                label="District - Province"
+                                placeholder="Enter your province"
+                            />
+                        </div>
+                        <div class="row">
+                            <label v-show="!subDistrict2" for="district1">
+                                Sub District
+                            </label>
+                            <input
+                                type="text"
+                                placeholder="Please pick your province first"
+                                disabled
+                                v-show="!subDistrict2"
+                            />
+                            <Dropdown
+                                v-if="subDistrict2"
+                                v-model="consignee.subDistrictId"
+                                :options.sync="subDistrict2"
+                                label="Subdistrict"
+                                placeholder="Enter your ward name ..."
+                            />
+                        </div>
+                    </div>
+                </div>
+                <div class="errors" v-show="error.consignee">
+                    {{ error.consignee }}
+                    <i class="fas fa-exclamation-circle"></i>
+                </div>
+            </div>
+
+            <!-- Package's Info -->
+            <div class="order-form__section">
+                <div class="title">
+                    Package Information - {{ products.length }}
+                    <span v-if="products.length == 1">Product</span>
+                    <span v-else> 1">Products</span>
+                    <span class="btn small" @click="addProduct">
+                        <i class="fas fa-plus-circle"></i>Add product
+                    </span>
+                </div>
+                <div class="inputs one-row">
+                    <div
+                        class="column"
+                        v-for="(product, index) in products"
+                        :key="index"
+                    >
+                        <!-- Product Name -->
+                        <div class="row">
+                            <label>Product Name</label>
+                            <input
+                                type="text"
+                                v-model="product.name"
+                                autocomplete="nope"
+                            />
+                        </div>
+
+                        <!-- Product Price -->
+                        <div class="row">
+                            <label for="price">
+                                Product Price <b>(Viet Nam Dong - VND)</b>
+                            </label>
+                            <input
+                                type="text"
+                                name="price"
+                                autocomplete="nope"
+                                placeholder="100.000"
+                                v-model="product.price"
+                                @input="formatPrice($event, index)"
+                            />
+                        </div>
+
+                        <i
+                            class="fas fa-trash"
+                            @click="products.splice(index, 1)"
+                            v-show="products.length > 1"
+                        ></i>
+                    </div>
+                </div>
+                <div class="errors" v-show="error.products">
+                    Please fill out all the information, value of each product
+                    should be bigger than 10.000 VND
+                    <i class="fas fa-exclamation-circle"></i>
+                </div>
+            </div>
+            <div class="line"></div>
+
+            <!-- Shipping's Info -->
+            <div class="order-form__section">
+                <div class="title">Shipping Information</div>
+                <div class="inputs">
+                    <div class="column">
+                        <!-- Payment method -->
+                        <div class="row">
+                            <Dropdown
+                                v-model="payment"
+                                :options="paymentOptions"
+                                label="Payment methods"
+                            />
+                        </div>
+                        <!-- Customer preview -->
+                        <div class="row">
+                            <label for="preview">
+                                Product Preview when Deliver
+                            </label>
+                            <div class="select">
+                                <i class="fas fa-chevron-down"></i>
+                                <select name="preview">
+                                    <option value="0">
+                                        Customer allows to observe but not to
+                                        try the product
+                                    </option>
+                                    <option value="1">
+                                        Customer not allows to observe product
+                                    </option>
+                                    <option value="2">
+                                        Customer allows to try product
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <!-- Shipping Type -->
+                        <div class="row">
+                            <label for="type">Shipping Type</label>
+                            <div class="select">
+                                <i class="fas fa-chevron-down"></i>
+                                <select name="type">
+                                    <option value="0">Standard</option>
+                                    <option value="1">Advance</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column">
+                        <div class="row">
+                            <label for="note">Other Note</label>
+                            <textarea
+                                name="note"
+                                placeholder="Other note"
+                            ></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="line"></div>
 
             <!-- Submit -->
             <div class="line"></div>
@@ -85,7 +270,7 @@
 import { mapState } from "vuex";
 import axios from "axios";
 
-import { required, email, minLength, sameAs } from "vuelidate/lib/validators";
+import { required, numeric, minLength } from "vuelidate/lib/validators";
 
 import Dropdown from "../components/DropdownInput.vue";
 
@@ -103,34 +288,109 @@ export default {
                 districtId: null,
                 subDistrictId: null,
             },
-            error1: null,
+            consignee: {
+                fullName: "",
+                phone: "",
+                address: "",
+                districtId: null,
+                subDistrictId: null,
+            },
+            // Dynamic var contains wards of a district
             subDistrict1: null,
+            subDistrict2: null,
+            // Products info
+            products: [
+                {
+                    name: "",
+                    price: "",
+                },
+            ],
+            // Other shipping information
+            paymentOptions: [
+                {
+                    id: 1,
+                    name: "Pay by consignor",
+                },
+                {
+                    id: 2,
+                    name: "Pay by consignee",
+                },
+            ],
+            payment: 1,
+            // Error handler
+            error: {
+                consignor: null,
+                consignee: null,
+                products: null,
+            },
         };
     },
     computed: {
         ...mapState(["user", "provinces"]),
     },
     watch: {
-        "consignor.districtId"(newVal, oldVal) {
+        async "consignor.districtId"(newVal, oldVal) {
             if (newVal) {
-                this.getSubDistrict(newVal);
+                if (oldVal) this.consignor.subDistrictId = null; // Reset subdistrict dropdown if district is changed
 
-                if (oldVal) this.consignor.subDistrictId = null;
+                this.subDistrict1 = await this.getSubDistrict(newVal);
+            }
+        },
+        async "consignee.districtId"(newVal, oldVal) {
+            if (newVal) {
+                if (oldVal) this.consignee.subDistrictId = null; // Reset subdistrict dropdown if district is changed
+
+                this.subDistrict2 = await this.getSubDistrict(newVal);
             }
         },
     },
     validations: {
         consignor: {
             fullName: { required },
-            phone: { required },
+            phone: { required, numeric },
             address: { required },
-            districtId: { required },
-            subDistrictId: { required },
+            districtId: { required, numeric },
+            subDistrictId: { required, numeric },
+        },
+        consignee: {
+            fullName: { required },
+            phone: { required, numeric },
+            address: { required },
+            districtId: { required, numeric },
+            subDistrictId: { required, numeric },
+        },
+        products: {
+            $each: {
+                name: { required },
+                price: { required, minLength: minLength(5) },
+            },
         },
     },
     methods: {
+        async submit() {
+            this.$v.$touch(); // validate input data
+
+            console.log(this.$v.products.$error);
+            if (this.$v.$error) {
+                this.error.consignor = this.$v.consignor.$error
+                    ? "Please fill out all information"
+                    : null;
+
+                this.error.consignee = this.$v.consignee.$error
+                    ? "Please fill out all information"
+                    : null;
+
+                this.error.products = this.$v.products.$error ? true : null;
+
+                return;
+            }
+
+            Object.keys(this.error).forEach(
+                (field) => (this.error[field] = null)
+            ); // Set all error to null
+        },
         async getSubDistrict(districtId) {
-            // Get wards of district after a district is chosen
+            // Get wards of district from API after a district is chosen
             try {
                 const url = `https://provinces.open-api.vn/api/d/${districtId}/?depth=2`;
                 const response = await axios.get(url);
@@ -143,16 +403,24 @@ export default {
                     };
                     wards.push(wardObj);
                 });
-
-                this.subDistrict1 = wards;
+                return wards;
             } catch (err) {
                 console.log(`Error getting subdistrict`, err);
             }
         },
-        async submit() {
-            this.$v.$touch();
-            console.log(this.$v.$error);
-            console.log(this.$v.consignor.phone.required);
+        addProduct() {
+            // Add products
+            this.products.push({
+                name: "",
+                price: "",
+            });
+        },
+        formatPrice(e, index) {
+            // Format the price as user typing
+            const value = e.target.value;
+
+            if (value)
+                this.products[index].price = /^\d+$/.test(value) ? value : 0;
         },
     },
     created() {

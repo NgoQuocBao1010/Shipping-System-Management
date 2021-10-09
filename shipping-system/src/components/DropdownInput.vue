@@ -26,6 +26,7 @@
                 v-model="displayValue"
                 @focus="showOptions = true"
                 @input="updateOptions"
+                disabled
             />
 
             <!-- Options -->
@@ -174,6 +175,10 @@ export default {
             &:focus {
                 border: 2px solid var(--primary-color) !important;
                 outline: none;
+            }
+
+            &:disabled {
+                color: black;
             }
         }
 
