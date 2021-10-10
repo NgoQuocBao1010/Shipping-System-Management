@@ -208,40 +208,27 @@
                             <Dropdown
                                 v-model="payment"
                                 :options="paymentOptions"
+                                :noSearch="true"
                                 label="Payment methods"
                             />
                         </div>
                         <!-- Customer preview -->
                         <div class="row">
-                            <label for="preview">
-                                Product Preview when Deliver
-                            </label>
-                            <div class="select">
-                                <i class="fas fa-chevron-down"></i>
-                                <select name="preview">
-                                    <option value="0">
-                                        Customer allows to observe but not to
-                                        try the product
-                                    </option>
-                                    <option value="1">
-                                        Customer not allows to observe product
-                                    </option>
-                                    <option value="2">
-                                        Customer allows to try product
-                                    </option>
-                                </select>
-                            </div>
+                            <Dropdown
+                                v-model="preview"
+                                :options="previewOptions"
+                                label="Customer Preview"
+                                :noSearch="true"
+                            />
                         </div>
                         <!-- Shipping Type -->
                         <div class="row">
-                            <label for="type">Shipping Type</label>
-                            <div class="select">
-                                <i class="fas fa-chevron-down"></i>
-                                <select name="type">
-                                    <option value="0">Standard</option>
-                                    <option value="1">Advance</option>
-                                </select>
-                            </div>
+                            <Dropdown
+                                v-model="shipping"
+                                :options="shippingOptions"
+                                label="Shipping Type"
+                                :noSearch="true"
+                            />
                         </div>
                     </div>
                     <div class="column">
@@ -250,6 +237,7 @@
                             <textarea
                                 name="note"
                                 placeholder="Other note"
+                                v-model="note"
                             ></textarea>
                         </div>
                     </div>
@@ -305,7 +293,7 @@ export default {
                     price: "",
                 },
             ],
-            // Other shipping information
+            // Payment Information
             paymentOptions: [
                 {
                     id: 1,
@@ -317,6 +305,36 @@ export default {
                 },
             ],
             payment: 1,
+            // Customer Preview Information
+            previewOptions: [
+                {
+                    id: 1,
+                    name: "Customer does not allow to observe",
+                },
+                {
+                    id: 2,
+                    name: "Customer allows to oberseve but not to try",
+                },
+                {
+                    id: 3,
+                    name: "Customer allows to try",
+                },
+            ],
+            preview: 2,
+            // Shipping Information
+            shippingOptions: [
+                {
+                    id: 1,
+                    name: "Standard",
+                },
+                {
+                    id: 2,
+                    name: "Advance",
+                },
+            ],
+            shipping: 1,
+            // Note for the order
+            note: null,
             // Error handler
             error: {
                 consignor: null,

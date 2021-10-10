@@ -26,8 +26,13 @@
                 v-model="displayValue"
                 @focus="showOptions = true"
                 @input="updateOptions"
-                disabled
+                :disabled="noSearch"
             />
+            <div
+                v-if="noSearch"
+                @click="showOptions = !showOptions"
+                class="pseudo-select"
+            ></div>
 
             <!-- Options -->
             <transition name="dropdown">
@@ -58,16 +63,22 @@ export default {
         event: "change",
     },
     props: {
-        value: Number,
-        options: Array,
+        value: Number, // model value
+        options: Array, // all the options value for the models {id, name}
         label: {
+            // label for the input
             type: String,
             default: "Dropdown label",
         },
         placeholder: {
+            // place holder for the input
             type: String,
             default: "Enter your value to filter",
         },
+        noSearch: {
+            type: Boolean,
+            default: false,
+        }, // no filter options needed
     },
     data() {
         return {
@@ -116,6 +127,9 @@ export default {
 
             this.$refs.options.scrollTop = 0;
         },
+        toggleDropdown() {
+            console.log("Clicked");
+        },
     },
     created() {
         this.filterArr = this.options;
@@ -160,6 +174,7 @@ export default {
             right: 10px;
             top: 50%;
             transform: translateY(-50%);
+            z-index: 2;
         }
 
         input {
@@ -180,6 +195,17 @@ export default {
             &:disabled {
                 color: black;
             }
+        }
+
+        .pseudo-select {
+            width: 100%;
+            height: 100%;
+            background-color: transparent;
+            position: absolute;
+            inset: 0;
+            cursor: pointer;
+            border-radius: 50px;
+            z-index: 1;
         }
 
         .options {
