@@ -1,16 +1,16 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
-import Profile from "../views/Profile.vue";
-import Reports from "../views/Reports.vue";
-import Orders from "../views/Orders.vue";
-import OrderDetail from "../views/OrderDetail.vue";
-import OrderCreate from "../views/OrderCreate.vue";
-import Management from "../views/Management.vue";
+import Profile from "../views/Management/Profile.vue";
+import Reports from "../views/Management/Reports.vue";
+import Management from "../views/Management/Management.vue";
+import Orders from "../views/Order/Orders.vue";
+import OrderDetail from "../views/Order/OrderDetail.vue";
+import OrderCreate from "../views/Order/OrderCreate.vue";
 import TestMap from "../views/Map.vue";
-import Login from "../views/Login.vue";
-import Register from "../views/Register.vue";
-import ResetPassword from "../views/ResetPassword.vue";
+import Login from "../views/Auth/Login.vue";
+import Register from "../views/Auth/Register.vue";
+import ResetPassword from "../views/Auth/ResetPassword.vue";
 
 import store from "../store/index";
 
@@ -64,7 +64,7 @@ const routes = [
         name: "OrderCreate",
         component: OrderCreate,
         meta: {
-            name: "OrderCreate",
+            name: "Order Create",
             guest: false,
         },
     },

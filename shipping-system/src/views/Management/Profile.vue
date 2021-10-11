@@ -125,7 +125,7 @@
 import { mapState, mapMutations } from "vuex";
 import axios from "axios";
 
-import LoadingAnimation from "../components/LoadingAnimation.vue";
+import LoadingAnimation from "../../components/LoadingAnimation.vue";
 
 export default {
     name: "Profile",

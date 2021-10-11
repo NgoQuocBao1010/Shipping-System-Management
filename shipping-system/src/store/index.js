@@ -65,7 +65,7 @@ export default new Vuex.Store({
             }
 
             state.user = authInfo.profile;
-            console.log("Authenticated");
+            console.log("Global store: Authenticated");
         },
         logout(state) {
             // Logging out: Set all auth information to null
@@ -113,6 +113,7 @@ export default new Vuex.Store({
 
                 const provicesData = [];
 
+                console.log(response.data);
                 // Restructure response api data
                 response.data.forEach((provinceData) => {
                     provinceData.districts.forEach((districtData) => {

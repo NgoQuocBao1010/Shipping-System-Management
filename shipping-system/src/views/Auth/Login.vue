@@ -194,7 +194,7 @@ export default {
         display: none;
         flex: 2;
         background-size: cover;
-        background-image: url("../assets/background.jpg");
+        background-image: url("../../assets/background.jpg");
         width: 100%;
         height: 100%;
         @media (min-width: 900px) {

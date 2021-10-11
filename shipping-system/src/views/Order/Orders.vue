@@ -81,7 +81,7 @@
 import moment from "moment";
 import { mapState } from "vuex";
 
-import OrderTable from "../components/OrderTable";
+import OrderTable from "@/components/OrderTable";
 
 export default {
     name: "Orders",

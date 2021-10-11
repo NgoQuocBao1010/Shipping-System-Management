@@ -63,7 +63,7 @@ export default {
         event: "change",
     },
     props: {
-        value: Number, // model value
+        value: Number, // v-model value
         options: Array, // all the options value for the models {id, name}
         label: {
             // label for the input
@@ -83,7 +83,6 @@ export default {
     data() {
         return {
             showOptions: false,
-            arr: [],
             filterArr: [],
             displayValue: "",
             selectVal: null,
@@ -194,6 +193,7 @@ export default {
 
             &:disabled {
                 color: black;
+                background: transparent;
             }
         }
 

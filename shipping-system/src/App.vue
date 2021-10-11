@@ -10,7 +10,6 @@
 
 <script>
 import { mapActions } from "vuex";
-import axios from "axios";
 
 import Sidebar from "./components/Sidebar.vue";
 import Navigation from "./components/Navigation.vue";

@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import EmployeeCard from "../components/EmployeeCard.vue";
+import EmployeeCard from "../../components/EmployeeCard.vue";
 export default {
     name: "Management",
     components: {

@@ -147,7 +147,7 @@
                 <div class="title">
                     Package Information - {{ products.length }}
                     <span v-if="products.length == 1">Product</span>
-                    <span v-else> 1">Products</span>
+                    <span v-else>Products</span>
                     <span class="btn small" @click="addProduct">
                         <i class="fas fa-plus-circle"></i>Add product
                     </span>
@@ -251,6 +251,15 @@
                 <button type="submit">Submit</button>
             </div>
         </form>
+        <!-- Order Confirmation -->
+        <Modal
+            header="Order Confirmation"
+            :active="modal"
+            @toggle="modal = !modal"
+        >
+            <h2>Consignor Info</h2>
+            <p>Info</p>
+        </Modal>
     </div>
 </template>
 
@@ -260,12 +269,14 @@ import axios from "axios";
 
 import { required, numeric, minLength } from "vuelidate/lib/validators";
 
-import Dropdown from "../components/DropdownInput.vue";
+import Dropdown from "@/components/DropdownInput.vue";
+import Modal from "@/components/Modal.vue";
 
 export default {
     name: "OrderCreate",
     components: {
         Dropdown,
+        Modal,
     },
     data() {
         return {
@@ -309,15 +320,15 @@ export default {
             previewOptions: [
                 {
                     id: 1,
-                    name: "Customer does not allow to observe",
+                    name: "Customer does not allow to observe products",
                 },
                 {
                     id: 2,
-                    name: "Customer allows to oberseve but not to try",
+                    name: "Customer allows to oberseve products but not to try",
                 },
                 {
                     id: 3,
-                    name: "Customer allows to try",
+                    name: "Customer allows to try products",
                 },
             ],
             preview: 2,
@@ -341,10 +352,12 @@ export default {
                 consignee: null,
                 products: null,
             },
+            // Modal active
+            modal: false,
         };
     },
     computed: {
-        ...mapState(["user", "provinces"]),
+        ...mapState(["user", "provinces", "token"]),
     },
     watch: {
         async "consignor.districtId"(newVal, oldVal) {
@@ -386,10 +399,11 @@ export default {
     },
     methods: {
         async submit() {
+            // On submit event
             this.$v.$touch(); // validate input data
 
-            console.log(this.$v.products.$error);
             if (this.$v.$error) {
+                console.log("Order Application/OrderCreate: Invalid input");
                 this.error.consignor = this.$v.consignor.$error
                     ? "Please fill out all information"
                     : null;
@@ -406,6 +420,32 @@ export default {
             Object.keys(this.error).forEach(
                 (field) => (this.error[field] = null)
             ); // Set all error to null
+
+            // Make API call
+            // try {
+            //     const order = {
+            //         consignor: this.consignor,
+            //         consignee: this.consignee,
+            //         products: this.products,
+            //         info: {
+            //             paymentMethod: this.payment,
+            //             productPreview: this.preview,
+            //             shippingType: this.shipping,
+            //             note: this.note,
+            //         },
+            //     };
+
+            //     const url = "http://127.0.0.1:8000/order/create/";
+            //     const response = await axios.post(url, order, {
+            //         headers: {
+            //             Authorization: `Token ${this.token}`,
+            //         },
+            //     });
+            // } catch (err) {
+            //     console.log(err);
+            // }
+
+            this.modal = true;
         },
         async getSubDistrict(districtId) {
             // Get wards of district from API after a district is chosen

@@ -49,7 +49,7 @@
 </template>
 
 <script>
-import BarChart from "../components/BarChartReport.vue";
+import BarChart from "../../components/BarChartReport.vue";
 
 export default {
     name: "Reports",

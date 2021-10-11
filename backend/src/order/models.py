@@ -49,17 +49,17 @@ class Order(models.Model):
         (3, "Delivered"),
     )
     PAYMENT_METHODS = (
-        (0, "Pay by consignor"),
-        (1, "Pay by consignee"),
+        (1, "Pay by consignor"),
+        (2, "Pay by consignee"),
     )
     PRODUCT_PREVIEW = (
-        (0, "Customer not allow to observe products"),
-        (1, "Customer allow to observe products but not to try them"),
-        (2, "Customer allow to try products"),
+        (1, "Customer not allow to observe products"),
+        (2, "Customer allow to observe products but not to try them"),
+        (3, "Customer allow to try products"),
     )
     SHIPPING_TYPE = (
-        (0, "Standard"),
-        (1, "Advanced"),
+        (1, "Standard"),
+        (2, "Advanced"),
     )
 
     consignor = models.ForeignKey(
