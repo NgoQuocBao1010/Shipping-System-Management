@@ -9,6 +9,8 @@
 </template>
 
 <script>
+import "leaflet/dist/leaflet.css";
+import "leaflet-routing-machine/dist/leaflet-routing-machine.css";
 import { mapActions } from "vuex";
 
 import Sidebar from "./components/Sidebar.vue";

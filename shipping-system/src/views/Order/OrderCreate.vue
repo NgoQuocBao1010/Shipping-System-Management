@@ -246,19 +246,18 @@
             <div class="line"></div>
 
             <!-- Submit -->
-            <div class="line"></div>
-            <div class="order-form__section">
+            <div class="order-form__submit">
                 <button type="submit">Submit</button>
+                <Loading v-show="loading" />
             </div>
         </form>
-        <!-- Order Confirmation -->
+        <!-- Order Confirmation Modal -->
         <Modal
             header="Order Confirmation"
             :active="modal"
             @toggle="modal = !modal"
         >
-            <h2>Consignor Info</h2>
-            <p>Info</p>
+            <OrderDetail v-if="order" :order="order" />
         </Modal>
     </div>
 </template>
@@ -266,17 +265,21 @@
 <script>
 import { mapState } from "vuex";
 import axios from "axios";
+import L from "leaflet";
+import { IRouter, IGeocoder, LineOptions } from "leaflet-routing-machine";
 
 import { required, numeric, minLength } from "vuelidate/lib/validators";
 
 import Dropdown from "@/components/DropdownInput.vue";
-import Modal from "@/components/Modal.vue";
+import Loading from "@/components/LoadingAnimation.vue";
 
 export default {
     name: "OrderCreate",
     components: {
         Dropdown,
-        Modal,
+        Loading,
+        Modal: () => import("@/components/Modal.vue"),
+        OrderDetail: () => import("@/components/OrderDetail2.vue"),
     },
     data() {
         return {
@@ -293,6 +296,7 @@ export default {
                 address: "",
                 districtId: null,
                 subDistrictId: null,
+                fullAddress: "",
             },
             // Dynamic var contains wards of a district
             subDistrict1: null,
@@ -300,8 +304,8 @@ export default {
             // Products info
             products: [
                 {
-                    name: "",
-                    price: "",
+                    name: "Chair",
+                    price: 10900,
                 },
             ],
             // Payment Information
@@ -346,6 +350,8 @@ export default {
             shipping: 1,
             // Note for the order
             note: null,
+            // Order
+            order: null,
             // Error handler
             error: {
                 consignor: null,
@@ -354,6 +360,8 @@ export default {
             },
             // Modal active
             modal: false,
+            // Loading Animation
+            loading: false,
         };
     },
     computed: {
@@ -372,6 +380,19 @@ export default {
                 if (oldVal) this.consignee.subDistrictId = null; // Reset subdistrict dropdown if district is changed
 
                 this.subDistrict2 = await this.getSubDistrict(newVal);
+            }
+        },
+        "consignee.subDistrictId"(newVal, oldVal) {
+            if (newVal) {
+                const districtName = this.provinces.find(
+                    (info) => info.id === this.consignee.districtId
+                ).name;
+
+                const wardName = this.subDistrict2.find(
+                    (info) => info.id === newVal
+                ).name;
+
+                this.consignee.fullAddress = `${wardName}, ${districtName}`;
             }
         },
     },
@@ -420,32 +441,54 @@ export default {
             Object.keys(this.error).forEach(
                 (field) => (this.error[field] = null)
             ); // Set all error to null
+            this.loading = true;
+            this.order = {
+                consignor: this.consignor,
+                consignee: this.consignee,
+                products: this.products,
+                info: {
+                    paymentMethod: this.payment,
+                    productPreview: this.preview,
+                    shippingType: this.shipping,
+                    note: this.note,
+                },
+            };
 
-            // Make API call
-            // try {
-            //     const order = {
-            //         consignor: this.consignor,
-            //         consignee: this.consignee,
-            //         products: this.products,
-            //         info: {
-            //             paymentMethod: this.payment,
-            //             productPreview: this.preview,
-            //             shippingType: this.shipping,
-            //             note: this.note,
-            //         },
-            //     };
+            const { lat, lon } = await this.searchLocation(
+                encodeURIComponent(this.consignee.fullAddress)
+            );
 
-            //     const url = "http://127.0.0.1:8000/order/create/";
-            //     const response = await axios.post(url, order, {
-            //         headers: {
-            //             Authorization: `Token ${this.token}`,
-            //         },
-            //     });
-            // } catch (err) {
-            //     console.log(err);
-            // }
+            var map = L.map("map");
+            const routing = L.Routing.control({
+                waypoints: [
+                    L.latLng(lat, lon),
+                    L.latLng(10.01792665, 105.78839074112506),
+                ],
+            }).addTo(map);
 
+            routing.on("routesfound", function (e) {
+                alert("////");
+                var routes = e.routes;
+                alert("Found ", routes);
+            });
+
+            this.loading = false;
             this.modal = true;
+        },
+        async searchLocation(locationURL) {
+            const url =
+                "https://nominatim.openstreetmap.org/search?format=json&limit=3&q=" +
+                locationURL;
+            try {
+                const response = await axios.get(url);
+                const firstResult = response.data[0];
+                const lat = parseFloat(firstResult.lat);
+                const lon = parseFloat(firstResult.lon);
+
+                return { lat, lon };
+            } catch (e) {
+                console.log(e);
+            }
         },
         async getSubDistrict(districtId) {
             // Get wards of district from API after a district is chosen
@@ -637,6 +680,13 @@ export default {
                 font-weight: bold;
                 font-size: 0.75rem;
             }
+        }
+
+        &__submit {
+            margin: 0.5rem 0;
+            padding: 1rem 0;
+            display: flex;
+            gap: 3rem;
         }
     }
 }

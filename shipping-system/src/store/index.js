@@ -113,12 +113,11 @@ export default new Vuex.Store({
 
                 const provicesData = [];
 
-                console.log(response.data);
                 // Restructure response api data
                 response.data.forEach((provinceData) => {
                     provinceData.districts.forEach((districtData) => {
                         const district = {
-                            name: `${districtData.name} - ${provinceData.name}`,
+                            name: `${districtData.name}, ${provinceData.name}`,
                             id: districtData.code,
                             province_code: provinceData.code,
                         };
