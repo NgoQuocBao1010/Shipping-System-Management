@@ -156,7 +156,7 @@ export default {
         position: absolute;
         right: 20px;
         bottom: 20px;
-        font-size: 2rem;
+        font-size: 1.2rem;
         color: #fff;
         cursor: pointer;
         transition: all 0.4s ease-in-out;

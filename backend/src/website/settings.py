@@ -132,3 +132,7 @@ STATIC_URL = "/static/"
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+OPEN_ROUTE_SERVICE_API_KEY = "5b3ce3597851110001cf6248f8c35fd1e82d4754933bf5d8fea33263"
+CURRENT_LOCATION = [105.7842959, 10.0171277]

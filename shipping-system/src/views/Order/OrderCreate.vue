@@ -266,7 +266,6 @@
 import { mapState } from "vuex";
 import axios from "axios";
 import L from "leaflet";
-import { IRouter, IGeocoder, LineOptions } from "leaflet-routing-machine";
 
 import { required, numeric, minLength } from "vuelidate/lib/validators";
 
@@ -442,6 +441,13 @@ export default {
                 (field) => (this.error[field] = null)
             ); // Set all error to null
             this.loading = true;
+
+            const { lat, lon } = await this.searchLocation(
+                encodeURIComponent(this.consignee.fullAddress)
+            );
+
+            console.log(lat, lon);
+
             this.order = {
                 consignor: this.consignor,
                 consignee: this.consignee,
@@ -452,25 +458,10 @@ export default {
                     shippingType: this.shipping,
                     note: this.note,
                 },
+                destinationCoors: { lon, lat },
             };
 
-            const { lat, lon } = await this.searchLocation(
-                encodeURIComponent(this.consignee.fullAddress)
-            );
-
-            var map = L.map("map");
-            const routing = L.Routing.control({
-                waypoints: [
-                    L.latLng(lat, lon),
-                    L.latLng(10.01792665, 105.78839074112506),
-                ],
-            }).addTo(map);
-
-            routing.on("routesfound", function (e) {
-                alert("////");
-                var routes = e.routes;
-                alert("Found ", routes);
-            });
+            console.log(JSON.stringify(this.order));
 
             this.loading = false;
             this.modal = true;
@@ -487,7 +478,7 @@ export default {
 
                 return { lat, lon };
             } catch (e) {
-                console.log(e);
+                console.log("Error finding location", e);
             }
         },
         async getSubDistrict(districtId) {

@@ -19,7 +19,7 @@
             </l-map>
         </div>
         <button @click="routing">Search routes</button>
-        <router-link to="/loc">Location Test</router-link>
+        <button @click="getLocation">Get current location</button>
     </div>
 </template>
 
@@ -130,7 +130,7 @@ export default {
             this.routingControl.on("routesfound", function (e) {
                 console.log(e.routes);
             });
-            this.routingControl._container.style.display = "None";
+            // this.routingControl._container.style.display = "None";
         },
         async routing2() {
             const ninhkieu = [10.0243192, 105.7727087];
@@ -160,6 +160,8 @@ export default {
                 (position) => {
                     this.myLat = position.coords.latitude;
                     this.myLon = position.coords.longitude;
+
+                    console.log(this.myLat, this.myLon);
                 },
                 (error) => {
                     if (error) {
@@ -182,7 +184,7 @@ export default {
     justify-content: center;
 }
 .map-container {
-    width: 300px !important;
+    width: 800px !important;
     height: 300px;
     overflow: hidden;
     border: 1px solid black;

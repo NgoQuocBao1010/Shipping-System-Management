@@ -46,18 +46,18 @@ export default {
     inset: 0;
     background: rgba(0, 0, 0, 0.3);
     z-index: 1000;
-    padding: 1rem;
-
+    padding-top: 2rem;
+    overflow-y: scroll;
     display: flex;
     justify-content: center;
-    align-items: center;
 
     .modal {
         width: 70%;
+        height: max-content;
         max-width: 1200px !important;
-        min-height: 40vh;
         padding: 1rem 2rem;
         border-radius: 10px;
+        margin-bottom: 1rem;
 
         background: #fff;
 
