@@ -6,8 +6,9 @@
                 <span
                     class="status"
                     :class="'order-' + statusCodes[order.status]"
-                    >{{ statusCodes[order.status] }}</span
                 >
+                    {{ statusCodes[order.status] }}
+                </span>
             </h1>
         </div>
         <div class="order-detail__content">

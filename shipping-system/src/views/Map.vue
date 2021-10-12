@@ -1,6 +1,8 @@
 <template>
     <div class="container">
-        <button @click="getLocation">Find location</button>
+        <button @click="routing2">Sth new</button>
+        <input type="text" v-model="location" />
+        <button @click="searchLocation">Find location</button>
         <br />
         {{ center }}
         <div class="map-container">
@@ -96,6 +98,8 @@ export default {
                 console.log("There is routing");
                 this.mapOject.removeControl(this.routingControl);
             }
+
+            console.log(this.myLat, this.myLon);
             this.routingControl = L.Routing.control({
                 waypoints: [
                     L.latLng(this.myLat, this.myLon),
@@ -121,12 +125,31 @@ export default {
                 // router: L.Routing.osrmv1({
                 //     serviceUrl: "http://my-osrm/route/v1"
                 // })
-            });
+            }).addTo(this.mapOject);
 
             this.routingControl.on("routesfound", function (e) {
                 console.log(e.routes);
             });
-            // this.routingControl._container.style.display = "None";
+            this.routingControl._container.style.display = "None";
+        },
+        async routing2() {
+            const ninhkieu = [10.0243192, 105.7727087];
+            const hungphu = [10.01792665, 105.78839074112506];
+
+            try {
+                const url = `https://api.openrouteservice.org/v2/directions/driving-car?api_key=5b3ce3597851110001cf6248f8c35fd1e82d4754933bf5d8fea33263&start=${ninhkieu[0]},${ninhkieu[1]}&end=${hungphu[0]},${hungphu[1]}`;
+
+                const response = await axios.get(url, {
+                    headers: {
+                        "Content-Type":
+                            "application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8",
+                    },
+                });
+
+                console.log(JSON.stringify(response.data));
+            } catch (e) {
+                console.log(e.response);
+            }
         },
         getLocation() {
             var options = {
