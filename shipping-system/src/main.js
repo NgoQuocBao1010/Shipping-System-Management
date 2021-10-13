@@ -11,6 +11,11 @@ Vue.use(Vuelidate);
 
 // Global functions
 Vue.prototype.$province = ProvincesAPI;
+Vue.prototype.$func = {
+    formatMoneyToVND(value) {
+        return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    },
+};
 
 new Vue({
     router,

@@ -52,18 +52,51 @@
             <div class="products-container">
                 <div class="title">Products</div>
                 <div class="products">
-                    <ul>
-                        <li
-                            v-for="(product, index) in order.products"
-                            :key="index"
-                        >
-                            {{ product.name }}, {{ product.price }} VND
-                        </li>
-                    </ul>
+                    <div class="row">
+                        <div class="header">Product Name</div>
+                        <div class="header">Price</div>
+                    </div>
+
+                    <div
+                        class="row"
+                        v-for="(product, index) in order.products"
+                        :key="index"
+                    >
+                        <div>{{ product.name }}</div>
+                        <div>
+                            {{ $func.formatMoneyToVND(product.price) }} VND
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            {{ order.price }}
+            <div class="pricing">
+                <div class="title">Total Expense</div>
+                <div class="pricing__details">
+                    <p>
+                        Packge's price:
+                        <span class="money">
+                            {{ this.$func.formatMoneyToVND(packagePrice) }} VND
+                        </span>
+                    </p>
+                    <p>
+                        Shipping price:
+                        <span class="money">
+                            {{
+                                this.$func.formatMoneyToVND(order.shippingPrice)
+                            }}
+                            VND
+                        </span>
+                    </p>
+                    <p class="total">
+                        In total:
+                        <span class="money">
+                            {{ this.$func.formatMoneyToVND(total) }}
+                            VND
+                        </span>
+                    </p>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -123,6 +156,20 @@ export default {
         },
         shippingType() {
             return this.shippingOptions[this.order.info.shippingType];
+        },
+        packagePrice() {
+            let total = 0;
+            this.order.products.forEach(
+                (item) => (total += parseFloat(item.price))
+            );
+
+            return total;
+        },
+        total() {
+            return (
+                parseFloat(this.order.shippingPrice) +
+                parseFloat(this.packagePrice)
+            );
         },
     },
     method: {},
@@ -197,18 +244,65 @@ export default {
         }
         .products-container {
             margin: 0rem 0.5rem;
+            margin-bottom: 2rem;
             .title {
                 margin-bottom: 5px;
                 font-weight: 900;
                 color: var(--primary-color);
             }
 
-            ul {
+            .products {
                 padding: 1rem;
                 box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px,
                     rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
-                li {
-                    list-style: none;
+
+                .row {
+                    display: flex;
+                    gap: 0.5rem;
+
+                    .header {
+                        font-size: 1rem;
+                        font-weight: 900;
+                        background: lightgray;
+                        margin-bottom: 1rem;
+                        border: none;
+                    }
+
+                    > * {
+                        flex: 1;
+                        font-weight: 500;
+                        font-size: 1.1rem;
+                        padding: 4px 10px;
+                        margin-bottom: 0.5rem;
+                        border-bottom: 1px solid black;
+                    }
+                }
+            }
+        }
+        .pricing {
+            .title {
+                margin-bottom: 5px;
+                font-weight: 900;
+                color: var(--primary-color);
+            }
+            margin: 0rem 0.5rem;
+
+            &__details {
+                padding: 1rem 0;
+
+                p {
+                    font-size: 1.2rem;
+                    margin-bottom: 6px;
+
+                    &.total {
+                        font-size: 1.3rem;
+                        font-weight: 900;
+                    }
+
+                    .money {
+                        margin: 0 1rem;
+                        font-weight: 600;
+                    }
                 }
             }
         }

@@ -250,6 +250,14 @@
             <!-- Submit -->
             <div class="order-form__submit">
                 <button type="submit">Submit</button>
+                <div class="errors">
+                    <i
+                        class="fas fa-exclamation-circle"
+                        v-show="
+                            error.consignor || error.consignee || error.products
+                        "
+                    ></i>
+                </div>
                 <Loading v-show="loading" />
             </div>
         </form>
@@ -472,7 +480,7 @@ export default {
                     shippingType: this.shipping,
                     note: this.note,
                 },
-                price: estimatedPrice,
+                shippingPrice: estimatedPrice,
             };
 
             // console.log(JSON.stringify(this.order));
@@ -568,6 +576,10 @@ export default {
 
             if (value)
                 this.products[index].price = /^\d+$/.test(value) ? value : 0;
+
+            // this.products[index].price = this.$func.formatMoneyToVND(
+            //     this.products[index].price
+            // );
         },
     },
     created() {
@@ -591,6 +603,12 @@ export default {
     display: flex;
     align-items: center;
     flex-direction: column;
+
+    .errors {
+        color: red;
+        font-weight: bold;
+        font-size: 0.75rem;
+    }
 
     .title {
         font-weight: 900;
@@ -719,12 +737,6 @@ export default {
                         }
                     }
                 }
-            }
-
-            .errors {
-                color: red;
-                font-weight: bold;
-                font-size: 0.75rem;
             }
         }
 

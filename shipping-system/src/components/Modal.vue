@@ -18,7 +18,9 @@
 
                     <!-- Footer -->
                     <div class="footer">
-                        <button class="small">Close</button>
+                        <button class="small" @click="$emit('toggle')">
+                            Close
+                        </button>
                     </div>
                 </div>
             </transition>
