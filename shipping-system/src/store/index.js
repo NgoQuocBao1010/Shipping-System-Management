@@ -51,6 +51,12 @@ export default new Vuex.Store({
         token: null,
         authenticated: false,
 
+        // Current location
+        currentLocation: {
+            longitude: 105.7842959,
+            latitude: 10.0171277,
+        },
+
         // Provinces
         provinces: null,
     },

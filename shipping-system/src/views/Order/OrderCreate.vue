@@ -1,6 +1,8 @@
 <template>
     <div class="wrapper">
         <div class="title">Order Application</div>
+
+        <!-- Order's Form Application -->
         <form class="order-form" @submit.prevent="submit">
             <!-- Consignor Info -->
             <div class="order-form__section">
@@ -251,6 +253,7 @@
                 <Loading v-show="loading" />
             </div>
         </form>
+
         <!-- Order Confirmation Modal -->
         <Modal
             header="Order Confirmation"
@@ -265,7 +268,6 @@
 <script>
 import { mapState } from "vuex";
 import axios from "axios";
-import L from "leaflet";
 
 import { required, numeric, minLength } from "vuelidate/lib/validators";
 
@@ -364,7 +366,7 @@ export default {
         };
     },
     computed: {
-        ...mapState(["user", "provinces", "token"]),
+        ...mapState(["user", "provinces", "token", "currentLocation"]),
     },
     watch: {
         async "consignor.districtId"(newVal, oldVal) {
@@ -391,7 +393,10 @@ export default {
                     (info) => info.id === newVal
                 ).name;
 
-                this.consignee.fullAddress = `${wardName}, ${districtName}`;
+                this.consignee.fullAddress = `${wardName}, ${districtName}`
+                    .replace("Thành Phố", "")
+                    .replace("Quận", "")
+                    .replace("Phường", "");
             }
         },
     },
@@ -419,9 +424,12 @@ export default {
     },
     methods: {
         async submit() {
-            // On submit event
-            this.$v.$touch(); // validate input data
+            /*
+                Form submit handler
+            */
 
+            // Handle input errors
+            this.$v.$touch(); // validate input data
             if (this.$v.$error) {
                 console.log("Order Application/OrderCreate: Invalid input");
                 this.error.consignor = this.$v.consignor.$error
@@ -436,17 +444,23 @@ export default {
 
                 return;
             }
-
             Object.keys(this.error).forEach(
                 (field) => (this.error[field] = null)
             ); // Set all error to null
-            this.loading = true;
 
-            const { lat, lon } = await this.searchLocation(
-                encodeURIComponent(this.consignee.fullAddress)
+            this.loading = true; // Trigger loading animation
+
+            // Get consignee location and estimate the shipping distance
+            const location = await this.searchLocation(
+                this.consignee.fullAddress
             );
+            const routing = location
+                ? await this.calculateDistance(location)
+                : null;
 
-            console.log(lat, lon);
+            const estimatedPrice = routing
+                ? await this.estimatePrice(routing.distance)
+                : null;
 
             this.order = {
                 consignor: this.consignor,
@@ -458,31 +472,89 @@ export default {
                     shippingType: this.shipping,
                     note: this.note,
                 },
-                destinationCoors: { lon, lat },
+                price: estimatedPrice,
             };
 
-            console.log(JSON.stringify(this.order));
+            // console.log(JSON.stringify(this.order));
 
             this.loading = false;
             this.modal = true;
         },
-        async searchLocation(locationURL) {
-            const url =
-                "https://nominatim.openstreetmap.org/search?format=json&limit=3&q=" +
-                locationURL;
+        async searchLocation(location) {
+            /*
+                Return latitude and longtitude of an given location's name
+            */
             try {
+                const url =
+                    "https://nominatim.openstreetmap.org/search?format=json&limit=3&q=" +
+                    encodeURIComponent(location);
                 const response = await axios.get(url);
-                const firstResult = response.data[0];
-                const lat = parseFloat(firstResult.lat);
-                const lon = parseFloat(firstResult.lon);
 
-                return { lat, lon };
+                if (response.data.length > 0) {
+                    const result = response.data[0];
+
+                    return {
+                        latitude: parseFloat(result.lat),
+                        longitude: parseFloat(result.lon),
+                    };
+                }
+                console.log("Error finding location");
+                return;
             } catch (e) {
                 console.log("Error finding location", e);
             }
         },
+        async calculateDistance(destination) {
+            /*
+                Using OpenRoute Service API
+                Calculate destination between the given consignee location and the shop address
+
+            */
+            const orgCoors = [
+                this.currentLocation.longitude,
+                this.currentLocation.latitude,
+            ];
+            const descriptionCoors = [
+                destination.longitude,
+                destination.latitude,
+            ];
+
+            try {
+                const headers = {
+                    Accept: "application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8",
+                    Authorization:
+                        "5b3ce3597851110001cf6248f8c35fd1e82d4754933bf5d8fea33263",
+                    "Content-Type": "application/json; charset=utf-8",
+                };
+                const response = await axios.post(
+                    "https://api.openrouteservice.org/v2/directions/driving-car/geojson",
+                    { coordinates: [orgCoors, descriptionCoors] },
+                    { headers }
+                );
+
+                const routing = response.data.features[0].properties.summary;
+
+                return routing;
+            } catch (e) {
+                console.log(e);
+            }
+        },
+        async estimatePrice(distance) {
+            /* 
+                Call backend API to estimate the shipping money
+            */
+            const distanceInKm = distance / 1000;
+            const response = await axios.get(
+                `http://127.0.0.1:8000/order/shipping-money/?distance=${distanceInKm}`
+            );
+
+            if (response.data.data.length > 0)
+                return response.data.data[0].price;
+        },
         async getSubDistrict(districtId) {
-            // Get wards of district from API after a district is chosen
+            /*
+                Get wards of district from API after a district is chosen
+            */
             try {
                 const url = `https://provinces.open-api.vn/api/d/${districtId}/?depth=2`;
                 const response = await axios.get(url);
@@ -501,14 +573,18 @@ export default {
             }
         },
         addProduct() {
-            // Add products
+            /*
+                Add 1 more product input to the form
+            */
             this.products.push({
                 name: "",
                 price: "",
             });
         },
         formatPrice(e, index) {
-            // Format the price as user typing
+            /*
+                Format the price as user typing
+            */
             const value = e.target.value;
 
             if (value)

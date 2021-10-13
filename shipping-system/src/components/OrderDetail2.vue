@@ -62,6 +62,8 @@
                     </ul>
                 </div>
             </div>
+
+            {{ order.price }}
         </div>
     </div>
 </template>
