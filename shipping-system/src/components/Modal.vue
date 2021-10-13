@@ -11,10 +11,12 @@
                         ></i>
                     </div>
 
+                    <!-- Content -->
                     <div class="content">
                         <slot>Content of modal</slot>
                     </div>
 
+                    <!-- Footer -->
                     <div class="footer">
                         <button class="small">Close</button>
                     </div>
@@ -86,5 +88,30 @@ export default {
             }
         }
     }
+}
+
+.modal-wrapper-animation-enter-active,
+.modal-wrapper-animation-leave-active {
+    transition: all 0.3s ease-out;
+}
+
+.modal-wrapper-animation-enter,
+.modal-wrapper-animation-leave-to {
+    opacity: 0;
+}
+
+.modal-animation-enter-active,
+.modal-animation-leave-active {
+    transition: all 0.3s ease-out 0.15s;
+}
+
+.modal-animation-enter,
+.modal-animation-leave-to {
+    transform: scale(0.7);
+    opacity: 0;
+}
+
+.modal-animation-enter-to {
+    transform: scale(1);
 }
 </style>

@@ -11,7 +11,7 @@
 <script>
 import "leaflet/dist/leaflet.css";
 import "leaflet-routing-machine/dist/leaflet-routing-machine.css";
-import { mapActions } from "vuex";
+import { mapMutations } from "vuex";
 
 import Sidebar from "./components/Sidebar.vue";
 import Navigation from "./components/Navigation.vue";
@@ -33,7 +33,7 @@ export default {
         },
     },
     methods: {
-        ...mapActions(["getProvinceInfo"]),
+        ...mapMutations(["saveProvinceInfo"]),
         checkRoute() {
             // Hide and show navigation bar depending on the page
             const routesWithNoNav = [
@@ -51,9 +51,10 @@ export default {
             this.navigation = true;
         },
     },
-    created() {
+    async created() {
         this.checkRoute();
-        this.getProvinceInfo();
+        const districts = await this.$province.getAllDistricts();
+        this.saveProvinceInfo(districts);
     },
 };
 </script>

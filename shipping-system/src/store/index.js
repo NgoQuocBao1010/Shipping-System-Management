@@ -80,7 +80,7 @@ export default new Vuex.Store({
             state.authenticated = false;
             localStorage.setItem("authToken", "");
         },
-        saveProviceInfo(state, data) {
+        saveProvinceInfo(state, data) {
             // Save all the provice data from api call
             state.provinces = data;
         },
@@ -111,30 +111,10 @@ export default new Vuex.Store({
                 return false;
             }
         },
-        async getProvinceInfo(context) {
-            try {
-                // Open API url to get all provinces and their districts
-                const url = `https://provinces.open-api.vn/api/?depth=2`;
-                const response = await axios.get(url);
-
-                const provicesData = [];
-
-                // Restructure response api data
-                response.data.forEach((provinceData) => {
-                    provinceData.districts.forEach((districtData) => {
-                        const district = {
-                            name: `${districtData.name}, ${provinceData.name}`,
-                            id: districtData.code,
-                            province_code: provinceData.code,
-                        };
-                        provicesData.push(district);
-                    });
-                });
-
-                context.commit("saveProviceInfo", provicesData);
-            } catch (e) {
-                console.log("Error get province info");
-            }
+    },
+    getters: {
+        district: (state) => (id) => {
+            return state.provinces.find((dis) => dis.id === id);
         },
     },
     modules: {},

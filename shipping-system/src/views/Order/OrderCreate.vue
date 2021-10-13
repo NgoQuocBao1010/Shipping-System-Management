@@ -373,30 +373,30 @@ export default {
             if (newVal) {
                 if (oldVal) this.consignor.subDistrictId = null; // Reset subdistrict dropdown if district is changed
 
-                this.subDistrict1 = await this.getSubDistrict(newVal);
+                this.subDistrict1 = await this.$province.getWardList(newVal);
             }
         },
         async "consignee.districtId"(newVal, oldVal) {
             if (newVal) {
                 if (oldVal) this.consignee.subDistrictId = null; // Reset subdistrict dropdown if district is changed
 
-                this.subDistrict2 = await this.getSubDistrict(newVal);
+                this.subDistrict2 = await this.$province.getWardList(newVal);
             }
         },
-        "consignee.subDistrictId"(newVal, oldVal) {
+        async "consignee.subDistrictId"(newVal, oldVal) {
             if (newVal) {
-                const districtName = this.provinces.find(
-                    (info) => info.id === this.consignee.districtId
+                const districtName = this.$store.getters.district(
+                    this.consignee.districtId
                 ).name;
 
-                const wardName = this.subDistrict2.find(
-                    (info) => info.id === newVal
-                ).name;
+                const ward = await this.$province.getWard(newVal);
 
-                this.consignee.fullAddress = `${wardName}, ${districtName}`
-                    .replace("Thành Phố", "")
+                this.consignee.fullAddress = `${ward.name}, ${districtName}`
+                    .replace("Thành phố", "")
                     .replace("Quận", "")
-                    .replace("Phường", "");
+                    .replace("Phường", "")
+                    .replace("Xã", "")
+                    .trim();
             }
         },
     },
@@ -550,27 +550,6 @@ export default {
 
             if (response.data.data.length > 0)
                 return response.data.data[0].price;
-        },
-        async getSubDistrict(districtId) {
-            /*
-                Get wards of district from API after a district is chosen
-            */
-            try {
-                const url = `https://provinces.open-api.vn/api/d/${districtId}/?depth=2`;
-                const response = await axios.get(url);
-
-                let wards = [];
-                response.data.wards.forEach((ward) => {
-                    const wardObj = {
-                        name: ward.name,
-                        id: ward.code,
-                    };
-                    wards.push(wardObj);
-                });
-                return wards;
-            } catch (err) {
-                console.log(`Error getting subdistrict`, err);
-            }
         },
         addProduct() {
             /*
