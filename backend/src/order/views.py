@@ -109,11 +109,10 @@ def orderCreateApi(request):
             consignee=consignee,
             paymentMethod=order.get("paymentMethod"),
             productPreview=order.get("productPreview"),
-            shippingType=order.get("shippingType"),
             note=order.get("note"),
         )
     except Exception as e:
-        print(str(e))
+        print("Error creating new order", str(e))
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
     return Response(

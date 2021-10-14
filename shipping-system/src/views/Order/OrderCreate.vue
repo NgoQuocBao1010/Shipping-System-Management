@@ -266,6 +266,8 @@
         <Modal
             header="Order Confirmation"
             :active="modal"
+            submit="Place Order"
+            @submit="placeOrder"
             @toggle="modal = !modal"
         >
             <OrderDetail v-if="order" :order="order" />
@@ -477,16 +479,33 @@ export default {
                 info: {
                     paymentMethod: this.payment,
                     productPreview: this.preview,
-                    shippingType: this.shipping,
                     note: this.note,
                 },
                 shippingPrice: estimatedPrice,
+                routing,
             };
-
-            // console.log(JSON.stringify(this.order));
 
             this.loading = false;
             this.modal = true;
+        },
+        async placeOrder() {
+            /* 
+                Call backend API to place an order after customer confirmation
+            */
+            try {
+                console.log("Place order");
+                const url = "http://127.0.0.1:8000/order/create/";
+
+                const response = await axios.post(url, this.order, {
+                    headers: {
+                        Authorization: `Token ${this.token}`,
+                    },
+                });
+
+                console.log(response);
+            } catch (e) {
+                console.log(e.response);
+            }
         },
         async searchLocation(location) {
             /*
@@ -548,16 +567,19 @@ export default {
             }
         },
         async estimatePrice(distance) {
-            /* 
+            /*
                 Call backend API to estimate the shipping money
             */
             const distanceInKm = distance / 1000;
             const response = await axios.get(
                 `http://127.0.0.1:8000/order/shipping-money/?distance=${distanceInKm}`
             );
-
-            if (response.data.data.length > 0)
+            if (response.data.data.length > 0) {
                 return response.data.data[0].price;
+            }
+
+            console.log("Error retriving price info");
+            return null;
         },
         addProduct() {
             /*

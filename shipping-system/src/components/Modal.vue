@@ -18,7 +18,10 @@
 
                     <!-- Footer -->
                     <div class="footer">
-                        <button class="small" @click="$emit('toggle')">
+                        <button v-if="submit" @click="$emit('submit')">
+                            {{ submit }}
+                        </button>
+                        <button class="close" @click="$emit('toggle')">
                             Close
                         </button>
                     </div>
@@ -39,6 +42,10 @@ export default {
         header: {
             type: String,
             default: "Modal Header",
+        },
+        submit: {
+            type: String,
+            default: null,
         },
     },
 };
@@ -88,6 +95,11 @@ export default {
                 cursor: pointer;
                 color: rgb(223, 84, 84);
             }
+        }
+
+        .footer {
+            display: flex;
+            gap: 2rem;
         }
     }
 }

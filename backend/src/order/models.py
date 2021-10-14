@@ -12,7 +12,7 @@ class Customer(models.Model):
     )
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     role = models.CharField(choices=CUSTOMER_ROLES, max_length=25)
-    name = models.CharField(max_length=100, blank=True, null=True)
+    fullName = models.CharField(max_length=100, blank=True, null=True)
     phone = models.CharField(max_length=20, blank=True, null=True)
     address = models.CharField(max_length=255, blank=True, null=True)
     provinceId = models.IntegerField(null=True, blank=True)
@@ -20,7 +20,7 @@ class Customer(models.Model):
     subDistrictId = models.IntegerField(null=True, blank=True)
 
     def __str__(self):
-        return f"{self.get_role_display()}: {self.name}"
+        return f"{self.get_role_display()}: {self.fullName}"
 
 
 class ShipDistance(models.Model):
@@ -57,10 +57,6 @@ class Order(models.Model):
         (2, "Customer allow to observe products but not to try them"),
         (3, "Customer allow to try products"),
     )
-    SHIPPING_TYPE = (
-        (1, "Standard"),
-        (2, "Advanced"),
-    )
 
     consignor = models.ForeignKey(
         Customer, null=True, on_delete=models.SET_NULL, related_name="consignor"
@@ -71,7 +67,6 @@ class Order(models.Model):
     status = models.IntegerField(default=1, choices=STATUS)
     paymentMethod = models.IntegerField(null=True, choices=PAYMENT_METHODS)
     productPreview = models.IntegerField(null=True, choices=PRODUCT_PREVIEW)
-    shippingType = models.IntegerField(null=True, choices=SHIPPING_TYPE)
     shipDistance = models.ForeignKey(ShipDistance, on_delete=models.CASCADE, null=True)
     note = models.TextField(null=True, blank=True)
     dateCreated = models.DateTimeField(auto_now_add=True)

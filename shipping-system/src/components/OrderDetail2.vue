@@ -45,7 +45,9 @@
                     <div class="normal">Date Created: {{ today }}</div>
                     <div class="normal">Shipping Type: {{ shippingType }}</div>
                     <div class="normal">Payment Method: {{ payment }}</div>
-                    <div class="normal">{{ preview }}</div>
+                    <div class="normal" style="font-weight: bold">
+                        {{ preview }}
+                    </div>
                 </div>
             </div>
 
@@ -90,7 +92,7 @@
                     </p>
                     <p class="total">
                         In total:
-                        <span class="money">
+                        <span class="money total">
                             {{ this.$func.formatMoneyToVND(total) }}
                             VND
                         </span>
@@ -294,6 +296,7 @@ export default {
                     font-size: 1.2rem;
                     margin-bottom: 6px;
 
+                    .total,
                     &.total {
                         font-size: 1.3rem;
                         font-weight: 900;

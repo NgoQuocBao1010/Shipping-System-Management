@@ -53,6 +53,7 @@ export default {
     },
     async created() {
         this.checkRoute();
+
         const districts = await this.$province.getAllDistricts();
         this.saveProvinceInfo(districts);
     },
@@ -168,6 +169,7 @@ input::-webkit-calendar-picker-indicator {
     background-color: lightgreen;
 }
 
+.close,
 .order-failed {
     background-color: rgb(238, 78, 78);
 }

@@ -13,6 +13,7 @@ Vue.use(Vuelidate);
 Vue.prototype.$province = ProvincesAPI;
 Vue.prototype.$func = {
     formatMoneyToVND(value) {
+        if (!value) return "Invalid";
         return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     },
 };
