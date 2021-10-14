@@ -67,32 +67,19 @@ class Order(models.Model):
     status = models.IntegerField(default=1, choices=STATUS)
     paymentMethod = models.IntegerField(null=True, choices=PAYMENT_METHODS)
     productPreview = models.IntegerField(null=True, choices=PRODUCT_PREVIEW)
-    shipDistance = models.ForeignKey(ShipDistance, on_delete=models.CASCADE, null=True)
     note = models.TextField(null=True, blank=True)
     dateCreated = models.DateTimeField(auto_now_add=True)
-
-    def __get_price(self):
-        if not self.shipDistance:
-            return "Unknow"
-
-        price = (
-            self.shipDistance.price
-            if self.shippingType == 0
-            else self.shipDistance.price * 115 / 100
-        )
-        return int(price * 1000)
-
-    price = property(__get_price)
+    estimateDistance = models.FloatField(null=True, blank=True)
+    shippingPrice = models.IntegerField(null=True, blank=True)
 
     def __str__(self):
-        return f"Order {self.id} ({self.status}), price {self.price} VND"
+        return f"Order {self.id} ({self.get_status_display()}), distance {self.estimateDistance / 1000} KM, shipping price {self.shippingPrice} VND"
 
 
 class ProductOrder(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, related_name="products", on_delete=models.CASCADE)
     name = models.CharField(max_length=255, blank=True, null=True)
     price = models.IntegerField(null=True, default=0)
-    note = models.TextField(null=True, blank=True)
 
     def __str__(self):
-        return f"Product {self.name}"
+        return f"Product {self.name} from Order id {self.order.id}"

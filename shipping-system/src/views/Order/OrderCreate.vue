@@ -464,25 +464,26 @@ export default {
             const location = await this.searchLocation(
                 this.consignee.fullAddress
             );
+            console.log("Done getting location", location);
             const routing = location
                 ? await this.calculateDistance(location)
                 : null;
-
+            console.log("Done routing", routing);
             const estimatedPrice = routing
                 ? await this.estimatePrice(routing.distance)
                 : null;
+            console.log("Done get the price", estimatedPrice);
 
             this.order = {
                 consignor: this.consignor,
                 consignee: this.consignee,
                 products: this.products,
-                info: {
-                    paymentMethod: this.payment,
-                    productPreview: this.preview,
-                    note: this.note,
-                },
-                shippingPrice: estimatedPrice,
-                routing,
+
+                paymentMethod: this.payment,
+                productPreview: this.preview,
+                note: this.note,
+                estimateDistance: routing ? routing.distance : null,
+                shippingPrice: estimatedPrice ? estimatedPrice : null,
             };
 
             this.loading = false;
@@ -570,16 +571,21 @@ export default {
             /*
                 Call backend API to estimate the shipping money
             */
-            const distanceInKm = distance / 1000;
-            const response = await axios.get(
-                `http://127.0.0.1:8000/order/shipping-money/?distance=${distanceInKm}`
-            );
-            if (response.data.data.length > 0) {
-                return response.data.data[0].price;
-            }
 
-            console.log("Error retriving price info");
-            return null;
+            try {
+                const distanceInKm = distance / 1000;
+                const response = await axios.get(
+                    `http://127.0.0.1:8000/order/shipping-money/?distance=${distanceInKm}`
+                );
+                if (response.data.data.length > 0) {
+                    return response.data.data[0].price;
+                }
+
+                console.log("Error retriving price info");
+                return null;
+            } catch (e) {
+                console.log("Error retriving price info", e.response);
+            }
         },
         addProduct() {
             /*

@@ -151,13 +151,13 @@ export default {
             return moment().format("DD-MM-YYYY");
         },
         payment() {
-            return this.paymentOptions[this.order.info.paymentMethod];
+            return this.paymentOptions[this.order.paymentMethod];
         },
         preview() {
-            return this.previewOptions[this.order.info.productPreview];
+            return this.previewOptions[this.order.productPreview];
         },
         shippingType() {
-            return this.shippingOptions[this.order.info.shippingType];
+            return this.shippingOptions[this.order.shippingType];
         },
         packagePrice() {
             let total = 0;
@@ -174,8 +174,6 @@ export default {
             );
         },
     },
-    method: {},
-    created() {},
 };
 </script>
 

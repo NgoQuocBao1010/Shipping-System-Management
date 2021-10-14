@@ -114,6 +114,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "en-us"
 
+DATETIME_FORMAT = "%m/%d/%y %H:%M"
+
 TIME_ZONE = "Asia/Ho_Chi_Minh"
 
 USE_I18N = True
