@@ -114,7 +114,9 @@ export default new Vuex.Store({
     },
     getters: {
         district: (state) => (id) => {
-            return state.provinces.find((dis) => dis.id === id);
+            return state.provinces
+                ? state.provinces.find((dis) => dis.id === id)
+                : null;
         },
     },
     modules: {},

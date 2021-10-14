@@ -45,7 +45,7 @@ def ordersList(request):
     orders = Order.objects.all()
 
     serializers = OrderSerializer(orders, many=True)
-    return Response(status=status.HTTP_200_OK, data={"data": serializers.data})
+    return Response(status=status.HTTP_200_OK, data=serializers.data)
 
 
 @api_view(["POST"])

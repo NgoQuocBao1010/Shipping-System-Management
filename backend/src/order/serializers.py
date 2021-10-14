@@ -22,8 +22,10 @@ class ProductOrderSerializer(serializers.ModelSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
+    consignor = CustomerSerializer(read_only=True)
+    consignee = CustomerSerializer(read_only=True)
     products = ProductOrderSerializer(read_only=True, many=True)
-    dateCreated = serializers.DateTimeField(format="%d-%m-%Y %H:%M:%S")
+    dateCreated = serializers.DateTimeField(format="%d-%m-%Y")
 
     class Meta:
         model = Order

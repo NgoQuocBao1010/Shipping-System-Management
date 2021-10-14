@@ -22,6 +22,7 @@
                             </select>
                         </div>
                     </div>
+
                     <!-- Select order's payment method -->
                     <div class="part">
                         <label for="payment">Payment Method</label>
@@ -41,6 +42,7 @@
                             </select>
                         </div>
                     </div>
+
                     <!-- Order Timeline -->
                     <div class="part">
                         <div class="timeline">
@@ -79,6 +81,7 @@
 
 <script>
 import moment from "moment";
+import axios from "axios";
 import { mapState } from "vuex";
 
 import OrderTable from "@/components/OrderTable";
@@ -90,6 +93,7 @@ export default {
     },
     data() {
         return {
+            orders: [],
             status: "all",
             payment: "all",
             fromDate: null,
@@ -97,16 +101,29 @@ export default {
         };
     },
     computed: {
-        ...mapState(["orders"]),
+        ...mapState(["token"]),
     },
     methods: {
         getToday() {
+            /* 
+                Get current day
+            */
             return moment().format("YYYY-MM-DD");
         },
+        async getOrderList() {
+            const url = "http://127.0.0.1:8000/order/list/";
+            const response = await axios.get(url);
+
+            console.log(response.data);
+
+            this.orders = response.data;
+        },
     },
-    created() {
+    async created() {
         this.toDate = this.getToday();
         this.fromDate = moment().subtract(1, "weeks").format("YYYY-MM-DD");
+
+        await this.getOrderList();
     },
 };
 </script>

@@ -15,7 +15,6 @@ class Customer(models.Model):
     fullName = models.CharField(max_length=100, blank=True, null=True)
     phone = models.CharField(max_length=20, blank=True, null=True)
     address = models.CharField(max_length=255, blank=True, null=True)
-    provinceId = models.IntegerField(null=True, blank=True)
     districtId = models.IntegerField(null=True, blank=True)
     subDistrictId = models.IntegerField(null=True, blank=True)
 
@@ -59,10 +58,10 @@ class Order(models.Model):
     )
 
     consignor = models.ForeignKey(
-        Customer, null=True, on_delete=models.SET_NULL, related_name="consignor"
+        Customer, null=True, on_delete=models.CASCADE, related_name="consignor"
     )
     consignee = models.ForeignKey(
-        Customer, null=True, on_delete=models.SET_NULL, related_name="consignee"
+        Customer, null=True, on_delete=models.CASCADE, related_name="consignee"
     )
     status = models.IntegerField(default=1, choices=STATUS)
     paymentMethod = models.IntegerField(null=True, choices=PAYMENT_METHODS)

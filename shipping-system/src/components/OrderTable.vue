@@ -1,5 +1,6 @@
 <template>
     <div class="wrapper">
+        <!-- Header -->
         <div class="header">
             <div class="column">Order ID</div>
             <div class="column">Order Date</div>
@@ -9,19 +10,32 @@
             <div class="column">Shipper</div>
             <div class="column">Status</div>
         </div>
+
+        <!-- Contents -->
         <div class="content">
+            <!-- No content -->
+            <div v-if="orders.length === 0" class="row empty">
+                There is no order yet
+            </div>
+
+            <!-- Main contents -->
             <div
+                v-else
                 class="row"
                 v-for="order in orders"
                 :key="order.id"
                 @click="goToDetail(order.id)"
             >
                 <div class="column">{{ order.id }}</div>
-                <div class="column">{{ order.date }}</div>
-                <div class="column">{{ order.placeOfReceipt }}</div>
+                <div class="column">{{ order.dateCreated }}</div>
+                <div class="column">{{ getFullAddress(order.consignor) }}</div>
                 <div class="column">{{ order.placeOfDelivery }}</div>
-                <div class="column">{{ order.paymentMethod }}</div>
-                <div class="column">{{ order.shipper }}</div>
+                <div class="column">
+                    {{ paymentMethods[order.paymentMethod] }}
+                </div>
+                <div class="column">
+                    {{ order.shipper || "No information" }}
+                </div>
                 <div class="column status">
                     <div :class="'order-' + statusCodes[order.status]">
                         {{ statusCodes[order.status] }}
@@ -39,9 +53,13 @@ export default {
         return {
             statusCodes: {
                 0: "failed",
-                1: "delivered",
+                1: "processing",
                 2: "delivering",
-                3: "processing",
+                3: "delivered",
+            },
+            paymentMethods: {
+                1: "Pay by consignor",
+                2: "Pay by consignee",
             },
         };
     },
@@ -50,7 +68,24 @@ export default {
     },
     methods: {
         goToDetail(id) {
-            this.$router.push({ name: "OrderDetail", params: { id: id } });
+            console.log("Go to detail");
+            // this.$router.push({ name: "OrderDetail", params: { id: id } });
+        },
+        async getFullAddress(profile) {
+            const districtObj = this.$store.getters.district(
+                profile.districtId
+            );
+
+            const wardObj = await this.$province.getWard(profile.subDistrictId);
+
+            const district = districtObj
+                ? districtObj.name
+                : "Can't retrive information";
+            const ward = wardObj ? wardObj.name : "Can't retrive information";
+
+            console.log(`${district}, ${ward}`);
+
+            return `${district}, ${ward}`;
         },
     },
 };
@@ -66,6 +101,15 @@ export default {
         max-width: 1440px;
         margin: 0 auto;
         display: flex;
+
+        &.empty {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: initial;
+            padding: 1rem;
+            font-weight: 900;
+        }
 
         .column:first-child {
             max-width: 100px;
@@ -90,6 +134,7 @@ export default {
         flex: 1;
         padding: 1rem;
         color: black;
+        font-weight: 600;
     }
 
     .row {
