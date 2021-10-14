@@ -28,7 +28,7 @@
             >
                 <div class="column">{{ order.id }}</div>
                 <div class="column">{{ order.dateCreated }}</div>
-                <div class="column">{{ getFullAddress(order.consignor) }}</div>
+                <div class="column">{{ order.consignor.fullAddress }}</div>
                 <div class="column">{{ order.placeOfDelivery }}</div>
                 <div class="column">
                     {{ paymentMethods[order.paymentMethod] }}
@@ -70,22 +70,6 @@ export default {
         goToDetail(id) {
             console.log("Go to detail");
             // this.$router.push({ name: "OrderDetail", params: { id: id } });
-        },
-        async getFullAddress(profile) {
-            const districtObj = this.$store.getters.district(
-                profile.districtId
-            );
-
-            const wardObj = await this.$province.getWard(profile.subDistrictId);
-
-            const district = districtObj
-                ? districtObj.name
-                : "Can't retrive information";
-            const ward = wardObj ? wardObj.name : "Can't retrive information";
-
-            console.log(`${district}, ${ward}`);
-
-            return `${district}, ${ward}`;
         },
     },
 };

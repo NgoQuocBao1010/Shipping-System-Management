@@ -110,11 +110,27 @@ export default {
             */
             return moment().format("YYYY-MM-DD");
         },
+        async getFullAddress(profile) {
+            /* 
+                Get full address to display
+            */
+            const districtObj = this.$store.getters.district(
+                profile.districtId
+            );
+
+            const wardObj = await this.$province.getWard(profile.subDistrictId);
+
+            const district = districtObj
+                ? districtObj.name
+                : "Can't retrive information";
+            const ward = wardObj ? wardObj.name : "Can't retrive information";
+
+            console.log(ward);
+            return `${district}, ${ward}`;
+        },
         async getOrderList() {
             const url = "http://127.0.0.1:8000/order/list/";
             const response = await axios.get(url);
-
-            console.log(response.data);
 
             this.orders = response.data;
         },
