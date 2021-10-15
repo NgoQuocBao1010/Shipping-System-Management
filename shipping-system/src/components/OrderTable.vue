@@ -28,8 +28,18 @@
             >
                 <div class="column">{{ order.id }}</div>
                 <div class="column">{{ order.dateCreated }}</div>
-                <div class="column">{{ order.consignor.fullAddress }}</div>
-                <div class="column">{{ order.placeOfDelivery }}</div>
+                <div class="column">
+                    {{ order.consignor.address }},
+                    {{
+                        $store.getters.district(order.consignor.districtId).name
+                    }}
+                </div>
+                <div class="column">
+                    {{ order.consignee.address }},
+                    {{
+                        $store.getters.district(order.consignee.districtId).name
+                    }}
+                </div>
                 <div class="column">
                     {{ paymentMethods[order.paymentMethod] }}
                 </div>
@@ -68,8 +78,10 @@ export default {
     },
     methods: {
         goToDetail(id) {
-            console.log("Go to detail");
-            // this.$router.push({ name: "OrderDetail", params: { id: id } });
+            /* 
+                Redirect to order detail page
+            */
+            this.$router.push({ name: "OrderDetail", params: { id: id } });
         },
     },
 };

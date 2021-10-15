@@ -278,7 +278,6 @@
 <script>
 import { mapState } from "vuex";
 import axios from "axios";
-
 import { required, numeric, minLength } from "vuelidate/lib/validators";
 
 import Dropdown from "@/components/DropdownInput.vue";
@@ -290,7 +289,7 @@ export default {
         Dropdown,
         Loading,
         Modal: () => import("@/components/Modal.vue"),
-        OrderDetail: () => import("@/components/OrderDetail2.vue"),
+        OrderDetail: () => import("@/components/OrderDetail.vue"),
     },
     data() {
         return {
@@ -316,7 +315,7 @@ export default {
             products: [
                 {
                     name: "Chair",
-                    price: 10900,
+                    price: 150000,
                 },
             ],
             // Payment Information
@@ -494,7 +493,6 @@ export default {
                 Call backend API to place an order after customer confirmation
             */
             try {
-                console.log("Place order");
                 const url = "http://127.0.0.1:8000/order/create/";
 
                 const response = await axios.post(url, this.order, {
@@ -503,7 +501,10 @@ export default {
                     },
                 });
 
-                console.log(response);
+                if (response.status === 200) {
+                    this.$router.push({ name: "Orders" });
+                    this.$toast.success("Your order has been placed!");
+                }
             } catch (e) {
                 console.log(e.response);
             }

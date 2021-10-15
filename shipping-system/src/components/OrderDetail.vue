@@ -13,44 +13,65 @@
         </div>
         <div class="order-detail__content">
             <div class="customer">
+                <!-- Consignor -->
                 <div class="info">
                     <div class="info__title">Consignor Address</div>
                     <div class="info__detail">
                         <div class="name">{{ order.consignor.fullName }}</div>
                         <div class="phone">
-                            Phone Number: {{ order.consignor.phone }}
+                            <b>{{ order.consignor.phone }}</b>
                         </div>
                         <div class="address">
-                            Address: {{ order.consignor.address }}
+                            {{ order.consignor.address }}
+                        </div>
+                        <div class="address">
+                            {{ consignorWard }},
+                            {{
+                                $store.getters.district(
+                                    order.consignor.districtId
+                                ).name
+                            }}
                         </div>
                     </div>
                 </div>
+                <!-- Consignee -->
                 <div class="info">
                     <div class="info__title">Consignee Address</div>
                     <div class="info__detail">
                         <div class="name">{{ order.consignee.fullName }}</div>
                         <div class="normal">
-                            Address: {{ order.consignee.address }}
+                            <b>{{ order.consignee.phone }}</b>
                         </div>
                         <div class="normal">
-                            Phone Number: {{ order.consignee.phone }}
+                            {{ order.consignee.address }}
+                        </div>
+                        <div class="normal">
+                            {{ consigneeWard }},
+                            {{
+                                $store.getters.district(
+                                    order.consignee.districtId
+                                ).name
+                            }}
                         </div>
                     </div>
                 </div>
             </div>
-
+            <!-- Other Information -->
             <div class="info">
                 <div class="info__title">Other Information</div>
                 <div class="info__detail">
-                    <div class="normal">Date Created: {{ today }}</div>
-                    <div class="normal">Shipping Type: {{ shippingType }}</div>
-                    <div class="normal">Payment Method: {{ payment }}</div>
+                    <div class="normal">
+                        Date Created: <b>{{ today }}</b>
+                    </div>
+                    <div class="normal">
+                        Payment Method: <b>{{ payment }}</b>
+                    </div>
                     <div class="normal" style="font-weight: bold">
                         {{ preview }}
                     </div>
                 </div>
             </div>
-
+            <!-- Package Information -->
             <div class="products-container">
                 <div class="title">Products</div>
                 <div class="products">
@@ -71,7 +92,7 @@
                     </div>
                 </div>
             </div>
-
+            <!-- Pricing Section -->
             <div class="pricing">
                 <div class="title">Total Expense</div>
                 <div class="pricing__details">
@@ -140,6 +161,8 @@ export default {
                 1: "Standard",
                 2: "Advance",
             },
+            consignorWard: null,
+            consigneeWard: null,
         };
     },
     props: {
@@ -173,6 +196,17 @@ export default {
                 parseFloat(this.packagePrice)
             );
         },
+    },
+    async created() {
+        this.consignorWard = await this.$province.getWard(
+            this.order.consignor.subDistrictId
+        );
+        this.consigneeWard = await this.$province.getWard(
+            this.order.consignee.subDistrictId
+        );
+
+        this.consignorWard = this.consignorWard.name;
+        this.consigneeWard = this.consigneeWard.name;
     },
 };
 </script>

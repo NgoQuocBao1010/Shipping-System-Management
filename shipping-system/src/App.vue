@@ -11,6 +11,7 @@
 <script>
 import "leaflet/dist/leaflet.css";
 import "leaflet-routing-machine/dist/leaflet-routing-machine.css";
+import "vue-toast-notification/dist/theme-sugar.css";
 import { mapMutations } from "vuex";
 
 import Sidebar from "./components/Sidebar.vue";

@@ -26,6 +26,7 @@ const getAllDistricts = async () => {
         return provicesData;
     } catch (e) {
         console.log("API: Error get province info");
+        return {};
     }
 };
 
@@ -48,6 +49,7 @@ const getWardList = async (districtId) => {
         return wards;
     } catch (err) {
         console.log(`Error getting subdistrict`, err);
+        return [];
     }
 };
 
@@ -64,10 +66,8 @@ const getWard = async (wardCode) => {
     } catch (e) {
         if (e.response.status === 404) {
             console.log("Invalid ward's code");
-            return;
-        }
-
-        console.log("Error getting wards", e.response);
+        } else console.log("Error getting wards", e.response);
+        return {};
     }
 };
 

@@ -3,44 +3,25 @@
         <div class="orders__header">
             <h1 class="title">Orders Management</h1>
             <div class="filters">
-                <p class="filters__title">Filters</p>
                 <div class="filters__inputs">
                     <!-- Select order's status -->
                     <div class="part">
-                        <label for="status">Status</label>
-                        <div class="select">
-                            <select
-                                name="status"
-                                class="filters__status"
-                                v-model="status"
-                            >
-                                <option value="all">All</option>
-                                <option value="processing">Processing</option>
-                                <option value="delivering">Delivering</option>
-                                <option value="delivered">Delivered</option>
-                                <option value="failed">Failed</option>
-                            </select>
-                        </div>
+                        <Dropdown
+                            v-model="status"
+                            :options="statusOptions"
+                            label="Status"
+                            :noSearch="true"
+                        />
                     </div>
 
                     <!-- Select order's payment method -->
                     <div class="part">
-                        <label for="payment">Payment Method</label>
-                        <div class="select">
-                            <select
-                                name="payment"
-                                class="filters__payment"
-                                v-model="payment"
-                            >
-                                <option value="all">All</option>
-                                <option value="processing">
-                                    Payment by consignor
-                                </option>
-                                <option value="delivering">
-                                    Payment by consignee
-                                </option>
-                            </select>
-                        </div>
+                        <Dropdown
+                            v-model="payment"
+                            :options="paymentOptions"
+                            label="Payment Methods"
+                            :noSearch="true"
+                        />
                     </div>
 
                     <!-- Order Timeline -->
@@ -84,18 +65,49 @@ import moment from "moment";
 import axios from "axios";
 import { mapState } from "vuex";
 
+import Dropdown from "@/components/DropdownInput.vue";
 import OrderTable from "@/components/OrderTable";
 
 export default {
     name: "Orders",
     components: {
         OrderTable,
+        Dropdown,
     },
     data() {
         return {
             orders: [],
-            status: "all",
-            payment: "all",
+            statusOptions: [
+                {
+                    id: 1,
+                    name: "Failed",
+                },
+                {
+                    id: 2,
+                    name: "Processing",
+                },
+                {
+                    id: 3,
+                    name: "Delivering",
+                },
+                {
+                    id: 4,
+                    name: "Delivered",
+                },
+            ],
+            status: 2,
+            // Payment Information
+            paymentOptions: [
+                {
+                    id: 1,
+                    name: "Pay by consignor",
+                },
+                {
+                    id: 2,
+                    name: "Pay by consignee",
+                },
+            ],
+            payment: 1,
             fromDate: null,
             toDate: null,
         };
@@ -110,25 +122,10 @@ export default {
             */
             return moment().format("YYYY-MM-DD");
         },
-        async getFullAddress(profile) {
-            /* 
-                Get full address to display
-            */
-            const districtObj = this.$store.getters.district(
-                profile.districtId
-            );
-
-            const wardObj = await this.$province.getWard(profile.subDistrictId);
-
-            const district = districtObj
-                ? districtObj.name
-                : "Can't retrive information";
-            const ward = wardObj ? wardObj.name : "Can't retrive information";
-
-            console.log(ward);
-            return `${district}, ${ward}`;
-        },
         async getOrderList() {
+            /* 
+                Call backend API to retrieve list of all orders
+            */
             const url = "http://127.0.0.1:8000/order/list/";
             const response = await axios.get(url);
 
@@ -156,6 +153,7 @@ export default {
         .filters {
             display: flex;
             align-items: center;
+            justify-content: center;
             margin: 1rem 0;
 
             &__title {
@@ -166,6 +164,8 @@ export default {
 
             &__inputs {
                 display: flex;
+                min-width: 80%;
+                justify-content: space-evenly;
                 align-items: center;
                 gap: 1rem;
 

@@ -3,11 +3,13 @@ import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 import Vuelidate from "vuelidate";
+import VueToast from "vue-toast-notification";
 
 import ProvincesAPI from "./api/locationAPI";
 
 Vue.config.productionTip = false;
 Vue.use(Vuelidate);
+Vue.use(VueToast);
 
 // Global functions
 Vue.prototype.$province = ProvincesAPI;

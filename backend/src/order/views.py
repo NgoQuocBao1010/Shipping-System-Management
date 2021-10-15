@@ -6,7 +6,6 @@ from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-import json, requests, pprint
 
 from .models import Order, ProductOrder, ShipDistance
 from .serializers import CustomerSerializer, ShipDistanceSerializer, OrderSerializer
@@ -42,9 +41,29 @@ def shippingPrice(request):
 
 @api_view(["GET"])
 def ordersList(request):
-    orders = Order.objects.all()
+    """
+    Get the list of all orders base on the user's authorization
+    If the user is the admin, return all orders
+    else return only the order that belong to the user correspond customer
+    """
+    orders = Order.objects.all().order_by("-dateCreated")
 
     serializers = OrderSerializer(orders, many=True)
+    return Response(status=status.HTTP_200_OK, data=serializers.data)
+
+
+@api_view(["GET", "POST"])
+def order(request, id):
+    print(id)
+    order = None
+    try:
+        order = Order.objects.get(id=id)
+    except Order.DoesNotExist:
+        return Response(
+            status=status.HTTP_404_NOT_FOUND, data={"error": "Order does not exist"}
+        )
+
+    serializers = OrderSerializer(order, many=False)
     return Response(status=status.HTTP_200_OK, data=serializers.data)
 
 
