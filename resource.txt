@@ -1,21 +1,6 @@
+https://lukashermann.dev/writing/how-to-use-async-await-with-vuejs-components/
 
-Yêu cầu:
-    TOPIC 1: Quản lý danh sách nhân viên công ty
-
-    TOPIC 2: Quản lý các đơn giao nhận sản phẩm
-        - Thông tin chủ sản phẩm (có thể là khách hàng mới)
-        - Địa chỉ khách hàng chủ sp
-        - Thông tin người nhận sp
-        - Địa chỉ ng nhận sp
-
-
-    TOPIC 3: Đơn giá vận chuyển:
-        - Theo độ dài đường đi và giao hàng
-        - Theo độ dài đường nhận và giao hàng
-
-    TOPIC 4: , Leafleft Routing Machine để chức năng tìm đường, giám sát giao nhận hàng
-        https://leafletjs.com/reference-1.7.1.html
-    TOPIC 5: Báo cáo, thống kê
+https://github.com/ankurk91/vue-toast-notification/tree/v1.x
 
 
 Công cụ:
@@ -31,7 +16,7 @@ Công cụ:
         - Cấp Xã: Xã/ Phường/ Thị trấn.
 4. Thuật ngữ tiếng Anh:
     https://melodylogistics.com/thuat-ngu-tieng-anh-logistics-va-van-tai-quoc-te-161.html
-
-https://lukashermann.dev/writing/how-to-use-async-await-with-vuejs-components/
-
-https://github.com/ankurk91/vue-toast-notification/tree/v1.x
+5. Custom Permission DRF:
+    https://www.django-rest-framework.org/api-guide/permissions/
+6. CSS animations
+    https://codepen.io/Manoz/pen/pydxK

@@ -17,16 +17,9 @@ import store from "../store/index";
 Vue.use(VueRouter);
 
 const routes = [
-    // Home
-    {
-        path: "/",
-        name: "Home",
-        component: Home,
-        meta: {
-            name: "Home",
-            guest: true,
-        },
-    },
+    /* 
+        Routes required authentication
+    */
     // Profile
     {
         path: "/profile",
@@ -34,7 +27,8 @@ const routes = [
         component: Profile,
         meta: {
             name: "Profile",
-            guest: false,
+            requiredAuth: true,
+            restrictedRole: null,
         },
     },
     // Orders
@@ -44,7 +38,8 @@ const routes = [
         component: Orders,
         meta: {
             name: "Orders",
-            guest: false,
+            requiredAuth: true,
+            restrictedRole: null,
         },
     },
     // Order detail
@@ -55,7 +50,8 @@ const routes = [
         props: true,
         meta: {
             name: "Order Detail",
-            guest: false,
+            requiredAuth: true,
+            restrictedRole: null,
         },
     },
     // Order create
@@ -65,7 +61,8 @@ const routes = [
         component: OrderCreate,
         meta: {
             name: "Order Create",
-            guest: false,
+            requiredAuth: true,
+            restrictedRole: null,
         },
     },
     // Report
@@ -74,8 +71,9 @@ const routes = [
         name: "Reports",
         component: Reports,
         meta: {
-            name: "Report",
-            guest: false,
+            name: "Reports",
+            requiredAuth: "true",
+            restrictedRole: "admin",
         },
     },
     // Management
@@ -85,7 +83,21 @@ const routes = [
         component: Management,
         meta: {
             name: "Manangement",
-            guest: false,
+            requiredAuth: true,
+            restrictedRole: "admin",
+        },
+    },
+    /* 
+        Guest visist routes
+    */
+    // Home
+    {
+        path: "/",
+        name: "Home",
+        component: Home,
+        meta: {
+            name: "Home",
+            requiredAuth: false,
         },
     },
     // Test Map
@@ -95,7 +107,7 @@ const routes = [
         component: TestMap,
         meta: {
             name: "TestMap",
-            guest: false,
+            requiredAuth: false,
         },
     },
     // Login
@@ -106,7 +118,7 @@ const routes = [
         props: true,
         meta: {
             name: "Login",
-            guest: true,
+            requiredAuth: false,
         },
     },
     // Register
@@ -116,7 +128,7 @@ const routes = [
         component: Register,
         meta: {
             name: "Register",
-            guest: true,
+            requiredAuth: false,
         },
     },
     // Reset password
@@ -126,7 +138,7 @@ const routes = [
         component: ResetPassword,
         meta: {
             name: "Reset Password",
-            guest: true,
+            requiredAuth: false,
         },
     },
 ];
@@ -136,28 +148,41 @@ const router = new VueRouter({
     routes,
 });
 
-// Routing resctrition
+/* 
+    Check local storage for token, 
+    If there is one, use it to login
+*/
 router.beforeEach(async (to, from, next) => {
-    // Restricting pages depends on user login status
-    // Not Authenticated
     if (!store.state.authenticated) {
-        let login = false;
         const token = localStorage.getItem("authToken");
         if (token !== "null" && token !== "") {
-            login = await store.dispatch("login", token);
+            const login = await store.dispatch("login", token);
         }
-
-        if (!login && !to.meta.guest) return next({ name: "Home" });
-        if (login && to.meta.guest) return next({ name: "Reports" });
-        else next();
-    } else {
-        // Authenticated
-        if (to.meta.guest) return next({ name: "Reports" });
-        return next();
     }
+
+    next();
 });
 
-// Changing name
+/* 
+    Check user authorization for each route
+*/
+router.beforeEach(async (to, from, next) => {
+    if (store.state.authenticated && !to.meta.requiredAuth) {
+        console.log("Logged in user not allowed to view this page");
+        return next({ name: "Reports" });
+    }
+
+    if (!store.state.authenticated && to.meta.requiredAuth) {
+        console.log("Log in first");
+        return next({ name: "Home" });
+    }
+
+    return next();
+});
+
+/* 
+    Changing the name of tab
+*/
 router.beforeEach((to, from, next) => {
     document.title = `${to.meta.name} | Kaz S.S`;
     return next();

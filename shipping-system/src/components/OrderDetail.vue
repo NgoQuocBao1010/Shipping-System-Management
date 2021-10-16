@@ -102,6 +102,7 @@
                     </div>
                 </div>
             </div>
+
             <!-- Pricing Section -->
             <div class="pricing">
                 <div class="title">Total Expense</div>
@@ -208,15 +209,15 @@ export default {
         },
     },
     async created() {
-        this.consignorWard = await this.$province.getWard(
+        const wardObj = await this.$province.getWard(
             this.order.consignor.subDistrictId
         );
-        this.consigneeWard = await this.$province.getWard(
+        const wardObj2 = await this.$province.getWard(
             this.order.consignee.subDistrictId
         );
 
-        this.consignorWard = this.consignorWard.name;
-        this.consigneeWard = this.consigneeWard.name;
+        this.consignorWard = wardObj.name;
+        this.consigneeWard = wardObj2.name;
     },
 };
 </script>

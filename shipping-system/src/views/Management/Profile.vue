@@ -8,91 +8,105 @@
                 </button>
             </h1>
         </div>
-        <form @submit.prevent="submit" class="profile__content">
+
+        <form class="profile__content">
+            <!-- Name -->
             <div class="input">
                 <label for="name">Full Name: </label>
                 <input
                     :class="{ active: edit }"
                     name="name"
                     type="text"
-                    v-model="fullName"
+                    v-model="profile.fullName"
                     :readonly="!edit"
                     required
                 />
             </div>
+
+            <!-- Email -->
             <div class="input">
                 <label for="email">Email: </label>
                 <input
                     name="email"
                     type="email"
-                    v-model="email"
+                    v-model="profile.email"
                     readonly="true"
                     required
                 />
             </div>
+
+            <!-- Phone Number -->
             <div class="input">
                 <label for="phone">Phone Number: </label>
                 <input
                     :class="{ active: edit }"
                     name="phone"
                     type="text"
-                    v-model="phone"
+                    v-model="profile.phone"
                     :readonly="!edit"
                     required
                 />
             </div>
+
+            <!-- Date of birth -->
             <div class="input">
                 <label for="dob">Date of birth: </label>
                 <input
                     name="dob"
                     type="date"
-                    v-model="dateOfBirth"
+                    v-model="profile.dateOfBirth"
                     :readonly="!edit"
                     :class="{ active: edit }"
                 />
             </div>
+
+            <!-- Address -->
             <div class="input">
                 <label for="address">Address: </label>
                 <input
                     :class="{ active: edit }"
                     name="address"
+                    v-model="profile.address"
                     type="text"
-                    v-model="address"
                     :readonly="!edit"
                 />
             </div>
+
+            <!-- Ward -->
             <div class="input">
-                <label for="subdistrict">Sub-district</label>
+                <label for="subdistrict">Ward</label>
                 <div class="select" :class="{ active: edit }">
                     <i class="fas fa-chevron-down"></i>
                     <select
                         name="subdistrict"
-                        v-model="subDistrictId"
+                        v-model="profile.subDistrictId"
                         :disabled="!edit"
                     >
                         <option
-                            v-for="subDistrict in subDistricts"
-                            :key="subDistrict.code"
-                            :value="subDistrict.code"
+                            v-for="ward in wards"
+                            :key="ward.id"
+                            :value="ward.id"
                         >
-                            {{ subDistrict.name }}
+                            {{ ward.name }}
                         </option>
                     </select>
                 </div>
             </div>
+
+            <!-- District -->
             <div class="input">
-                <label for="province">Province - District</label>
+                <label for="province">District - City</label>
                 <div class="select" :class="{ active: edit }">
                     <i class="fas fa-chevron-down"></i>
                     <select
                         name="province"
-                        v-model="districtId"
+                        v-model="profile.districtId"
                         :disabled="!edit"
                     >
                         <option
-                            v-for="dstr in districts"
-                            :key="dstr.disCode"
-                            :value="dstr.disCode"
+                            v-for="dstr in provinces"
+                            :key="dstr.id"
+                            :value="dstr.id"
                         >
                             {{ dstr.name }}
                         </option>
@@ -100,7 +114,14 @@
                 </div>
             </div>
 
-            <loading-animation class="animation" v-show="animate" />
+            <!-- Error for validations -->
+            <p class="error" v-show="error">
+                <i class="fas fa-exclamation-circle"></i> Please fill out all
+                the input
+            </p>
+
+            <!-- Editing section -->
+            <CircleAnimation class="animation" v-show="loadingData" />
             <div class="edit-buttons">
                 <div class="btn small" @click="edit = true" v-show="!edit">
                     <i class="far fa-edit"></i>Edit
@@ -111,7 +132,7 @@
                 <button
                     class="btn small"
                     type="submit"
-                    @click="edit = false"
+                    @click.prevent="submit"
                     v-show="edit"
                 >
                     <i class="fas fa-save"></i>Save
@@ -124,145 +145,104 @@
 <script>
 import { mapState, mapMutations } from "vuex";
 import axios from "axios";
+import { required, numeric, minLength } from "vuelidate/lib/validators";
 
-import LoadingAnimation from "../../components/LoadingAnimation.vue";
+import CircleAnimation from "../../components/CircleAnimation.vue";
 
 export default {
     name: "Profile",
     components: {
-        LoadingAnimation,
+        CircleAnimation,
     },
     data() {
         return {
-            fullName: "",
-            email: "",
-            dateOfBirth: "",
-            phone: "",
-            address: "",
-            provinceId: null,
-            districtId: null,
-            subDistrictId: null,
+            profile: {
+                fullName: null,
+                email: "",
+                dateOfBirth: "",
+                phone: "",
+                address: "",
+                provinceId: null,
+                districtId: null,
+                subDistrictId: null,
+            },
+            loadingData: false,
             edit: false,
-            animate: false,
 
+            error: false,
             districts: [],
-            subDistricts: [],
+            wards: [],
         };
     },
     computed: {
-        ...mapState(["user", "token"]),
+        ...mapState(["user", "token", "provinces"]),
     },
     watch: {
-        districtId(newVal, oldVal) {
-            if (oldVal) {
-                this.provinceId = this.districts.find(
-                    (info) => info.disCode === newVal
-                ).proCode;
+        async "profile.districtId"(newVal, oldVal) {
+            if (newVal && oldVal) {
+                this.loadingData = true;
 
-                this.subDistrictId = "";
+                this.profile.subDistrictId = null;
+                this.wards = await this.$province.getWardList(newVal);
 
-                this.getSubDistricts(newVal)
-                    .then((response) => {
-                        this.subDistricts = response.data.wards;
-                    })
-                    .catch((error) => console.log(error));
+                this.loadingData = false;
             }
         },
     },
+    validations: {
+        profile: {
+            fullName: { required },
+            email: { required },
+            dateOfBirth: { required },
+            phone: { required },
+            address: { required },
+            provinceId: { required },
+            districtId: { required },
+            subDistrictId: { required },
+        },
+    },
     methods: {
-        ...mapMutations(["logout", "authenticate"]),
-        getAllProvinces() {
-            const url = `https://provinces.open-api.vn/api/?depth=2`;
-            axios
-                .get(url)
-                .then((response) => {
-                    const provinces = response.data;
-
-                    // Get info from api then rearrange it to get the info for Can Tho city to the front
-                    let results = [];
-                    let ctInfo = [];
-
-                    for (let province of provinces) {
-                        for (let district of province.districts) {
-                            const disObj = {
-                                proCode: province.code,
-                                disCode: district.code,
-                                name: `${district.name} - ${province.name}`,
-                            };
-
-                            if (province.code === 92) ctInfo.push(disObj);
-                            else results.push(disObj);
-                        }
-                    }
-
-                    this.districts = [...ctInfo, ...results];
-                })
-                .catch((error) => console.log(error));
-        },
-        getSubDistricts(districtCode) {
-            const url = `https://provinces.open-api.vn/api/d/${districtCode}/?depth=2`;
-
-            return axios.get(url);
-        },
+        ...mapMutations(["logout", "updateProfile"]),
         signOut() {
             this.logout();
             this.$router.push({ name: "Home" });
         },
         async submit() {
-            const profileForm = {
-                email: this.email,
-                fullName: this.fullName,
-                gender: this.gender,
-                dateOfBirth: this.dateOfBirth,
-                phone: this.phone,
-                address: this.address,
-                provinceId: this.provinceId,
-                districtId: this.districtId,
-                subDistrictId: this.subDistrictId,
-            };
+            this.$v.$touch();
 
+            if (this.$v.$error) {
+                console.log("Profile Edited: Invalid input");
+                this.error = true;
+                return;
+            }
             try {
-                this.animate = true;
+                this.loadingData = true;
                 const url = "http://127.0.0.1:8000/account/profile";
-                const response = await axios.post(url, profileForm, {
+                const response = await axios.post(url, this.profile, {
                     headers: {
                         Authorization: `Token ${this.token}`,
                     },
                 });
 
-                if (response.status === 200) {
-                    this.authenticate({ profile: profileForm });
-                }
-
-                this.animate = false;
+                this.edit = false;
+                this.error = false;
+                this.loadingData = false;
+                this.$toast.success("Your profile has been placed!", {
+                    duration: 2000,
+                });
             } catch (e) {
                 console.log(e);
             }
         },
     },
-    mounted() {
-        ({
-            email: this.email,
-            fullName: this.fullName,
-            gender: this.gender,
-            dateOfBirth: this.dateOfBirth,
-            phone: this.phone,
-            address: this.address,
-            provinceId: this.provinceId,
-            districtId: this.districtId,
-            subDistrictId: this.subDistrictId,
-        } = this.user);
+    async created() {
+        this.loadingData = true;
+        this.profile = this.user;
+        this.districts = this.provinces;
 
-        this.districtId = this.districtId === null ? -1 : this.districtId;
+        this.wards = await this.$province.getWardList(this.profile.districtId);
 
-        // Get address information from API
-        this.getAllProvinces();
-        if (this.districtId !== -1)
-            this.getSubDistricts(this.districtId)
-                .then((response) => {
-                    this.subDistricts = response.data.wards;
-                })
-                .catch((error) => console.log(error));
+        this.loadingData = false;
     },
 };
 </script>
@@ -289,6 +269,10 @@ export default {
             position: absolute;
             right: 10px;
         }
+    }
+
+    &__loading {
+        margin: 1rem 0;
     }
 
     &__content {
@@ -393,7 +377,7 @@ export default {
 
         .edit-buttons {
             position: absolute;
-            top: 40px;
+            top: 60px;
             right: 20px;
             display: flex;
             flex-direction: column;
@@ -413,6 +397,15 @@ export default {
             position: absolute;
             top: 15px;
             right: 30px;
+        }
+
+        .error {
+            color: red;
+            font-size: 12px;
+            font-weight: 600;
+            position: absolute;
+            bottom: 15px;
+            left: 30px;
         }
     }
 }

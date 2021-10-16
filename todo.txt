@@ -1,0 +1,2 @@
+- Viết lại trang Profile
+- Viết trang Home, 404, Unauth
