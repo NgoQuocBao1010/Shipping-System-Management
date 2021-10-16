@@ -54,7 +54,9 @@ def ordersList(request):
 
 @api_view(["GET", "POST"])
 def order(request, id):
-    print(id)
+    if not id.isnumeric():
+        return Response(status=status.HTTP_200_OK, data={"error": "Invalid query"})
+    
     order = None
     try:
         order = Order.objects.get(id=id)

@@ -1,8 +1,9 @@
 <template>
-    <div class="order-detail">
-        <div class="order-detail__header">
+    <div class="order-container">
+        <!-- Order Id -->
+        <div class="order-container__header">
             <h1 class="title" v-if="order.id">
-                Order #{{ id }}
+                Order #{{ order.id }}
                 <span
                     class="status"
                     :class="'order-' + statusCodes[order.status]"
@@ -11,10 +12,13 @@
                 </span>
             </h1>
         </div>
-        <div class="order-detail__content">
+
+        <!-- Order Information -->
+        <div class="order-container__content">
+            <!-- Customer Section -->
             <div class="customer">
                 <!-- Consignor -->
-                <div class="info">
+                <div class="customer__info">
                     <div class="info__title">Consignor Address</div>
                     <div class="info__detail">
                         <div class="name">{{ order.consignor.fullName }}</div>
@@ -34,8 +38,9 @@
                         </div>
                     </div>
                 </div>
+
                 <!-- Consignee -->
-                <div class="info">
+                <div class="customer__info">
                     <div class="info__title">Consignee Address</div>
                     <div class="info__detail">
                         <div class="name">{{ order.consignee.fullName }}</div>
@@ -56,11 +61,15 @@
                     </div>
                 </div>
             </div>
+
             <!-- Other Information -->
             <div class="info">
                 <div class="info__title">Other Information</div>
                 <div class="info__detail">
-                    <div class="normal">
+                    <div class="normal" v-if="order.id">
+                        Date Created: <b>{{ order.dateCreated }}</b>
+                    </div>
+                    <div class="normal" v-else>
                         Date Created: <b>{{ today }}</b>
                     </div>
                     <div class="normal">
@@ -71,6 +80,7 @@
                     </div>
                 </div>
             </div>
+
             <!-- Package Information -->
             <div class="products-container">
                 <div class="title">Products</div>
@@ -97,7 +107,7 @@
                 <div class="title">Total Expense</div>
                 <div class="pricing__details">
                     <p>
-                        Packge's price:
+                        Package's price:
                         <span class="money">
                             {{ this.$func.formatMoneyToVND(packagePrice) }} VND
                         </span>
@@ -134,9 +144,9 @@ export default {
         return {
             statusCodes: {
                 0: "failed",
-                1: "delivered",
-                2: "delivering",
-                3: "processing",
+                1: "processing",
+                2: "delivered",
+                3: "delivering",
             },
             paymentOptions: [
                 {
@@ -212,15 +222,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.order-detail {
+.order-container {
     &__header {
         display: flex;
         justify-content: space-between;
-        margin-bottom: 0.8rem;
-        background: lightblue;
+        margin-bottom: 2rem;
 
         .title {
-            font-size: 1.5rem;
+            font-size: 2rem;
             display: flex;
             align-items: center;
             gap: 5rem;
@@ -229,10 +238,6 @@ export default {
                 text-transform: capitalize;
                 font-size: 12px;
             }
-        }
-
-        .date {
-            font-weight: 600;
         }
     }
 
@@ -243,15 +248,18 @@ export default {
 
         .customer {
             display: flex;
-            flex-direction: row;
             justify-content: space-between;
+            gap: 20px;
             width: 100%;
             margin-bottom: 1rem;
-        }
-        .info {
-            flex: 1 1 200px;
-            margin: 1rem 0.5rem;
 
+            > * {
+                flex: 1 1 40%;
+            }
+        }
+
+        .info {
+            margin: 1rem 0;
             font-weight: 500;
 
             &__title {
@@ -261,6 +269,7 @@ export default {
             }
 
             &__detail {
+                height: 100%;
                 padding: 1rem;
                 box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px,
                     rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
@@ -276,9 +285,9 @@ export default {
                 }
             }
         }
+
         .products-container {
-            margin: 0rem 0.5rem;
-            margin-bottom: 2rem;
+            margin-bottom: 1rem;
             .title {
                 margin-bottom: 5px;
                 font-weight: 900;
@@ -297,15 +306,16 @@ export default {
                     .header {
                         font-size: 1rem;
                         font-weight: 900;
-                        background: lightgray;
+                        color: white;
+                        background: var(--secondary-color);
                         margin-bottom: 1rem;
                         border: none;
                     }
 
                     > * {
                         flex: 1;
-                        font-weight: 500;
-                        font-size: 1.1rem;
+                        font-weight: 600;
+                        font-size: 1.2rem;
                         padding: 4px 10px;
                         margin-bottom: 0.5rem;
                         border-bottom: 1px solid black;
@@ -313,16 +323,23 @@ export default {
                 }
             }
         }
+
         .pricing {
+            display: flex;
+
+            > * {
+                flex: 1 1 50%;
+            }
             .title {
                 margin-bottom: 5px;
                 font-weight: 900;
+                font-size: 1.5rem;
                 color: var(--primary-color);
             }
-            margin: 0rem 0.5rem;
 
             &__details {
-                padding: 1rem 0;
+                padding: 0.5rem 0;
+                text-align: right;
 
                 p {
                     font-size: 1.2rem;
