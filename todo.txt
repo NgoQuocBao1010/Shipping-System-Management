@@ -1,2 +1,4 @@
-- Viết lại trang Profile
-- Viết trang Home, 404, Unauth
+Front End
+- Viết lại trang Profile X
+- Viết trang Home, 404, Unauth. 
+- Viết lại trang Login, Register

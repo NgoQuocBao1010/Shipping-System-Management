@@ -34,6 +34,7 @@ class UserSerializer(serializers.Serializer):
 
 class ProfileSerializer(serializers.ModelSerializer):
     email = serializers.SerializerMethodField()
+    isAdmin = serializers.SerializerMethodField()
 
     class Meta:
         model = Profile
@@ -41,6 +42,9 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     def get_email(self, obj):
         return obj.user.email
+
+    def get_isAdmin(self, obj):
+        return obj.user.is_admin
 
     def update(self, instance, validated_data):
         instance.fullName = self.validated_data.get("fullName", instance.fullName)

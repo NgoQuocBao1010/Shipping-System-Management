@@ -40,6 +40,7 @@ def shippingPrice(request):
 
 
 @api_view(["GET"])
+@permission_classes([IsAuthenticated])
 def ordersList(request):
     """
     Get the list of all orders base on the user's authorization
@@ -53,13 +54,14 @@ def ordersList(request):
 
 
 @api_view(["GET", "POST"])
+@permission_classes([IsAuthenticated])
 def order(request, id):
-    '''
-        Get order by giving order id
-    '''
+    """
+    Get order by giving order id
+    """
     if not id.isnumeric():
         return Response(status=status.HTTP_200_OK, data={"error": "Invalid query"})
-    
+
     order = None
     try:
         order = Order.objects.get(id=id)

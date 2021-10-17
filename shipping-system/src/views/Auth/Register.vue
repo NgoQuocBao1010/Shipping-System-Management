@@ -12,9 +12,9 @@
                 <div class="input">
                     <input
                         type="email"
+                        autocomplete="nope"
                         placeholder="Email"
                         v-model="email"
-                        required
                     />
                     <i class="far fa-envelope icon"></i>
                 </div>
@@ -22,6 +22,7 @@
                     <input
                         type="password"
                         placeholder="Password"
+                        autocomplete="new-password"
                         v-model="password"
                         required
                     />
@@ -95,8 +96,15 @@ export default {
                 if (response.status === 200) {
                     this.$router.replace({
                         name: "Login",
-                        params: { newUserCreated: true },
+                        params: { newUserCreated: true, newEmail: this.email },
                     });
+
+                    this.$toast.success(
+                        "Your accout is successfully created!",
+                        {
+                            duration: 2000,
+                        }
+                    );
                 }
             } catch (e) {
                 if (e.response.status === 400) {
@@ -114,6 +122,9 @@ export default {
                 /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
             return re.test(String(email).toLowerCase());
         },
+    },
+    created() {
+        console.log(this.email);
     },
 };
 </script>

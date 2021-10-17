@@ -47,10 +47,10 @@
                         <div class="normal">
                             <b>{{ order.consignee.phone }}</b>
                         </div>
-                        <div class="normal">
+                        <div class="address">
                             {{ order.consignee.address }}
                         </div>
-                        <div class="normal">
+                        <div class="address">
                             {{ consigneeWard }},
                             {{
                                 $store.getters.district(
@@ -256,6 +256,10 @@ export default {
 
             > * {
                 flex: 1 1 40%;
+            }
+
+            .address {
+                font-weight: 600;
             }
         }
 

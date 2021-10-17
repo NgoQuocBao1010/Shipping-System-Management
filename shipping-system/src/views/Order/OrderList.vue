@@ -55,7 +55,8 @@
         </div>
 
         <div class="orders__content">
-            <OrderTable :orders="orders" />
+            <OrderTable :orders="orders" v-if="orders" />
+            <LoadingAnimation v-else />
         </div>
     </div>
 </template>
@@ -67,16 +68,18 @@ import { mapState } from "vuex";
 
 import Dropdown from "@/components/DropdownInput.vue";
 import OrderTable from "@/components/OrderTable";
+import LoadingAnimation from "@/components/CircleAnimation.vue";
 
 export default {
     name: "Orders",
     components: {
         OrderTable,
         Dropdown,
+        LoadingAnimation,
     },
     data() {
         return {
-            orders: [],
+            orders: null,
             statusOptions: [
                 {
                     id: 1,
@@ -110,6 +113,7 @@ export default {
             payment: 1,
             fromDate: null,
             toDate: null,
+            loading: false,
         };
     },
     computed: {
@@ -126,10 +130,18 @@ export default {
             /* 
                 Call backend API to retrieve list of all orders
             */
-            const url = "http://127.0.0.1:8000/order/list/";
-            const response = await axios.get(url);
+            try {
+                const url = "http://127.0.0.1:8000/order/list/";
+                const response = await axios.get(url, {
+                    headers: {
+                        Authorization: `Token ${this.token}`,
+                    },
+                });
 
-            this.orders = response.data;
+                this.orders = response.data;
+            } catch (e) {
+                console.log("Error getting list of orders", e);
+            }
         },
     },
     async created() {

@@ -78,9 +78,14 @@ export default new Vuex.Store({
     },
     getters: {
         district: (state) => (id) => {
+            /* Return district object by given id */
             return state.provinces
                 ? state.provinces.find((dis) => dis.id === id)
                 : {};
+        },
+        isAdmin: (state) => {
+            /* Return if user is admin */
+            return state.user ? state.user.isAdmin : false;
         },
     },
     modules: {},

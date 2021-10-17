@@ -12,6 +12,7 @@ export default {
 
 <style lang="scss" scoped>
 .wrapper {
+    max-width: 100px;
     min-height: 20px;
 
     .small {

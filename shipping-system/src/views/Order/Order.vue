@@ -25,7 +25,9 @@ export default {
     props: {
         id: String | Number,
     },
-    computed: {},
+    computed: {
+        ...mapState(["token"]),
+    },
     methods: {
         async getOrder() {
             /* 
@@ -33,7 +35,11 @@ export default {
             */
             try {
                 const url = `http://127.0.0.1:8000/order/detail/${this.id}/`;
-                const response = await axios.get(url);
+                const response = await axios.get(url, {
+                    headers: {
+                        Authorization: `Token ${this.token}`,
+                    },
+                });
 
                 this.order = response.data;
             } catch (e) {

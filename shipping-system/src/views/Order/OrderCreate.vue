@@ -281,7 +281,7 @@ import axios from "axios";
 import { required, numeric, minLength } from "vuelidate/lib/validators";
 
 import Dropdown from "@/components/DropdownInput.vue";
-import Loading from "@/components/LoadingAnimation.vue";
+import Loading from "@/components/CircleAnimation.vue";
 
 export default {
     name: "OrderCreate",
@@ -773,7 +773,6 @@ export default {
             margin: 0.5rem 0;
             padding: 1rem 0;
             display: flex;
-            gap: 3rem;
         }
     }
 }

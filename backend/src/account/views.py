@@ -14,6 +14,7 @@ User = get_user_model()
 
 @api_view(["POST"])
 def loginApi(request):
+    """Token login"""
     email = request.data.get("email", None)
     password = request.data.get("password", None)
 
@@ -33,6 +34,7 @@ def loginApi(request):
 
 @api_view(["POST"])
 def registerApi(request):
+    """Create new account and response token"""
     serializer = UserSerializer(data=request.data)
 
     if serializer.is_valid():
@@ -50,7 +52,9 @@ def registerApi(request):
 
 @api_view(["GET", "POST"])
 def profileApi(request):
-    print(request)
+    """
+    Get or update profile
+    """
     if request.user.is_authenticated:
         profile = Profile.objects.get(user=request.user)
 

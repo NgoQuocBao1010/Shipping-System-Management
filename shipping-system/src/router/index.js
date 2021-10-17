@@ -1,16 +1,22 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import Home from "../views/Home.vue";
+// Management
 import Profile from "../views/Management/Profile.vue";
 import Reports from "../views/Management/Reports.vue";
 import Management from "../views/Management/Management.vue";
+// Orders
 import Orders from "../views/Order/OrderList.vue";
 import Order from "../views/Order/Order.vue";
 import OrderCreate from "../views/Order/OrderCreate.vue";
-import TestMap from "../views/Map.vue";
+// Auth
 import Login from "../views/Auth/Login.vue";
 import Register from "../views/Auth/Register.vue";
 import ResetPassword from "../views/Auth/ResetPassword.vue";
+// Error
+import Unauthorized from "../views/Error/Unauthorized.vue";
+// Others
+import TestMap from "../views/Map.vue";
+import Home from "../views/Home.vue";
 
 import store from "../store/index";
 
@@ -83,6 +89,17 @@ const routes = [
         component: Management,
         meta: {
             name: "Manangement",
+            requiredAuth: true,
+            restrictedRole: "admin",
+        },
+    },
+    // Unauthorized
+    {
+        path: "/unauthorized",
+        name: "Unauthorized",
+        component: Unauthorized,
+        meta: {
+            name: "Unauthorized",
             requiredAuth: true,
             restrictedRole: "admin",
         },

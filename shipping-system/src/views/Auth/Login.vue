@@ -1,15 +1,15 @@
 <template>
     <div class="form-wrap">
         <form @submit.prevent="signIn" class="login">
-            <p class="login-register" v-show="!newUserCreated">
+            <!-- Register redirect -->
+            <p class="login-register">
                 Don't have an account?
                 <router-link class="router-link" :to="{ name: 'Register' }">
                     Register
                 </router-link>
             </p>
-            <p class="account-created" v-show="newUserCreated">
-                Account Created Successfully
-            </p>
+
+            <!-- Login Form -->
             <h2>Login to Kaz Shipping System</h2>
             <div class="inputs">
                 <div class="input">
@@ -32,6 +32,8 @@
                 </div>
                 <div v-show="error" class="error">{{ this.errorMsg }}</div>
             </div>
+
+            <!-- Submit -->
             <router-link
                 class="forgot-password"
                 :to="{ name: 'ResetPassword' }"
@@ -53,6 +55,7 @@ export default {
     name: "Login",
     props: {
         newUserCreated: Boolean,
+        newEmail: String,
     },
     data() {
         return {
@@ -84,6 +87,9 @@ export default {
                 this.errorMsg = e.response.data.message;
             }
         },
+    },
+    created() {
+        this.email = this.newEmail ? this.newEmail : "";
     },
 };
 </script>

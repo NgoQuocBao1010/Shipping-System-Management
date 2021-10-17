@@ -145,7 +145,7 @@
 <script>
 import { mapState, mapMutations } from "vuex";
 import axios from "axios";
-import { required, numeric, minLength } from "vuelidate/lib/validators";
+import { required } from "vuelidate/lib/validators";
 
 import CircleAnimation from "../../components/CircleAnimation.vue";
 
@@ -179,26 +179,16 @@ export default {
     },
     watch: {
         async "profile.districtId"(newVal, oldVal) {
-            if (newVal && oldVal) {
+            if (newVal) {
                 this.loadingData = true;
 
-                this.profile.subDistrictId = null;
+                this.profile.subDistrictId = oldVal
+                    ? null
+                    : this.profile.subDistrictId;
                 this.wards = await this.$province.getWardList(newVal);
 
                 this.loadingData = false;
             }
-        },
-    },
-    validations: {
-        profile: {
-            fullName: { required },
-            email: { required },
-            dateOfBirth: { required },
-            phone: { required },
-            address: { required },
-            provinceId: { required },
-            districtId: { required },
-            subDistrictId: { required },
         },
     },
     methods: {
@@ -208,13 +198,6 @@ export default {
             this.$router.push({ name: "Home" });
         },
         async submit() {
-            this.$v.$touch();
-
-            if (this.$v.$error) {
-                console.log("Profile Edited: Invalid input");
-                this.error = true;
-                return;
-            }
             try {
                 this.loadingData = true;
                 const url = "http://127.0.0.1:8000/account/profile";
@@ -227,7 +210,7 @@ export default {
                 this.edit = false;
                 this.error = false;
                 this.loadingData = false;
-                this.$toast.success("Your profile has been placed!", {
+                this.$toast.success("Your profile has been updated!", {
                     duration: 2000,
                 });
             } catch (e) {
@@ -240,7 +223,11 @@ export default {
         this.profile = this.user;
         this.districts = this.provinces;
 
-        this.wards = await this.$province.getWardList(this.profile.districtId);
+        if (this.profile.districtId) {
+            this.wards = await this.$province.getWardList(
+                this.profile.districtId
+            );
+        }
 
         this.loadingData = false;
     },

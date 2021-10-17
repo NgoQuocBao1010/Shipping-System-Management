@@ -22,34 +22,43 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
+
 export default {
     name: "Sidebar",
     data() {
         return {
             pages: [
                 {
-                    name: "Reports",
-                    iconClass: "fas fa-clipboard-list",
-                },
-                {
                     name: "Orders",
                     iconClass: "fas fa-shipping-fast",
                 },
-                {
-                    name: "Management",
-                    iconClass: "fas fa-users",
-                },
-                // {
-                //     name: "Home",
-                //     iconClass: "fas fa-house-user",
-                // },
             ],
             expand: false,
         };
     },
     computed: {
+        ...mapState(["user"]),
         currentRoute() {
             return this.$route.name;
+        },
+    },
+    watch: {
+        user(newVal, oldVal) {
+            if (newVal.isAdmin) {
+                this.pages.unshift(
+                    ...[
+                        {
+                            name: "Reports",
+                            iconClass: "fas fa-clipboard-list",
+                        },
+                        {
+                            name: "Management",
+                            iconClass: "fas fa-users",
+                        },
+                    ]
+                );
+            }
         },
     },
 };
