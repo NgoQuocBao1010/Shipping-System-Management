@@ -12,7 +12,7 @@
 import "leaflet/dist/leaflet.css";
 import "leaflet-routing-machine/dist/leaflet-routing-machine.css";
 import "vue-toast-notification/dist/theme-sugar.css";
-import { mapMutations } from "vuex";
+import { mapMutations, mapActions } from "vuex";
 
 import Sidebar from "./components/Sidebar.vue";
 import Navigation from "./components/Navigation.vue";
@@ -35,6 +35,7 @@ export default {
     },
     methods: {
         ...mapMutations(["saveProvinceInfo"]),
+        ...mapActions(["login"]),
         checkRoute() {
             // Hide and show navigation bar depending on the page
             const routesWithNoNav = [
@@ -52,11 +53,12 @@ export default {
             this.navigation = true;
         },
     },
-    async created() {
-        this.checkRoute();
-
+    async beforeCreate() {
         const districts = await this.$province.getAllDistricts();
         this.saveProvinceInfo(districts);
+    },
+    created() {
+        this.checkRoute();
     },
 };
 </script>

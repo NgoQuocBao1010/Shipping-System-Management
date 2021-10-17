@@ -59,11 +59,6 @@ export default new Vuex.Store({
                     }
                 );
 
-                const authInfo = {
-                    token,
-                    profile: response.data,
-                };
-
                 if (response.status === 200) {
                     context.commit("authenticate", token);
                     context.commit("updateProfile", response.data);

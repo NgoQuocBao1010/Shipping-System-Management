@@ -20,3 +20,5 @@ Công cụ:
     https://www.django-rest-framework.org/api-guide/permissions/
 6. CSS animations
     https://codepen.io/Manoz/pen/pydxK
+7. Best practice for Auth Vuejs:
+    https://blog.sqreen.com/authentication-best-practices-vue/

@@ -6,6 +6,7 @@
                 :key="index"
                 class="link"
                 :class="{ active: page.name === currentRoute }"
+                v-show="(page.adminOnly && isAdmin) || !page.adminOnly"
             >
                 <router-link :to="{ name: page.name }">
                     <span class="icon"><i :class="page.iconClass"></i></span>
@@ -30,35 +31,30 @@ export default {
         return {
             pages: [
                 {
+                    name: "Reports",
+                    iconClass: "fas fa-clipboard-list",
+                    adminOnly: true,
+                },
+                {
+                    name: "Management",
+                    iconClass: "fas fa-users",
+                    adminOnly: true,
+                },
+                {
                     name: "Orders",
                     iconClass: "fas fa-shipping-fast",
+                    adminOnly: false,
                 },
             ],
             expand: false,
         };
     },
     computed: {
-        ...mapState(["user"]),
         currentRoute() {
             return this.$route.name;
         },
-    },
-    watch: {
-        user(newVal, oldVal) {
-            if (newVal.isAdmin) {
-                this.pages.unshift(
-                    ...[
-                        {
-                            name: "Reports",
-                            iconClass: "fas fa-clipboard-list",
-                        },
-                        {
-                            name: "Management",
-                            iconClass: "fas fa-users",
-                        },
-                    ]
-                );
-            }
+        isAdmin() {
+            return this.$store.getters.isAdmin;
         },
     },
 };

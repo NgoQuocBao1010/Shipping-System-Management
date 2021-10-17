@@ -34,7 +34,7 @@ const routes = [
         meta: {
             name: "Profile",
             requiredAuth: true,
-            restrictedRole: null,
+            adminOnly: null,
         },
     },
     // Orders
@@ -45,7 +45,7 @@ const routes = [
         meta: {
             name: "Orders",
             requiredAuth: true,
-            restrictedRole: null,
+            adminOnly: null,
         },
     },
     // Order detail
@@ -57,7 +57,7 @@ const routes = [
         meta: {
             name: "Order Detail",
             requiredAuth: true,
-            restrictedRole: null,
+            adminOnly: null,
         },
     },
     // Order create
@@ -68,7 +68,7 @@ const routes = [
         meta: {
             name: "Order Create",
             requiredAuth: true,
-            restrictedRole: null,
+            adminOnly: null,
         },
     },
     // Report
@@ -79,7 +79,7 @@ const routes = [
         meta: {
             name: "Reports",
             requiredAuth: "true",
-            restrictedRole: "admin",
+            adminOnly: "admin",
         },
     },
     // Management
@@ -90,7 +90,7 @@ const routes = [
         meta: {
             name: "Manangement",
             requiredAuth: true,
-            restrictedRole: "admin",
+            adminOnly: "admin",
         },
     },
     // Unauthorized
@@ -101,7 +101,7 @@ const routes = [
         meta: {
             name: "Unauthorized",
             requiredAuth: true,
-            restrictedRole: "admin",
+            adminOnly: "admin",
         },
     },
     /* 
@@ -161,7 +161,6 @@ const routes = [
 ];
 
 const router = new VueRouter({
-    mode: "history",
     routes,
 });
 
@@ -183,19 +182,21 @@ router.beforeEach(async (to, from, next) => {
 /* 
     Check user authorization for each route
 */
-router.beforeEach(async (to, from, next) => {
+router.beforeEach((to, from, next) => {
     if (store.state.authenticated && !to.meta.requiredAuth) {
         console.log("Logged in user not allowed to view this page");
-        return next({ name: "Reports" });
+        return next(false);
     }
 
     if (!store.state.authenticated && to.meta.requiredAuth) {
         console.log("Log in first");
-        return next({ name: "Home" });
+        return next(false);
     }
 
     return next();
 });
+
+/* Navigation guard for each role */
 
 /* 
     Changing the name of tab
