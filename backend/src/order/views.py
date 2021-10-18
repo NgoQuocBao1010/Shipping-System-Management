@@ -49,6 +49,9 @@ def ordersList(request):
     """
     orders = Order.objects.all().order_by("-dateCreated")
 
+    if not request.user.is_admin:
+        orders = orders.filter(consignor__user=request.user)
+
     serializers = OrderSerializer(orders, many=True)
     return Response(status=status.HTTP_200_OK, data=serializers.data)
 
@@ -58,13 +61,23 @@ def ordersList(request):
 def order(request, id):
     """
     Get order by giving order id
+    Unless you are logged in as admin, you are only allowed to view your own order
     """
     if not id.isnumeric():
-        return Response(status=status.HTTP_200_OK, data={"error": "Invalid query"})
+        return Response(
+            status=status.HTTP_400_BAD_REQUEST, data={"error": "Invalid query"}
+        )
 
     order = None
     try:
         order = Order.objects.get(id=id)
+
+        if order.consignor.user != request.user and not request.user.is_admin:
+            return Response(
+                status=status.HTTP_401_UNAUTHORIZED,
+                data={"error": "You are not the admin nor owner of this order"},
+            )
+
     except Order.DoesNotExist:
         return Response(
             status=status.HTTP_404_NOT_FOUND, data={"error": "Order does not exist"}

@@ -1,29 +1,51 @@
 <template>
     <div class="management">
         <div class="management__header">
-            <h1 class="title">Employee</h1>
+            <h1 class="title">Human Resources Management</h1>
             <div class="btn-header">
                 <button><i class="fas fa-plus-circle"></i>Add Employee</button>
                 <button>Status</button>
             </div>
         </div>
-        <hr />
+
+        <!-- Content -->
         <div class="management__content">
-            <EmployeeCard />
-            <EmployeeCard />
-            <EmployeeCard />
-            <EmployeeCard />
-            <EmployeeCard />
+            <TabWrapper />
         </div>
     </div>
 </template>
 
 <script>
-import EmployeeCard from "../../components/EmployeeCard.vue";
+import { mapState } from "vuex";
+import axios from "axios";
+
+import EmployeeCard from "@/components/EmployeeCard.vue";
+import TabWrapper from "@/components/management/TabWrapper.vue";
+import Tab from "@/components/management/Tab.vue";
+
 export default {
     name: "Management",
     components: {
         EmployeeCard,
+        TabWrapper,
+        Tab,
+    },
+    computed: {
+        ...mapState(["token"]),
+    },
+    async created() {
+        try {
+            const url = "http://127.0.0.1:8000/account/staff";
+            const response = await axios.get(url, {
+                headers: {
+                    Authorization: `Token ${this.token}`,
+                },
+            });
+
+            console.log(response.data);
+        } catch (e) {
+            console.log(e);
+        }
     },
 };
 </script>

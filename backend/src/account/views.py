@@ -8,6 +8,7 @@ from rest_framework.authtoken.models import Token
 
 from .models import Profile
 from .serializers import UserSerializer, ProfileSerializer
+from .permissions import AdminOnly
 
 User = get_user_model()
 
@@ -83,3 +84,12 @@ def profileApi(request):
             status=status.HTTP_401_UNAUTHORIZED,
             data={"message": "You are not authorized to view this profile"},
         )
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated, AdminOnly])
+def staffProfile(request):
+    profiles = Profile.objects.filter(user__admin=True)
+
+    serializers = ProfileSerializer(profiles, many=True)
+    return Response(status=status.HTTP_200_OK, data=serializers.data)

@@ -34,7 +34,7 @@ const routes = [
         meta: {
             name: "Profile",
             requiredAuth: true,
-            adminOnly: null,
+            adminOnly: false,
         },
     },
     // Orders
@@ -45,7 +45,7 @@ const routes = [
         meta: {
             name: "Orders",
             requiredAuth: true,
-            adminOnly: null,
+            adminOnly: false,
         },
     },
     // Order detail
@@ -57,7 +57,7 @@ const routes = [
         meta: {
             name: "Order Detail",
             requiredAuth: true,
-            adminOnly: null,
+            adminOnly: false,
         },
     },
     // Order create
@@ -68,7 +68,7 @@ const routes = [
         meta: {
             name: "Order Create",
             requiredAuth: true,
-            adminOnly: null,
+            adminOnly: false,
         },
     },
     // Report
@@ -79,7 +79,7 @@ const routes = [
         meta: {
             name: "Reports",
             requiredAuth: "true",
-            adminOnly: "admin",
+            adminOnly: true,
         },
     },
     // Management
@@ -90,7 +90,7 @@ const routes = [
         meta: {
             name: "Manangement",
             requiredAuth: true,
-            adminOnly: "admin",
+            adminOnly: true,
         },
     },
     // Unauthorized
@@ -101,7 +101,7 @@ const routes = [
         meta: {
             name: "Unauthorized",
             requiredAuth: true,
-            adminOnly: "admin",
+            adminOnly: false,
         },
     },
     /* 
@@ -179,28 +179,33 @@ router.beforeEach(async (to, from, next) => {
     next();
 });
 
-/* 
-    Check user authorization for each route
-*/
+/*  Check user authorization for each route */
 router.beforeEach((to, from, next) => {
     if (store.state.authenticated && !to.meta.requiredAuth) {
         console.log("Logged in user not allowed to view this page");
-        return next(false);
+        return from.name ? next(false) : next({ name: "Orders" });
     }
 
     if (!store.state.authenticated && to.meta.requiredAuth) {
         console.log("Log in first");
-        return next(false);
+        return from.name ? next(false) : next({ name: "Home" });
     }
 
     return next();
 });
 
 /* Navigation guard for each role */
+router.beforeEach((to, from, next) => {
+    if (!store.state.authenticated) return next();
 
-/* 
-    Changing the name of tab
-*/
+    if (store.getters.isAdmin) return next();
+    else {
+        if (to.meta.adminOnly) return next({ name: "Unauthorized" });
+        else next();
+    }
+});
+
+/* Changing the name of tab */
 router.beforeEach((to, from, next) => {
     document.title = `${to.meta.name} | Kaz S.S`;
     return next();

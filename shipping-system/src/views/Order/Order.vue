@@ -45,7 +45,11 @@ export default {
             } catch (e) {
                 if (e.response.status === 404) {
                     this.error = "Not found";
+                } else if (e.response.status === 401) {
+                    this.$router.push({ name: "Unauthorized" });
                 }
+
+                console.log(e.response);
             }
         },
     },

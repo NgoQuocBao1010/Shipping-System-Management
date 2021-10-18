@@ -80,7 +80,7 @@ export default {
 
                 await this.login(authToken);
 
-                this.$router.push({ name: "Reports" });
+                this.$router.push({ name: "Orders" });
             } catch (e) {
                 console.log("Error loggin in", e);
                 this.error = true;
