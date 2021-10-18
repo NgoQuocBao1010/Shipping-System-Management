@@ -3,7 +3,9 @@
         <Sidebar v-if="navigation" />
         <div class="container">
             <Navigation v-if="navigation" />
-            <router-view class="container__content" />
+            <keep-alive>
+                <router-view class="container__content" />
+            </keep-alive>
         </div>
     </div>
 </template>
@@ -198,5 +200,13 @@ input::-webkit-calendar-picker-indicator {
     &.customer {
         background-color: lightgreen;
     }
+}
+
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 0.5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+    opacity: 0;
 }
 </style>
