@@ -7,8 +7,9 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from account.serializers import ProfileSerializer
 from .models import Order, ProductOrder, ShipDistance
-from .serializers import CustomerSerializer, ShipDistanceSerializer, OrderSerializer
+from .serializers import ShipDistanceSerializer, OrderSerializer
 
 
 @api_view(["GET"])
@@ -25,6 +26,7 @@ def shippingPrice(request):
     if distance:
         try:
             distance = float(distance)
+            print(distance)
         except Exception as e:
             return Response(
                 status=status.HTTP_400_BAD_REQUEST,
@@ -50,7 +52,7 @@ def ordersList(request):
     orders = Order.objects.all().order_by("-dateCreated")
 
     if not request.user.is_admin:
-        orders = orders.filter(consignor__user=request.user)
+        orders = orders.filter(consignor=request.user)
 
     serializers = OrderSerializer(orders, many=True)
     return Response(status=status.HTTP_200_OK, data=serializers.data)
@@ -95,51 +97,36 @@ def orderCreateApi(request):
     Consignor, Consignee, Package, other ...
     """
     # Get and save consignor and consignee information
-    consignorInfo = request.data.get("consignor")
-    consignorInfo.update(
-        {
-            "user": request.user.id,
-            "role": "cnor",
-        }
-    )
-    consignor = CustomerSerializer(data=consignorInfo)
-
-    consigneeInfo = request.data.get("consignee")
-    consigneeInfo.update(
-        {
-            "role": "cnee",
-        }
-    )
-    consignee = CustomerSerializer(data=consigneeInfo)
-
-    if consignor.is_valid() and consignee.is_valid():
-        consignor = consignor.save()
-        consignee = consignee.save()
-    else:
-        print(consignor.errors)
-        print(consignee.errors)
+    consigneeProfile = makeConsigneeProfile(request.data.get("consignee"))
+    if not consigneeProfile:
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
     # Get order information
-    products = request.data.get("products")
+    print(request.data)
+    # Get order information
+    # products = request.data.get("products")
 
-    try:
-        newOrder = Order.objects.create(
-            consignor=consignor,
-            consignee=consignee,
-            paymentMethod=request.data.get("paymentMethod"),
-            productPreview=request.data.get("productPreview"),
-            note=request.data.get("note"),
-            estimateDistance=request.data.get("estimateDistance"),
-            shippingPrice=request.data.get("shippingPrice"),
-        )
+    # try:
+    #     newOrder = Order.objects.create(
+    #         consignor=consignor,
+    #         consignee=consignee,
+    #         paymentMethod=request.data.get("paymentMethod"),
+    #         productPreview=request.data.get("productPreview"),
+    #         note=request.data.get("note"),
+    #         estimateDistance=request.data.get("estimateDistance"),
+    #         shippingPrice=request.data.get("shippingPrice"),
+    #     )
 
-        if not savePackageInfo(products, newOrder):
-            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    #     if not savePackageInfo(products, newOrder):
+    #         return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    except Exception as e:
-        print("Error creating new order", str(e))
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+    # except Exception as e:
+    #     print("Error creating new order", str(e))
+    #     return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    # return Response(
+    #     status=status.HTTP_200_OK,
+    # )
 
     return Response(
         status=status.HTTP_200_OK,
@@ -164,3 +151,19 @@ def savePackageInfo(products, order):
         return False
 
     return True
+
+
+def makeConsigneeProfile(info):
+    """Creating a profile for a consignee of an order"""
+    profile = None
+    info.setdefault("consignee", True)
+
+    serializer = ProfileSerializer(data=info)
+
+    if serializer.is_valid():
+        profile = serializer.save()
+
+    else:
+        print(f"[SERVER]: Error creating profile {serializer.errors}")
+
+    return profile

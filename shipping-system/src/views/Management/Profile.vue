@@ -79,7 +79,7 @@
                     <i class="fas fa-chevron-down"></i>
                     <select
                         name="subdistrict"
-                        v-model="profile.subDistrictId"
+                        v-model="profile.wardId"
                         :disabled="!edit"
                     >
                         <option
@@ -164,7 +164,7 @@ export default {
                 address: "",
                 provinceId: null,
                 districtId: null,
-                subDistrictId: null,
+                wardId: null,
             },
             loadingData: false,
             edit: false,
@@ -182,9 +182,7 @@ export default {
             if (newVal) {
                 this.loadingData = true;
 
-                this.profile.subDistrictId = oldVal
-                    ? null
-                    : this.profile.subDistrictId;
+                this.profile.wardId = oldVal ? null : this.profile.wardId;
                 this.wards = await this.$province.getWardList(newVal);
 
                 this.loadingData = false;

@@ -18,6 +18,7 @@
                         required
                         placeholder="Email"
                         v-model="email"
+                        autocomplete="nope"
                     />
                     <i class="far fa-envelope icon"></i>
                 </div>
@@ -27,6 +28,7 @@
                         required
                         placeholder="Password"
                         v-model="password"
+                        autocomplete="new-password"
                     />
                     <i class="fas fa-lock icon"></i>
                 </div>
@@ -65,6 +67,13 @@ export default {
             password: "",
         };
     },
+    watch: {
+        newEmail(newVal, oldVal) {
+            if (newVal) {
+                this.email = newVal;
+            }
+        },
+    },
     methods: {
         ...mapActions(["login"]),
         async signIn() {
@@ -87,9 +96,6 @@ export default {
                 this.errorMsg = e.response.data.message;
             }
         },
-    },
-    created() {
-        this.email = this.newEmail ? this.newEmail : "";
     },
 };
 </script>

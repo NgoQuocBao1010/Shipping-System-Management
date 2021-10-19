@@ -2,24 +2,9 @@ from django.db import models
 from django.db.models import CheckConstraint, Q, F, constraints
 from django.contrib.auth import get_user_model
 
+from account.models import Profile
+
 User = get_user_model()
-
-
-class Customer(models.Model):
-    CUSTOMER_ROLES = (
-        ("cnor", "Consignor"),
-        ("cnee", "Consignee"),
-    )
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    role = models.CharField(choices=CUSTOMER_ROLES, max_length=25)
-    fullName = models.CharField(max_length=100, blank=True, null=True)
-    phone = models.CharField(max_length=20, blank=True, null=True)
-    address = models.CharField(max_length=255, blank=True, null=True)
-    districtId = models.IntegerField(null=True, blank=True)
-    subDistrictId = models.IntegerField(null=True, blank=True)
-
-    def __str__(self):
-        return f"{self.get_role_display()}: {self.fullName}"
 
 
 class ShipDistance(models.Model):
@@ -57,12 +42,8 @@ class Order(models.Model):
         (3, "Customer allow to try products"),
     )
 
-    consignor = models.ForeignKey(
-        Customer, null=True, on_delete=models.CASCADE, related_name="consignor"
-    )
-    consignee = models.ForeignKey(
-        Customer, null=True, on_delete=models.CASCADE, related_name="consignee"
-    )
+    consignor = models.ForeignKey(User, on_delete=models.CASCADE)
+    consignee = models.ForeignKey(Profile, on_delete=models.SET_NULL, null=True)
     status = models.IntegerField(default=1, choices=STATUS)
     paymentMethod = models.IntegerField(null=True, choices=PAYMENT_METHODS)
     productPreview = models.IntegerField(null=True, choices=PRODUCT_PREVIEW)
@@ -78,6 +59,7 @@ class Order(models.Model):
 class ProductOrder(models.Model):
     order = models.ForeignKey(Order, related_name="products", on_delete=models.CASCADE)
     name = models.CharField(max_length=255, blank=True, null=True)
+    quantity = models.IntegerField(default=1)
     price = models.IntegerField(null=True, default=0)
 
     def __str__(self):

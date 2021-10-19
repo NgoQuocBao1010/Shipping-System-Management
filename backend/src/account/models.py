@@ -72,16 +72,16 @@ class Profile(models.Model):
         ("unknown", "unknown"),
     )
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
     fullName = models.CharField(max_length=255, blank=True, null=True)
     gender = models.CharField(max_length=50, choices=GENDERS, blank=True, null=True)
     dateOfBirth = models.DateField(null=True, blank=True)
     phone = models.CharField(max_length=20, blank=True, null=True)
     address = models.CharField(max_length=255, blank=True, null=True)
-    provinceId = models.IntegerField(null=True, blank=True)
     districtId = models.IntegerField(null=True, blank=True)
-    subDistrictId = models.IntegerField(null=True, blank=True)
+    wardId = models.IntegerField(null=True, blank=True)
     dateCreated = models.DateTimeField(auto_now_add=True)
+    consignee = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"Profile from {self.user}"
+        return f"Profile from {self.user or 'a consignee'}, date created {self.dateCreated}"

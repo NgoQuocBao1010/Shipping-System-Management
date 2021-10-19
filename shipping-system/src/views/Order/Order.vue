@@ -47,6 +47,8 @@ export default {
                     this.error = "Not found";
                 } else if (e.response.status === 401) {
                     this.$router.push({ name: "Unauthorized" });
+                } else if (e.response.status === 500) {
+                    this.$router.push({ name: "InternalError" });
                 }
 
                 console.log(e.response);

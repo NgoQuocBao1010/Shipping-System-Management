@@ -140,7 +140,8 @@ export default {
 
                 this.orders = response.data;
             } catch (e) {
-                console.log("Error getting list of orders", e);
+                console.log(this.$options.name);
+                this.$func.handleError(e);
             }
         },
     },

@@ -18,6 +18,20 @@ Vue.prototype.$func = {
         if (!value) return "Invalid";
         return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     },
+    handleError(error) {
+        console.log(error);
+        let message = "";
+
+        if (error.response.status === 404) {
+            message = "Not found";
+        } else if (error.response.status === 401) {
+            router.push({ name: "Unauthorized" });
+        } else if (error.response.status === 500) {
+            router.push({ name: "InternalError" });
+        }
+
+        return message;
+    },
 };
 
 new Vue({

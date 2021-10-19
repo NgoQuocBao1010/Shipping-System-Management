@@ -14,6 +14,7 @@ import Register from "../views/Auth/Register.vue";
 import ResetPassword from "../views/Auth/ResetPassword.vue";
 // Error
 import Unauthorized from "../views/Error/Unauthorized.vue";
+import InternalError from "../views/Error/500.vue";
 // Others
 import TestMap from "../views/Map.vue";
 import Home from "../views/Home.vue";
@@ -100,6 +101,17 @@ const routes = [
         component: Unauthorized,
         meta: {
             name: "Unauthorized",
+            requiredAuth: true,
+            adminOnly: false,
+        },
+    },
+    // Internal Error
+    {
+        path: "/500",
+        name: "InternalError",
+        component: InternalError,
+        meta: {
+            name: "Internal Error",
             requiredAuth: true,
             adminOnly: false,
         },

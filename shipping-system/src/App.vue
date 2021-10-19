@@ -3,9 +3,7 @@
         <Sidebar v-if="navigation" />
         <div class="container">
             <Navigation v-if="navigation" />
-            <keep-alive>
-                <router-view class="container__content" />
-            </keep-alive>
+            <router-view class="container__content" />
         </div>
     </div>
 </template>

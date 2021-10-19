@@ -60,7 +60,7 @@
                             />
                             <Dropdown
                                 v-if="subDistrict1"
-                                v-model="consignor.subDistrictId"
+                                v-model="consignor.wardId"
                                 :options.sync="subDistrict1"
                                 label="Subdistrict"
                                 placeholder="Enter your ward name ..."
@@ -130,7 +130,7 @@
                             />
                             <Dropdown
                                 v-if="subDistrict2"
-                                v-model="consignee.subDistrictId"
+                                v-model="consignee.wardId"
                                 :options.sync="subDistrict2"
                                 label="Subdistrict"
                                 placeholder="Enter your ward name ..."
@@ -298,14 +298,14 @@ export default {
                 phone: "",
                 address: "",
                 districtId: null,
-                subDistrictId: null,
+                wardId: null,
             },
             consignee: {
                 fullName: "",
                 phone: "",
                 address: "",
                 districtId: null,
-                subDistrictId: null,
+                wardId: null,
                 fullAddress: "",
             },
             // Dynamic var contains wards of a district
@@ -380,19 +380,19 @@ export default {
     watch: {
         async "consignor.districtId"(newVal, oldVal) {
             if (newVal) {
-                if (oldVal) this.consignor.subDistrictId = null; // Reset subdistrict dropdown if district is changed
+                if (oldVal) this.consignor.wardId = null; // Reset subdistrict dropdown if district is changed
 
                 this.subDistrict1 = await this.$province.getWardList(newVal);
             }
         },
         async "consignee.districtId"(newVal, oldVal) {
             if (newVal) {
-                if (oldVal) this.consignee.subDistrictId = null; // Reset subdistrict dropdown if district is changed
+                if (oldVal) this.consignee.wardId = null; // Reset subdistrict dropdown if district is changed
 
                 this.subDistrict2 = await this.$province.getWardList(newVal);
             }
         },
-        async "consignee.subDistrictId"(newVal, oldVal) {
+        async "consignee.wardId"(newVal, oldVal) {
             if (newVal) {
                 const districtName = this.$store.getters.district(
                     this.consignee.districtId
@@ -415,14 +415,14 @@ export default {
             phone: { required, numeric },
             address: { required },
             districtId: { required, numeric },
-            subDistrictId: { required, numeric },
+            wardId: { required, numeric },
         },
         consignee: {
             fullName: { required },
             phone: { required, numeric },
             address: { required },
             districtId: { required, numeric },
-            subDistrictId: { required, numeric },
+            wardId: { required, numeric },
         },
         products: {
             $each: {
@@ -495,6 +495,7 @@ export default {
             try {
                 const url = "http://127.0.0.1:8000/order/create/";
 
+                console.log(this.order);
                 const response = await axios.post(url, this.order, {
                     headers: {
                         Authorization: `Token ${this.token}`,
@@ -502,7 +503,7 @@ export default {
                 });
 
                 if (response.status === 200) {
-                    this.$router.push({ name: "Orders" });
+                    // this.$router.push({ name: "Orders" });
                     this.$toast.success("Your order has been placed!");
                 }
             } catch (e) {
@@ -612,7 +613,7 @@ export default {
         },
     },
     created() {
-        const { fullName, phone, address, districtId, subDistrictId, ...rest } =
+        const { fullName, phone, address, districtId, wardId, ...rest } =
             this.user;
 
         this.consignor = {
@@ -620,7 +621,7 @@ export default {
             phone,
             address,
             districtId,
-            subDistrictId,
+            wardId,
         };
     },
 };

@@ -210,10 +210,10 @@ export default {
     },
     async created() {
         const wardObj = await this.$province.getWard(
-            this.order.consignor.subDistrictId
+            this.order.consignor.wardId
         );
         const wardObj2 = await this.$province.getWard(
-            this.order.consignee.subDistrictId
+            this.order.consignee.wardId
         );
 
         this.consignorWard = wardObj.name;

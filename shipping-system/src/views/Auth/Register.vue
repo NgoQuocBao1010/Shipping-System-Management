@@ -123,9 +123,6 @@ export default {
             return re.test(String(email).toLowerCase());
         },
     },
-    created() {
-        console.log(this.email);
-    },
 };
 </script>
 

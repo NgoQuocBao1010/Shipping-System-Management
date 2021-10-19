@@ -54,11 +54,8 @@ class ProfileSerializer(serializers.ModelSerializer):
         instance.dateOfBirth = self.validated_data.get(
             "dateOfBirth", instance.dateOfBirth
         )
-        instance.provinceId = self.validated_data.get("provinceId", instance.provinceId)
         instance.districtId = self.validated_data.get("districtId", instance.districtId)
-        instance.subDistrictId = self.validated_data.get(
-            "subDistrictId", instance.subDistrictId
-        )
+        instance.wardId = self.validated_data.get("wardId", instance.wardId)
 
         instance.save()
 
