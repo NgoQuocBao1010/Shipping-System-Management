@@ -23,19 +23,22 @@
             </div>
 
             <div class="content">
-                <LoadingAnimation v-if="!profileList" />
+                <!-- <LoadingAnimation v-if="!profileList" /> -->
 
-                <div class="profile-cards" v-else>
-                    <EmployeeCard
-                        v-for="profile in profileList"
-                        :key="profile.id"
-                        :profile="profile"
-                    />
-                    <EmployeeCard />
-                    <EmployeeCard />
-                    <EmployeeCard />
-                    <EmployeeCard />
-                </div>
+                <transition name="fade">
+                    <div class="profile-cards" v-if="profileList">
+                        <EmployeeCard
+                            v-for="profile in profileList"
+                            :key="profile.id"
+                            :profile="profile"
+                        />
+
+                        <EmployeeCard />
+                        <EmployeeCard />
+                        <EmployeeCard />
+                        <EmployeeCard />
+                    </div>
+                </transition>
             </div>
         </div>
     </div>
@@ -45,7 +48,7 @@
 import { mapState } from "vuex";
 import axios from "axios";
 
-import EmployeeCard from "@/components/EmployeeCard.vue";
+import EmployeeCard from "@/components/management/EmployeeCard.vue";
 import LoadingAnimation from "../../components/CircleAnimation.vue";
 
 export default {
@@ -159,7 +162,6 @@ export default {
                 width: 100%;
                 display: flex;
                 flex-wrap: wrap;
-                justify-content: space-evenly;
                 gap: 3rem;
             }
         }

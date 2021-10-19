@@ -81,6 +81,10 @@ export default {
     --white: #ffffff;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 #app {
     display: flex;
     min-height: 100vh;

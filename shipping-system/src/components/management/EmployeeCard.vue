@@ -1,7 +1,7 @@
 <template>
     <div class="card">
         <div class="card__profile">
-            <img src="../assets/test/user-icon.jpg" alt="" />
+            <img src="../../assets/test/user-icon.jpg" alt="" />
         </div>
         <div class="card__info">
             <div class="header">
