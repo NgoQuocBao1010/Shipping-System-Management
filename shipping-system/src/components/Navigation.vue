@@ -63,7 +63,7 @@ export default {
 <style lang="scss" scoped>
 .nav {
     width: 100%;
-    height: 8vh;
+    min-height: 8vh;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -88,9 +88,9 @@ export default {
 
         &__input {
             width: 100%;
-            padding: 12px 24px;
+            padding: 6px 12px;
             @media only screen and (min-width: 1200px) {
-                padding: 6px 12px;
+                padding: 8px 16px;
             }
 
             background-color: transparent;

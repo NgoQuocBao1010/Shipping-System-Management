@@ -86,10 +86,27 @@ def profileApi(request):
         )
 
 
+# @permission_classes([IsAuthenticated, AdminOnly])
+
+
 @api_view(["GET"])
-@permission_classes([IsAuthenticated, AdminOnly])
 def staffProfile(request):
-    profiles = Profile.objects.filter(user__admin=True)
+    """Get profile base on role"""
+    query = request.GET.get("q") or "employee"
+
+    queries = {
+        "employee": Profile.objects.filter(user__admin=True),
+        "consignor": Profile.objects.filter(user__admin=False),
+        "consignee": Profile.objects.filter(user__admin=False),
+    }
+
+    profiles = queries.get(query.lower(), None)
+
+    if not profiles:
+        return Response(
+            status=status.HTTP_400_BAD_REQUEST,
+            data={"error": "Invalid query parameters"},
+        )
 
     serializers = ProfileSerializer(profiles, many=True)
     return Response(status=status.HTTP_200_OK, data=serializers.data)

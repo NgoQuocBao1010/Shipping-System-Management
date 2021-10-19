@@ -15,11 +15,9 @@
                 </ul>
 
                 <!-- Tab content -->
-                <transition name="fade">
-                    <div class="slot__wrapper">
-                        <slot></slot>
-                    </div>
-                </transition>
+                <div class="slot__wrapper">
+                    <slot></slot>
+                </div>
             </div>
         </template>
     </div>

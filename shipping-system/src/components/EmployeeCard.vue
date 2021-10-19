@@ -5,17 +5,12 @@
         </div>
         <div class="card__info">
             <div class="header">
-                <p class="header__name">John Doe</p>
-                <div class="role driver">driver</div>
+                <p class="header__name">{{ profile.fullName }}</p>
+                <div class="role driver">
+                    {{ profile.email }}
+                </div>
             </div>
-            <div class="line"></div>
             <div class="content">
-                <p>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum
-                    beatae quam maxime quibusdam repudiandae! Molestiae quidem
-                    nihil nobis dolore minus.
-                </p>
-
                 <div class="content__btn">
                     <router-link to="#" class="btn small">
                         <i class="fas fa-plus-circle"></i>Add Task
@@ -32,70 +27,64 @@
 <script>
 export default {
     name: "EmployeeCard",
+    props: {
+        profile: {
+            type: Object,
+            default() {
+                return {
+                    fullName: "John Doe",
+                    email: "jhdoe@gmail.com",
+                };
+            },
+        },
+    },
 };
 </script>
 
 <style lang="scss" scoped>
 .card {
-    min-width: 500px;
-    max-width: 800px;
-    flex: 1 1 40%;
-    height: 200px;
-    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
-    display: flex;
+    min-width: 250px;
+    width: 250px;
+    aspect-ratio: 6 / 7;
     padding: 1rem;
+    border-radius: 10px;
+    box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
+    display: flex;
+    flex-direction: column;
 
     &__profile {
-        flex: 1 1 30%;
-        border-right: 1px solid rgb(187, 181, 181);
         display: flex;
         justify-content: center;
         align-items: center;
 
         img {
             width: 60%;
+            max-width: 120px;
             aspect-ratio: 1 / 1;
             border-radius: 50%;
         }
     }
 
-    .line {
-        height: 1px;
-        width: 100%;
-        background: rgb(187, 181, 181);
-    }
-
     &__info {
-        flex: 1 1 70%;
-        padding-left: 1rem;
-
+        flex-grow: 1;
         display: flex;
         flex-direction: column;
+        align-items: center;
+        justify-content: space-evenly;
 
         .header {
-            margin-bottom: 0.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
 
             &__name {
-                font-weight: bold;
-                font-size: 1.2rem;
+                font-weight: 600;
             }
         }
 
         .content {
-            flex: 1 1 80%;
-            padding: 0.5rem 0;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-
-            p {
-                font-size: 0.8rem;
-            }
-
-            &__btn {
-                .btn {
-                    margin-right: 1rem;
-                }
+            .btn {
+                margin: 0 5px;
             }
         }
     }

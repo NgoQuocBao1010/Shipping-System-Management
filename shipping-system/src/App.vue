@@ -181,11 +181,10 @@ input::-webkit-calendar-picker-indicator {
 
 .role {
     font-size: 0.8rem;
-    width: 80px;
+    width: max-content;
     padding: 0.2rem 0.5rem;
     margin: 0.2rem 0;
     text-align: center;
-    text-transform: capitalize;
     font-weight: 600;
     border-radius: 20px;
 

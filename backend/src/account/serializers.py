@@ -38,7 +38,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Profile
-        exclude = ("user", "id", "dateCreated")
+        exclude = ("user", "dateCreated")
 
     def get_email(self, obj):
         return obj.user.email
