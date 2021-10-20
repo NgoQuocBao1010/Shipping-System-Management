@@ -4,7 +4,7 @@
         <div class="header">
             <div class="column">Order ID</div>
             <div class="column">Order Date</div>
-            <div class="column">Place of Receipt</div>
+            <div class="column">User</div>
             <div class="column">Place of Delivery</div>
             <div class="column">Payment Method</div>
             <div class="column">Shipper</div>
@@ -28,7 +28,7 @@
             >
                 <div class="column">{{ order.id }}</div>
                 <div class="column">{{ order.dateCreated }}</div>
-                <div class="column">...</div>
+                <div class="column">{{ order.consignor.email }}</div>
                 <div class="column">
                     {{ order.consignee.address }},
                     {{

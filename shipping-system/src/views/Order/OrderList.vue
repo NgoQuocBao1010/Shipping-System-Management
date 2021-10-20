@@ -121,9 +121,7 @@ export default {
     },
     methods: {
         getToday() {
-            /* 
-                Get current day
-            */
+            /*  Get current day */
             return moment().format("YYYY-MM-DD");
         },
         async getOrderList() {

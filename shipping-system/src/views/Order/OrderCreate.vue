@@ -508,6 +508,15 @@ export default {
                 }
             } catch (e) {
                 console.log(e.response);
+
+                if (e.response.status === 500) {
+                    this.$toast.error(
+                        "There is an problem occured in our server, plese try again later!",
+                        {
+                            duration: 4000,
+                        }
+                    );
+                }
             }
         },
         async searchLocation(location) {

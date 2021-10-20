@@ -21,7 +21,9 @@
                 <div class="customer__info">
                     <div class="info__title">Consignor Address</div>
                     <div class="info__detail">
-                        <div class="name">{{ order.consignor.fullName }}</div>
+                        <div class="name">
+                            {{ order.consignor.fullName }}
+                        </div>
                         <div class="phone">
                             <b>{{ order.consignor.phone }}</b>
                         </div>
@@ -209,16 +211,14 @@ export default {
         },
     },
     async created() {
-        // const wardObj = await this.$province.getWard(
-        //     this.order.consignor.wardId
-        // );
-        // const wardObj2 = await this.$province.getWard(
-        //     this.order.consignee.wardId
-        // );
-        // this.consignorWard = wardObj.name;
-        // this.consigneeWard = wardObj2.name;
-
-        console.log(this.order);
+        const wardObj = await this.$province.getWard(
+            this.order.consignor.wardId
+        );
+        const wardObj2 = await this.$province.getWard(
+            this.order.consignee.wardId
+        );
+        this.consignorWard = wardObj.name;
+        this.consigneeWard = wardObj2.name;
     },
 };
 </script>

@@ -74,7 +74,7 @@ def order(request, id):
     try:
         order = Order.objects.get(id=id)
 
-        if order.consignor != request.user and not request.user.is_admin:
+        if order.user != request.user and not request.user.is_admin:
             return Response(
                 status=status.HTTP_401_UNAUTHORIZED,
                 data={"error": "You are not the admin nor owner of this order"},

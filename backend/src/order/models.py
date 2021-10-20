@@ -42,7 +42,7 @@ class Order(models.Model):
         (3, "Customer allow to try products"),
     )
 
-    consignor = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     consignee = models.OneToOneField(
         Profile, on_delete=models.SET_NULL, null=True, related_name="order"
     )
