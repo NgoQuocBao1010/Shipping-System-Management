@@ -35,6 +35,7 @@ class UserSerializer(serializers.Serializer):
 class ProfileSerializer(serializers.ModelSerializer):
     email = serializers.SerializerMethodField()
     isAdmin = serializers.SerializerMethodField()
+    orderId = serializers.SerializerMethodField()
 
     class Meta:
         model = Profile
@@ -45,6 +46,9 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     def get_isAdmin(self, obj):
         return obj.user.is_admin if not obj.consignee else None
+
+    def get_orderId(self, obj):
+        return None if not obj.consignee else obj.order.id
 
     def update(self, instance, validated_data):
         instance.fullName = self.validated_data.get("fullName", instance.fullName)

@@ -102,6 +102,12 @@ html {
     }
 }
 
+a.normal-link {
+    text-decoration: none;
+    color: var(--primary-color);
+    font-weight: 900;
+}
+
 .btn,
 button {
     padding: 0.5rem 2rem;
@@ -189,7 +195,9 @@ input::-webkit-calendar-picker-indicator {
     text-align: center;
     font-weight: 600;
     border-radius: 20px;
+}
 
+.color {
     &.manager {
         background-color: rgb(255, 184, 184);
     }
@@ -199,7 +207,7 @@ input::-webkit-calendar-picker-indicator {
     }
 
     &.customer {
-        background-color: lightgreen;
+        background-color: var(--secondary-color);
     }
 }
 

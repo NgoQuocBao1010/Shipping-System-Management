@@ -23,8 +23,6 @@
             </div>
 
             <div class="content">
-                <!-- <LoadingAnimation v-if="!profileList" /> -->
-
                 <transition name="fade">
                     <div class="profile-cards" v-if="profileList">
                         <EmployeeCard
@@ -32,11 +30,6 @@
                             :key="profile.id"
                             :profile="profile"
                         />
-
-                        <EmployeeCard />
-                        <EmployeeCard />
-                        <EmployeeCard />
-                        <EmployeeCard />
                     </div>
                 </transition>
             </div>
@@ -69,6 +62,7 @@ export default {
     },
     methods: {
         async changeCategory(index) {
+            /* Change category */
             this.selectedIndex = index;
             this.profileList = null;
 
@@ -86,7 +80,6 @@ export default {
                     },
                 });
 
-                console.log(response.data);
                 this.profileList = response.data;
             } catch (e) {
                 console.log(e);

@@ -97,7 +97,7 @@ def staffProfile(request):
     queries = {
         "employee": Profile.objects.filter(user__admin=True),
         "consignor": Profile.objects.filter(user__admin=False),
-        "consignee": Profile.objects.filter(user__admin=False),
+        "consignee": Profile.objects.filter(consignee=True),
     }
 
     profiles = queries.get(query.lower(), None)

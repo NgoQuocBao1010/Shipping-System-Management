@@ -4,16 +4,37 @@
             <img src="../../assets/test/user-icon.jpg" alt="" />
         </div>
         <div class="card__info">
+            <div class="ribbons color" :class="role">{{ role }}</div>
             <div class="header">
-                <p class="header__name">{{ profile.fullName }}</p>
-                <div class="role driver">
+                <p class="header__name">
+                    {{ profile.fullName || "No information" }}
+                </p>
+                <div class="role color" v-if="!profile.consignee" :class="role">
                     {{ profile.email }}
+                </div>
+                <div class="role color" v-else>
+                    Consignee of
+                    <router-link
+                        class="normal-link"
+                        :to="{
+                            name: 'OrderDetail',
+                            params: { id: profile.orderId },
+                        }"
+                        >Order {{ profile.orderId }}</router-link
+                    >
                 </div>
             </div>
             <div class="content">
-                <div class="content__btn">
-                    <router-link to="#" class="btn small">
+                <div class="content__btn" v-if="!profile.consignee">
+                    <router-link
+                        to="#"
+                        class="btn small"
+                        v-if="profile.isAdmin"
+                    >
                         <i class="fas fa-plus-circle"></i>Add Task
+                    </router-link>
+                    <router-link to="#" class="btn small" v-else>
+                        <i class="fas fa-box-open"></i>Orders
                     </router-link>
                     <router-link to="#" class="btn small">
                         <i class="fas fa-user-circle"></i>Profile
@@ -38,6 +59,11 @@ export default {
             },
         },
     },
+    computed: {
+        role() {
+            return this.profile.isAdmin ? "manager" : "customer";
+        },
+    },
 };
 </script>
 
@@ -51,6 +77,7 @@ export default {
     box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
     display: flex;
     flex-direction: column;
+    position: relative;
 
     &__profile {
         display: flex;
@@ -71,6 +98,20 @@ export default {
         flex-direction: column;
         align-items: center;
         justify-content: space-evenly;
+
+        .ribbons {
+            position: absolute;
+            top: 20px;
+            right: 0;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: capitalize;
+            padding: 2px 6px;
+            border-top-left-radius: 25px;
+            border-bottom-left-radius: 25px;
+            box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px,
+                rgba(0, 0, 0, 0.23) 0px 6px 6px;
+        }
 
         .header {
             display: flex;

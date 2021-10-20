@@ -96,18 +96,14 @@ def orderCreateApi(request):
     Saving information of an orders
     Consignor, Consignee, Package, other ...
     """
-    # Get and save consignor and consignee information
-    consigneeProfile = makeConsigneeProfile(request.data.get("consignee"))
-    if not consigneeProfile:
-        return Response(status=status.HTTP_400_BAD_REQUEST)
 
     # Get order information
     products = request.data.get("products")
 
     try:
         newOrder = Order.objects.create(
-            consignor=request.user,
-            consignee=consigneeProfile,
+            user=request.user,
+            consignee=None,
             paymentMethod=request.data.get("paymentMethod"),
             productPreview=request.data.get("productPreview"),
             note=request.data.get("note"),
@@ -120,6 +116,15 @@ def orderCreateApi(request):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 data={"error": "Internal error"},
             )
+        
+        # Get and save consignor and consignee information
+        consigneeProfile = makeConsigneeProfile(request.data.get("consignee"))
+        if not consigneeProfile:
+            newOrder.delete()
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        
+        newOrder.consignee = consigneeProfile
+        newOrder.save()
 
     except ValueError as e:
         print(f"Error creating new order", str(e))
