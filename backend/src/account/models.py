@@ -84,4 +84,9 @@ class Profile(models.Model):
     consignee = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"Profile from {self.user or 'a consignee'}, date created {self.dateCreated}"
+
+        return (
+            f"Profile from user {self.user}"
+            if not self.consignee
+            else f"Profile from consignee with Order id {self.order.id}"
+        )

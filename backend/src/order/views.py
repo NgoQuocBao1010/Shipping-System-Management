@@ -97,40 +97,40 @@ def orderCreateApi(request):
     Consignor, Consignee, Package, other ...
     """
     # Get and save consignor and consignee information
-    consigneeProfile = makeConsigneeProfile(request.data.get("consignee"))
-    if not consigneeProfile:
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+    # consigneeProfile = makeConsigneeProfile(request.data.get("consignee"))
+    # if not consigneeProfile:
+    #     return Response(status=status.HTTP_400_BAD_REQUEST)
 
-    # Get order information
-    print(request.data)
     # Get order information
     # products = request.data.get("products")
 
-    # try:
-    #     newOrder = Order.objects.create(
-    #         consignor=consignor,
-    #         consignee=consignee,
-    #         paymentMethod=request.data.get("paymentMethod"),
-    #         productPreview=request.data.get("productPreview"),
-    #         note=request.data.get("note"),
-    #         estimateDistance=request.data.get("estimateDistance"),
-    #         shippingPrice=request.data.get("shippingPrice"),
-    #     )
+    try:
+        newOrder = Order(
+            consignor=request.user,
+            consignee=None,
+            paymentMethod=request.data.get("paymentMethod"),
+            productPreview=request.data.get("productPreview"),
+            note=request.data.get("note"),
+            estimateDistance=request.data.get("estimateDistance"),
+            shippingPrice="Xin chao",
+        )
 
-    #     if not savePackageInfo(products, newOrder):
-    #         return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        print(newOrder)
 
-    # except Exception as e:
-    #     print("Error creating new order", str(e))
-    #     return Response(status=status.HTTP_400_BAD_REQUEST)
+        # if not savePackageInfo(products, newOrder):
+        #     return Response(
+        #         status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        #         data={"error": "Internal error"},
+        #     )
 
-    # return Response(
-    #     status=status.HTTP_200_OK,
-    # )
+    except Exception as e:
+        print("Error creating new order", str(e))
+        return Response(
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            data={"error": "Internal error"},
+        )
 
-    return Response(
-        status=status.HTTP_200_OK,
-    )
+    return Response(status=status.HTTP_200_OK, data={"message": "Create"})
 
 
 # Utils Functions

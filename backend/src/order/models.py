@@ -43,7 +43,9 @@ class Order(models.Model):
     )
 
     consignor = models.ForeignKey(User, on_delete=models.CASCADE)
-    consignee = models.ForeignKey(Profile, on_delete=models.SET_NULL, null=True)
+    consignee = models.OneToOneField(
+        Profile, on_delete=models.SET_NULL, null=True, related_name="order"
+    )
     status = models.IntegerField(default=1, choices=STATUS)
     paymentMethod = models.IntegerField(null=True, choices=PAYMENT_METHODS)
     productPreview = models.IntegerField(null=True, choices=PRODUCT_PREVIEW)
