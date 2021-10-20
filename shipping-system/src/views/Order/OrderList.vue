@@ -127,9 +127,7 @@ export default {
             return moment().format("YYYY-MM-DD");
         },
         async getOrderList() {
-            /* 
-                Call backend API to retrieve list of all orders
-            */
+            /* Call backend API to retrieve list of all orders */
             try {
                 const url = "http://127.0.0.1:8000/order/list/";
                 const response = await axios.get(url, {

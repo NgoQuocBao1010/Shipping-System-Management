@@ -74,7 +74,7 @@ def order(request, id):
     try:
         order = Order.objects.get(id=id)
 
-        if order.consignor.user != request.user and not request.user.is_admin:
+        if order.consignor != request.user and not request.user.is_admin:
             return Response(
                 status=status.HTTP_401_UNAUTHORIZED,
                 data={"error": "You are not the admin nor owner of this order"},
@@ -97,40 +97,47 @@ def orderCreateApi(request):
     Consignor, Consignee, Package, other ...
     """
     # Get and save consignor and consignee information
-    # consigneeProfile = makeConsigneeProfile(request.data.get("consignee"))
-    # if not consigneeProfile:
-    #     return Response(status=status.HTTP_400_BAD_REQUEST)
+    consigneeProfile = makeConsigneeProfile(request.data.get("consignee"))
+    if not consigneeProfile:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
     # Get order information
-    # products = request.data.get("products")
+    products = request.data.get("products")
 
     try:
-        newOrder = Order(
+        newOrder = Order.objects.create(
             consignor=request.user,
-            consignee=None,
+            consignee=consigneeProfile,
             paymentMethod=request.data.get("paymentMethod"),
             productPreview=request.data.get("productPreview"),
             note=request.data.get("note"),
             estimateDistance=request.data.get("estimateDistance"),
-            shippingPrice="Xin chao",
+            shippingPrice=request.data.get("shippingPrice"),
         )
 
-        print(newOrder)
+        if not savePackageInfo(products, newOrder):
+            return Response(
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                data={"error": "Internal error"},
+            )
 
-        # if not savePackageInfo(products, newOrder):
-        #     return Response(
-        #         status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        #         data={"error": "Internal error"},
-        #     )
+    except ValueError as e:
+        print(f"Error creating new order", str(e))
+        return Response(
+            status=status.HTTP_400_BAD_REQUEST,
+            data={"error": "Invalid field"},
+        )
 
     except Exception as e:
-        print("Error creating new order", str(e))
+        print(f"Error creating new order {e.__class__.__name__}: ", str(e))
         return Response(
             status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             data={"error": "Internal error"},
         )
 
-    return Response(status=status.HTTP_200_OK, data={"message": "Create"})
+    return Response(
+        status=status.HTTP_200_OK, data={"message": "Succesfully place order"}
+    )
 
 
 # Utils Functions

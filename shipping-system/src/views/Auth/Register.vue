@@ -102,7 +102,7 @@ export default {
                     this.$toast.success(
                         "Your accout is successfully created!",
                         {
-                            duration: 2000,
+                            duration: 4000,
                         }
                     );
                 }

@@ -67,13 +67,6 @@ export default {
             password: "",
         };
     },
-    watch: {
-        newEmail(newVal, oldVal) {
-            if (newVal) {
-                this.email = newVal;
-            }
-        },
-    },
     methods: {
         ...mapActions(["login"]),
         async signIn() {
@@ -96,6 +89,9 @@ export default {
                 this.errorMsg = e.response.data.message;
             }
         },
+    },
+    mounted() {
+        this.email = this.newEmail ? this.newEmail : "";
     },
 };
 </script>

@@ -1,4 +1,5 @@
 Front End
 - Viết lại trang Profile X
 - Viết trang Home, 404, Unauth. 
+- Viết trang show tiền theo đường đi. 
 - Viết lại trang Login, Register

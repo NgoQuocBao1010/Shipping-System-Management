@@ -209,15 +209,16 @@ export default {
         },
     },
     async created() {
-        const wardObj = await this.$province.getWard(
-            this.order.consignor.wardId
-        );
-        const wardObj2 = await this.$province.getWard(
-            this.order.consignee.wardId
-        );
+        // const wardObj = await this.$province.getWard(
+        //     this.order.consignor.wardId
+        // );
+        // const wardObj2 = await this.$province.getWard(
+        //     this.order.consignee.wardId
+        // );
+        // this.consignorWard = wardObj.name;
+        // this.consigneeWard = wardObj2.name;
 
-        this.consignorWard = wardObj.name;
-        this.consigneeWard = wardObj2.name;
+        console.log(this.order);
     },
 };
 </script>

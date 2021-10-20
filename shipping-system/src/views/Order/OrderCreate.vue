@@ -503,7 +503,7 @@ export default {
                 });
 
                 if (response.status === 200) {
-                    // this.$router.push({ name: "Orders" });
+                    this.$router.push({ name: "Orders" });
                     this.$toast.success("Your order has been placed!");
                 }
             } catch (e) {

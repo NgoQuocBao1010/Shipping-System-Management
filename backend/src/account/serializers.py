@@ -41,10 +41,10 @@ class ProfileSerializer(serializers.ModelSerializer):
         exclude = ("user", "dateCreated")
 
     def get_email(self, obj):
-        return obj.user.email
+        return obj.user.email if not obj.consignee else None
 
     def get_isAdmin(self, obj):
-        return obj.user.is_admin
+        return obj.user.is_admin if not obj.consignee else None
 
     def update(self, instance, validated_data):
         instance.fullName = self.validated_data.get("fullName", instance.fullName)

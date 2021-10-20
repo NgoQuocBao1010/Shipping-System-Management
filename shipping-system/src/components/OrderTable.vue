@@ -28,12 +28,7 @@
             >
                 <div class="column">{{ order.id }}</div>
                 <div class="column">{{ order.dateCreated }}</div>
-                <div class="column">
-                    {{ order.consignor.address }},
-                    {{
-                        $store.getters.district(order.consignor.districtId).name
-                    }}
-                </div>
+                <div class="column">...</div>
                 <div class="column">
                     {{ order.consignee.address }},
                     {{
@@ -78,11 +73,12 @@ export default {
     },
     methods: {
         goToDetail(id) {
-            /* 
-                Redirect to order detail page
-            */
+            /* Redirect to order detail page */
             this.$router.push({ name: "OrderDetail", params: { id: id } });
         },
+    },
+    created() {
+        console.log(this.orders);
     },
 };
 </script>
