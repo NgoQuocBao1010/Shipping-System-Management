@@ -9,6 +9,7 @@
                         <Dropdown
                             v-model="status"
                             :options="statusOptions"
+                            placeholder="All"
                             label="Status"
                             :noSearch="true"
                         />
@@ -19,6 +20,7 @@
                         <Dropdown
                             v-model="payment"
                             :options="paymentOptions"
+                            placeholder="All"
                             label="Payment Methods"
                             :noSearch="true"
                         />
@@ -98,7 +100,7 @@ export default {
                     name: "Delivered",
                 },
             ],
-            status: 2,
+            status: null,
             // Payment Information
             paymentOptions: [
                 {
@@ -110,7 +112,7 @@ export default {
                     name: "Pay by consignee",
                 },
             ],
-            payment: 1,
+            payment: null,
             fromDate: null,
             toDate: null,
             loading: false,
@@ -127,7 +129,7 @@ export default {
         async getOrderList() {
             /* Call backend API to retrieve list of all orders */
             try {
-                const url = "http://127.0.0.1:8000/order/list/";
+                const url = "http://127.0.0.1:8000/order/list/?profileId=5";
                 const response = await axios.get(url, {
                     headers: {
                         Authorization: `Token ${this.token}`,
@@ -138,6 +140,16 @@ export default {
             } catch (e) {
                 console.log(this.$options.name);
                 this.$func.handleError(e);
+
+                if (e.response.status === 400) {
+                    this.orders = [];
+                    this.$toast.error(
+                        "An error has occured while retriving orders! Please try again later!",
+                        {
+                            duration: 3000,
+                        }
+                    );
+                }
             }
         },
     },
@@ -161,8 +173,6 @@ export default {
 
         .filters {
             display: flex;
-            align-items: center;
-            justify-content: center;
             margin: 1rem 0;
 
             &__title {
@@ -174,7 +184,6 @@ export default {
             &__inputs {
                 display: flex;
                 min-width: 80%;
-                justify-content: space-evenly;
                 align-items: center;
                 gap: 1rem;
 
@@ -288,6 +297,11 @@ export default {
         flex-wrap: wrap;
         justify-content: center;
         gap: 1.5rem;
+
+        .filter-var {
+            width: 100%;
+            background: lightblue;
+        }
     }
 }
 </style>

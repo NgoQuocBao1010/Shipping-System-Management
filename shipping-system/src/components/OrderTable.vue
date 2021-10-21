@@ -2,13 +2,13 @@
     <div class="wrapper">
         <!-- Header -->
         <div class="header">
-            <div class="column">Order ID</div>
-            <div class="column">Order Date</div>
-            <div class="column">User</div>
+            <div class="column small">Order ID</div>
+            <div class="column medium">Order Date</div>
+            <div class="column medium">User</div>
             <div class="column">Place of Delivery</div>
-            <div class="column">Payment Method</div>
-            <div class="column">Shipper</div>
-            <div class="column">Status</div>
+            <div class="column medium">Payment Method</div>
+            <div class="column medium">Shipper</div>
+            <div class="column medium">Status</div>
         </div>
 
         <!-- Contents -->
@@ -26,22 +26,22 @@
                 :key="order.id"
                 @click="goToDetail(order.id)"
             >
-                <div class="column">{{ order.id }}</div>
-                <div class="column">{{ order.dateCreated }}</div>
-                <div class="column">{{ order.consignor.email }}</div>
+                <div class="column small">{{ order.id }}</div>
+                <div class="column medium">{{ order.dateCreated }}</div>
+                <div class="column medium">{{ order.consignor.email }}</div>
                 <div class="column">
                     {{ order.consignee.address }},
                     {{
                         $store.getters.district(order.consignee.districtId).name
                     }}
                 </div>
-                <div class="column">
+                <div class="column medium">
                     {{ paymentMethods[order.paymentMethod] }}
                 </div>
-                <div class="column">
+                <div class="column medium">
                     {{ order.shipper || "No information" }}
                 </div>
-                <div class="column status">
+                <div class="column medium status">
                     <div :class="'order-' + statusCodes[order.status]">
                         {{ statusCodes[order.status] }}
                     </div>
@@ -87,7 +87,6 @@ export default {
     .header,
     .row {
         width: 100%;
-        max-width: 1440px;
         margin: 0 auto;
         display: flex;
 
@@ -100,13 +99,16 @@ export default {
             font-weight: 900;
         }
 
-        .column:first-child {
+        .column.small {
             max-width: 100px;
         }
 
-        .column:last-child,
-        .column:nth-child(2) {
-            max-width: 120px;
+        .column.medium {
+            max-width: 200px;
+        }
+
+        .column.large {
+            min-width: 250px;
         }
     }
 

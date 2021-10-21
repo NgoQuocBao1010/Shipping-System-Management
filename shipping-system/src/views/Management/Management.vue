@@ -73,7 +73,7 @@ export default {
             try {
                 const role = this.categories[this.selectedIndex];
 
-                const url = `http://127.0.0.1:8000/account/staff?q=${role}`;
+                const url = `http://127.0.0.1:8000/account/list?q=${role}`;
                 const response = await axios.get(url, {
                     headers: {
                         Authorization: `Token ${this.token}`,

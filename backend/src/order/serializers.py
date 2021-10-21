@@ -18,17 +18,15 @@ class ProductOrderSerializer(serializers.ModelSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
-    consignor = serializers.SerializerMethodField()
-    consignee = ProfileSerializer(read_only=True)
+    consignor = serializers.SerializerMethodField()  # get consignor serializer
+    consignee = ProfileSerializer(read_only=True)  # get consignor serializer
     products = ProductOrderSerializer(read_only=True, many=True)
     dateCreated = serializers.DateTimeField(format="%d-%m-%Y")
 
     def get_consignor(self, obj):
         consignorProfile = ProfileSerializer(obj.user.profile, many=False)
-
         return consignorProfile.data
 
     class Meta:
         model = Order
-        exclude = ("user", )
-
+        exclude = ("user",)

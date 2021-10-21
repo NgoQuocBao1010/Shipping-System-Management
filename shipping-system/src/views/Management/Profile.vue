@@ -123,7 +123,11 @@
             <!-- Editing section -->
             <CircleAnimation class="animation" v-show="loadingData" />
             <div class="edit-buttons">
-                <div class="btn small" @click="edit = true" v-show="!edit">
+                <div
+                    class="btn small"
+                    @click="edit = true"
+                    v-show="!edit && isCurrentUser"
+                >
                     <i class="far fa-edit"></i>Edit
                 </div>
                 <div class="btn small editing" v-show="edit">
@@ -132,7 +136,7 @@
                 <button
                     class="btn small"
                     type="submit"
-                    @click.prevent="submit"
+                    @click.prevent="updateProfile"
                     v-show="edit"
                 >
                     <i class="fas fa-save"></i>Save
@@ -145,7 +149,6 @@
 <script>
 import { mapState, mapMutations } from "vuex";
 import axios from "axios";
-import { required } from "vuelidate/lib/validators";
 
 import CircleAnimation from "../../components/CircleAnimation.vue";
 
@@ -153,6 +156,9 @@ export default {
     name: "Profile",
     components: {
         CircleAnimation,
+    },
+    props: {
+        email: String,
     },
     data() {
         return {
@@ -176,6 +182,9 @@ export default {
     },
     computed: {
         ...mapState(["user", "token", "provinces"]),
+        isCurrentUser() {
+            return this.email === this.$store.getters.email;
+        },
     },
     watch: {
         async "profile.districtId"(newVal, oldVal) {
@@ -191,14 +200,21 @@ export default {
     },
     methods: {
         ...mapMutations(["logout", "updateProfile"]),
+        async getProfile() {
+            if (this.isCurrentUser) this.profile = this.user;
+            else {
+                console.log("Make api call");
+            }
+        },
         signOut() {
             this.logout();
             this.$router.push({ name: "Home" });
         },
-        async submit() {
+        async updateProfile() {
+            /* Make API call to update profile */
             try {
                 this.loadingData = true;
-                const url = "http://127.0.0.1:8000/account/profile";
+                const url = "http://127.0.0.1:8000/account/verify";
                 const response = await axios.post(url, this.profile, {
                     headers: {
                         Authorization: `Token ${this.token}`,
@@ -217,8 +233,9 @@ export default {
         },
     },
     async created() {
+        console.log(this.email);
         this.loadingData = true;
-        this.profile = this.user;
+        await this.getProfile();
         this.districts = this.provinces;
 
         if (this.profile.districtId) {

@@ -49,10 +49,22 @@ def ordersList(request):
     If the user is the admin, return all orders
     else return only the order that belong to the user correspond customer
     """
+
     orders = Order.objects.all().order_by("-dateCreated")
 
-    if not request.user.is_admin:
-        orders = orders.filter(consignor=request.user)
+    if not request.user.is_admin:  # if not admin
+        orders = orders.filter(user=request.user)
+    else:  # if the user is admin
+        profileId = request.GET.get("profileId")
+
+        if profileId:
+            if not profileId.isnumeric():
+                return Response(
+                    status=status.HTTP_400_BAD_REQUEST,
+                    data={"error": "Invalid profile id"},
+                )
+
+            orders = orders.filter(user__profile__id=profileId)
 
     serializers = OrderSerializer(orders, many=True)
     return Response(status=status.HTTP_200_OK, data=serializers.data)
@@ -116,13 +128,13 @@ def orderCreateApi(request):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 data={"error": "Internal error"},
             )
-        
+
         # Get and save consignor and consignee information
         consigneeProfile = makeConsigneeProfile(request.data.get("consignee"))
         if not consigneeProfile:
             newOrder.delete()
             return Response(status=status.HTTP_400_BAD_REQUEST)
-        
+
         newOrder.consignee = consigneeProfile
         newOrder.save()
 

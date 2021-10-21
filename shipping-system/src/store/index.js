@@ -51,7 +51,7 @@ export default new Vuex.Store({
             // API call to get user token and information
             try {
                 const response = await axios.get(
-                    "http://127.0.0.1:8000/account/profile",
+                    "http://127.0.0.1:8000/account/verify",
                     {
                         headers: {
                             Authorization: `Token ${token}`,
@@ -81,6 +81,10 @@ export default new Vuex.Store({
         isAdmin: (state) => {
             /* Return if user is admin */
             return state.user ? state.user.isAdmin : false;
+        },
+        email: (state) => {
+            /* Return current user's email */
+            return state.user ? state.user.email : "email";
         },
     },
     modules: {},

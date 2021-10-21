@@ -29,9 +29,10 @@ const routes = [
     */
     // Profile
     {
-        path: "/profile",
+        path: "/profile/:email",
         name: "Profile",
         component: Profile,
+        props: true,
         meta: {
             name: "Profile",
             requiredAuth: true,

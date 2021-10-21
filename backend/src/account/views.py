@@ -52,45 +52,38 @@ def registerApi(request):
 
 
 @api_view(["GET", "POST"])
-def profileApi(request):
+@permission_classes([IsAuthenticated])
+def verifyAccount(request):
     """
-    Get or update profile
+    Verify token
+    If token is valid, return a profile info of that user user
+    Change user info if receive a valid POST data
     """
-    if request.user.is_authenticated:
-        profile = Profile.objects.get(user=request.user)
+    profile = Profile.objects.get(user=request.user)
 
-        # Update profile
-        if request.method == "POST":
-            serializer = ProfileSerializer(profile, data=request.data)
-            if serializer.is_valid():
-                serializer.save()
-            else:
-                print(f"[SERVER]: Error updating profile {serializer.errors}")
-
-            return JsonResponse(
-                status=status.HTTP_200_OK, data={"message": "Profile updated!"}
-            )
-
-        # Get profile
+    # Update profile
+    if request.method == "POST":
+        serializer = ProfileSerializer(profile, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
         else:
-            serializer = ProfileSerializer(
-                profile, many=False, context={"request": request}
-            )
-            return Response(serializer.data)
+            print(f"[SERVER]: Error updating profile {serializer.errors}")
 
-    else:
-        print("[SERVER]: Invalid token", request.headers)
         return JsonResponse(
-            status=status.HTTP_401_UNAUTHORIZED,
-            data={"message": "You are not authorized to view this profile"},
+            status=status.HTTP_200_OK, data={"message": "Profile updated!"}
         )
 
-
-# @permission_classes([IsAuthenticated, AdminOnly])
+    # Get profile
+    else:
+        serializer = ProfileSerializer(
+            profile, many=False, context={"request": request}
+        )
+        return Response(serializer.data)
 
 
 @api_view(["GET"])
-def staffProfile(request):
+@permission_classes([IsAuthenticated, AdminOnly])
+def profileList(request):
     """Get profile base on role"""
     query = request.GET.get("q") or "employee"
 
@@ -110,3 +103,10 @@ def staffProfile(request):
 
     serializers = ProfileSerializer(profiles, many=True)
     return Response(status=status.HTTP_200_OK, data=serializers.data)
+
+
+@api_view(["GET"])
+def profile(request, email):
+    """Return profile information correspond to email parameter"""
+    print(email)
+    return Response(status=status.HTTP_200_OK)

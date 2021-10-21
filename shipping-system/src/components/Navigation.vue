@@ -1,18 +1,21 @@
 <template>
     <div class="nav">
-        <router-link class="logo" :to="{ name: 'Reports' }">
+        <!-- Logo -->
+        <router-link class="logo" :to="{ name: 'Orders' }">
             <img src="../assets/logo/Color logo - no background.png" alt="" />
         </router-link>
 
+        <!-- Search bar -->
         <form @submit.prevent="search" class="search__container">
             <input
                 class="search__input"
                 type="text"
                 v-model="searchContent"
-                placeholder="Enter order ID, customer name ..."
+                :placeholder="placeholder"
             />
         </form>
 
+        <!-- Noti, profile, ... -->
         <div class="nav__icons">
             <router-link
                 :to="{ name: 'OrderCreate' }"
@@ -22,7 +25,12 @@
                 <i class="fas fa-pen"></i>Make order
             </router-link>
             <i class="fas fa-bell notification"></i>
-            <router-link :to="{ name: 'Profile' }">
+            <router-link
+                :to="{
+                    name: 'Profile',
+                    params: { email: $store.getters.email },
+                }"
+            >
                 <img class="avatar" src="../assets/test/user-icon.jpg" alt="" />
             </router-link>
         </div>
@@ -47,6 +55,13 @@ export default {
             }
         },
     },
+    computed: {
+        placeholder() {
+            return this.$store.getters.isAdmin
+                ? "Enter order ID or username ..."
+                : "Enter order ID";
+        },
+    },
     methods: {
         search() {
             console.log(this.searchContent);
@@ -67,7 +82,7 @@ export default {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0.5rem 2rem;
+    padding: 0 2rem;
     box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px,
         rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
 
