@@ -2,6 +2,10 @@
     <div class="order-detail">
         <h1 v-if="error">{{ error }}</h1>
         <OrderDetail v-if="order" :order="order" />
+
+        <div class="map-container">
+            <Map />
+        </div>
     </div>
 </template>
 
@@ -10,11 +14,13 @@ import axios from "axios";
 import { mapState } from "vuex";
 
 import OrderDetail from "@/components/OrderDetail.vue";
+import Map from "@/components/Leaflet.vue";
 
 export default {
     name: "Order",
     components: {
         OrderDetail,
+        Map,
     },
     data() {
         return {
@@ -63,9 +69,13 @@ export default {
 
 <style lang="scss" scoped>
 .order-detail {
-    @media only screen and (min-width: 1200px) {
+    @media only screen and (min-width: 1400px) {
         padding-left: 5rem;
         padding-right: 5rem;
+    }
+
+    .map-container {
+        margin: 2rem 0;
     }
 }
 </style>

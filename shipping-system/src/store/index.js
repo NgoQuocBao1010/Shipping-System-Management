@@ -28,9 +28,7 @@ export default new Vuex.Store({
             console.log("Global store: Authenticated");
         },
         updateProfile(state, profile) {
-            /* 
-                Update profile state, store user information
-            */
+            /* Update profile state, store user information */
 
             state.user = profile;
         },
