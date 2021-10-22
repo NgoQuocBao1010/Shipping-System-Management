@@ -15,6 +15,7 @@ import ResetPassword from "../views/Auth/ResetPassword.vue";
 // Error
 import Unauthorized from "../views/Error/Unauthorized.vue";
 import InternalError from "../views/Error/500.vue";
+import NotFoundError from "../views/Error/404.vue";
 // Others
 import TestMap from "../views/Map.vue";
 import Home from "../views/Home.vue";
@@ -117,6 +118,17 @@ const routes = [
             adminOnly: false,
         },
     },
+    // 404 Error
+    {
+        path: "/404",
+        name: "NotFoundError",
+        component: NotFoundError,
+        meta: {
+            name: "Not Found",
+            requiredAuth: true,
+            adminOnly: false,
+        },
+    },
     /* 
         Guest visist routes
     */
@@ -174,6 +186,7 @@ const routes = [
 ];
 
 const router = new VueRouter({
+    mode: "history",
     routes,
 });
 

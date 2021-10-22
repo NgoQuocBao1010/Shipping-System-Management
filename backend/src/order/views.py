@@ -46,7 +46,7 @@ def shippingPrice(request):
 def ordersList(request):
     """
     Get the list of all orders base on the user's authorization
-    If the user is the admin, return all orders
+    If the user is the admin, return all orders or filters the orders accordingly
     else return only the order that belong to the user correspond customer
     """
 
@@ -113,6 +113,7 @@ def orderCreateApi(request):
     products = request.data.get("products")
 
     try:
+        # Creating new order
         newOrder = Order.objects.create(
             user=request.user,
             consignee=None,

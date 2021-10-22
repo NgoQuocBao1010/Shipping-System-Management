@@ -2,8 +2,14 @@
     <div class="profile">
         <div class="profile__header">
             <h1 class="title">
-                Profile Information <span class="role manager">Manager</span>
-                <button class="small" @click="signOut">
+                Profile Information
+                <span
+                    class="role color"
+                    :class="role"
+                    style="text-transform: capitalize"
+                    >{{ role }}</span
+                >
+                <button class="small" @click="signOut" v-if="isCurrentUser">
                     <i class="fas fa-sign-out-alt"></i>Logout
                 </button>
             </h1>
@@ -143,6 +149,11 @@
                 </button>
             </div>
         </form>
+
+        <div class="profile__orders">
+            <div class="title">{{ profile.email }} orders</div>
+            <OrderTable :orders="orders" />
+        </div>
     </div>
 </template>
 
@@ -150,12 +161,14 @@
 import { mapState, mapMutations } from "vuex";
 import axios from "axios";
 
-import CircleAnimation from "../../components/CircleAnimation.vue";
+import CircleAnimation from "@/components/CircleAnimation.vue";
+import OrderTable from "@/components/OrderTable.vue";
 
 export default {
     name: "Profile",
     components: {
         CircleAnimation,
+        OrderTable,
     },
     props: {
         email: String,
@@ -178,12 +191,17 @@ export default {
             error: false,
             districts: [],
             wards: [],
+
+            orders: [],
         };
     },
     computed: {
         ...mapState(["user", "token", "provinces"]),
         isCurrentUser() {
             return this.email === this.$store.getters.email;
+        },
+        role() {
+            return !this.profile.isAdmin ? "customer" : "manager";
         },
     },
     watch: {
@@ -201,9 +219,60 @@ export default {
     methods: {
         ...mapMutations(["logout", "updateProfile"]),
         async getProfile() {
+            /*
+                Get the user profile
+                If it is the current user own profile, return the global user store
+                else
+                    the user can only make API call to get other's profile only when he/she is the admin 
+            */
             if (this.isCurrentUser) this.profile = this.user;
             else {
-                console.log("Make api call");
+                if (!this.$store.getters.isAdmin)
+                    return this.$router.push({ name: "Unauthorized" });
+
+                try {
+                    this.loadingData = true;
+                    const url = `http://127.0.0.1:8000/account/profile/${this.email}`;
+                    const response = await axios.get(url, {
+                        headers: {
+                            Authorization: `Token ${this.token}`,
+                        },
+                    });
+
+                    this.profile = response.data;
+                } catch (e) {
+                    console.log(e);
+
+                    if (e.response.status === 404) {
+                        this.$router.push({ name: "NotFoundError" });
+                    }
+                }
+            }
+
+            await this.getOrderList();
+        },
+        async getOrderList() {
+            /* Call backend API to retrieve list of all orders */
+            try {
+                const url = `http://127.0.0.1:8000/order/list/?profileId=${this.profile.id}`;
+                const response = await axios.get(url, {
+                    headers: {
+                        Authorization: `Token ${this.token}`,
+                    },
+                });
+
+                this.orders = response.data;
+            } catch (e) {
+                console.log(e);
+                if (e.response.status === 400) {
+                    this.orders = [];
+                    this.$toast.error(
+                        "An error has occured while retriving orders! Please try again later!",
+                        {
+                            duration: 3000,
+                        }
+                    );
+                }
             }
         },
         signOut() {
@@ -233,7 +302,6 @@ export default {
         },
     },
     async created() {
-        console.log(this.email);
         this.loadingData = true;
         await this.getProfile();
         this.districts = this.provinces;
@@ -251,19 +319,19 @@ export default {
 
 <style lang="scss" scoped>
 .profile {
+    .title {
+        font-size: 1.5rem;
+
+        display: flex;
+        align-items: center;
+        gap: 3rem;
+    }
+
     &__header {
         display: flex;
         justify-content: space-between;
         margin-bottom: 0.8rem;
         position: relative;
-
-        .title {
-            font-size: 1.5rem;
-
-            display: flex;
-            align-items: center;
-            gap: 3rem;
-        }
 
         button {
             background: rgb(223, 71, 71);
@@ -408,6 +476,15 @@ export default {
             position: absolute;
             bottom: 15px;
             left: 30px;
+        }
+    }
+
+    &__orders {
+        margin: 2rem 0;
+
+        .title {
+            margin: 1rem 0;
+            font-weight: bold;
         }
     }
 }

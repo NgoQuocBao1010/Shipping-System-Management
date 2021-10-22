@@ -9,9 +9,11 @@
                 <p class="header__name">
                     {{ profile.fullName || "No information" }}
                 </p>
+                <!-- Cosnsignor -->
                 <div class="role color" v-if="!profile.consignee" :class="role">
                     {{ profile.email }}
                 </div>
+                <!-- Consignee -->
                 <div class="role color" v-else>
                     Consignee of
                     <router-link
@@ -24,6 +26,7 @@
                     >
                 </div>
             </div>
+            <!-- Func button -->
             <div class="content">
                 <div class="content__btn" v-if="!profile.consignee">
                     <router-link
@@ -36,7 +39,13 @@
                     <router-link to="#" class="btn small" v-else>
                         <i class="fas fa-box-open"></i>Orders
                     </router-link>
-                    <router-link to="#" class="btn small">
+                    <router-link
+                        :to="{
+                            name: 'Profile',
+                            params: { email: profile.email },
+                        }"
+                        class="btn small"
+                    >
                         <i class="fas fa-user-circle"></i>Profile
                     </router-link>
                 </div>

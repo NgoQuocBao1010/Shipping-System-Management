@@ -129,7 +129,7 @@ export default {
         async getOrderList() {
             /* Call backend API to retrieve list of all orders */
             try {
-                const url = "http://127.0.0.1:8000/order/list/?profileId=5";
+                const url = "http://127.0.0.1:8000/order/list/";
                 const response = await axios.get(url, {
                     headers: {
                         Authorization: `Token ${this.token}`,

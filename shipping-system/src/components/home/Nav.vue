@@ -1,37 +1,25 @@
 <template>
-    <div class="nav">
-        <!-- Logo -->
-        <router-link class="logo" :to="{ name: 'Orders' }">
-            <img src="../assets/logo/Color logo - no background.png" alt="" />
-        </router-link>
+    <div class="wrapper">
+        <div class="header">
+            <img src="@/assets/logo/Color logo - no background.png" alt="" />
+            <p>Kaz Shipping Company</p>
+        </div>
 
         <!-- Search bar -->
         <form @submit.prevent="search" class="search__container">
             <input
                 class="search__input"
                 type="text"
-                v-model="searchContent"
-                :placeholder="placeholder"
+                placeholder="Enter order Id ..."
             />
         </form>
 
-        <!-- Noti, profile, ... -->
-        <div class="nav__icons">
-            <router-link
-                :to="{ name: 'OrderCreate' }"
-                class="btn"
-                v-show="makeOrder"
-            >
-                <i class="fas fa-pen"></i>Make order
+        <div class="navigation">
+            <router-link :to="{ name: 'Login' }" class="btn small">
+                <i class="fas fa-sign-in-alt"></i> Login
             </router-link>
-            <i class="fas fa-bell notification"></i>
-            <router-link
-                :to="{
-                    name: 'Profile',
-                    params: { email: $store.getters.email },
-                }"
-            >
-                <img class="avatar" src="../assets/test/user-icon.jpg" alt="" />
+            <router-link :to="{ name: 'Register' }" class="btn small register">
+                <i class="fas fa-user-edit"></i> Register
             </router-link>
         </div>
     </div>
@@ -39,61 +27,38 @@
 
 <script>
 export default {
-    name: "Navigation",
-    data() {
-        return {
-            searchContent: "",
-            makeOrder: null,
-        };
-    },
-    watch: {
-        $route(to, from) {
-            if (to.name === "Orders") {
-                this.makeOrder = true;
-            } else {
-                this.makeOrder = false;
-            }
-        },
-    },
-    computed: {
-        placeholder() {
-            return this.$store.getters.isAdmin
-                ? "Enter order ID or username ..."
-                : "Enter order ID";
-        },
-    },
-    methods: {
-        search() {
-            console.log(this.searchContent);
-            this.searchContent = "";
-        },
-    },
-    mounted() {
-        if (this.$route.name === "Orders") this.makeOrder = true;
-        else this.makeOrder = false;
-    },
+    name: "HomeNav",
 };
 </script>
 
 <style lang="scss" scoped>
-.nav {
+.wrapper {
     width: 100%;
-    min-height: 10vh;
+    padding: 0.2rem 2rem;
+    min-height: 8vh;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 2rem;
+    margin-bottom: 2rem;
+
     box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px,
         rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
-    z-index: 1000;
 
-    /* Logo */
-    .logo {
-        width: 8%;
-        cursor: pointer;
+    /* Image Logo */
+    .header {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
 
         img {
-            width: 100%;
+            max-height: 50px;
+        }
+
+        p {
+            font-weight: bold;
+            font-size: 20px;
+            color: var(--primary-color);
         }
     }
 
@@ -149,31 +114,21 @@ export default {
         }
     }
 
-    /* Icons */
-    &__icons {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 100%;
-
-        gap: 1.2rem;
-
-        .btn {
-            font-size: 1rem;
-            padding: 0.5rem 1rem;
-            border-radius: 5px;
+    /* Navigation */
+    .navigation {
+        > * {
+            margin-left: 1rem;
         }
 
-        .notification {
-            font-size: 1.5rem;
-            color: var(--primary-color);
-            cursor: pointer;
-        }
+        .register {
+            background: orange;
 
-        .avatar {
-            max-height: 40px;
-            aspect-ratio: 1 / 1;
-            border-radius: 50%;
+            &:hover {
+                background: white;
+                color: orange;
+                box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px,
+                    rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+            }
         }
     }
 }

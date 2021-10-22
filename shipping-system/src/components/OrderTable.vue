@@ -5,7 +5,7 @@
             <div class="column small">Order ID</div>
             <div class="column medium">Order Date</div>
             <div class="column medium">User</div>
-            <div class="column">Place of Delivery</div>
+            <div class="column large">Place of Delivery</div>
             <div class="column medium">Payment Method</div>
             <div class="column medium">Shipper</div>
             <div class="column medium">Status</div>
@@ -29,7 +29,7 @@
                 <div class="column small">{{ order.id }}</div>
                 <div class="column medium">{{ order.dateCreated }}</div>
                 <div class="column medium">{{ order.consignor.email }}</div>
-                <div class="column">
+                <div class="column large">
                     {{ order.consignee.address }},
                     {{
                         $store.getters.district(order.consignee.districtId).name
@@ -69,7 +69,10 @@ export default {
         };
     },
     props: {
-        orders: Array,
+        orders: {
+            type: Array,
+            default: () => [],
+        },
     },
     methods: {
         goToDetail(id) {
@@ -83,6 +86,11 @@ export default {
 <style lang="scss" scoped>
 .wrapper {
     width: 100%;
+    font-size: 14px;
+
+    @media only screen and (min-width: 1400px) {
+        font-size: 16px;
+    }
 
     .header,
     .row {
@@ -108,7 +116,7 @@ export default {
         }
 
         .column.large {
-            min-width: 250px;
+            min-width: 300px !important;
         }
     }
 

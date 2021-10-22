@@ -106,7 +106,13 @@ def profileList(request):
 
 
 @api_view(["GET"])
+@permission_classes([IsAuthenticated, AdminOnly])
 def profile(request, email):
     """Return profile information correspond to email parameter"""
-    print(email)
-    return Response(status=status.HTTP_200_OK)
+    query = Profile.objects.filter(user__email=email)
+
+    if not query.exists():
+        return Response(status=status.HTTP_404_NOT_FOUND, data={"error": "Profile did not exists"})
+    
+    serializer = ProfileSerializer(query[0], many=False)
+    return Response(status=status.HTTP_200_OK, data=serializer.data)
