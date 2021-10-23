@@ -93,8 +93,6 @@ export default {
                 waypoints: [L.latLng(this.center), L.latLng(coors)],
                 addWaypoints: false,
                 createMarker: (i, waypoint, n) => {
-                    const markerIcon =
-                        i == 0 ? this.startIcon : this.destinationIcon;
                     const marker = L.marker(waypoint.latLng, {
                         draggable: false,
                         bounceOnAdd: false,
