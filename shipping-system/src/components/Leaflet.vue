@@ -11,7 +11,7 @@
 
         <div class="map">
             <l-map
-                style="height: 600px; width: 100%"
+                style="height: 500px; width: 100%"
                 :zoom="mapConfig.zoom"
                 :center="center"
                 ref="map"
@@ -21,9 +21,9 @@
                     :attribution="mapConfig.attribution"
                 ></l-tile-layer>
                 <!-- <l-circle :lat-lng="center" :radius="10" color="red" /> -->
-                <l-marker :lat-lng="center" :icon="icons.companyIcons">
+                <!-- <l-marker :lat-lng="center" :icon="icons.companyIcons">
                     <l-popup><h1>Kaz Shipping Comapny</h1></l-popup>
-                </l-marker>
+                </l-marker> -->
             </l-map>
         </div>
     </div>
@@ -85,8 +85,27 @@ export default {
             );
 
             console.log(coors);
-            let marker = L.marker(coors, {
-                icon: this.icons.companyIcons,
+            // let marker = L.marker(coors, {
+            //     icon: this.icons.companyIcons,
+            // });
+
+            const routingControl = L.Routing.control({
+                waypoints: [L.latLng(this.center), L.latLng(coors)],
+                addWaypoints: false,
+                createMarker: (i, waypoint, n) => {
+                    const markerIcon =
+                        i == 0 ? this.startIcon : this.destinationIcon;
+                    const marker = L.marker(waypoint.latLng, {
+                        draggable: false,
+                        bounceOnAdd: false,
+                        bounceOnAddOptions: {
+                            duration: 1000,
+                            height: 800,
+                        },
+                        icon: this.icons.companyIcons,
+                    });
+                    return marker;
+                },
             }).addTo(this.mapOject);
         },
     },
@@ -115,7 +134,7 @@ export default {
         border: 2px solid var(--primary-color);
         margin: 2rem;
         width: 80%;
-        min-height: 400px;
+        min-height: 500px;
         overflow: hidden;
     }
 }
