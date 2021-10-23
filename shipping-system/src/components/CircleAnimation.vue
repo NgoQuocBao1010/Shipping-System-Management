@@ -1,12 +1,18 @@
 <template>
     <div class="wrapper">
-        <div class="loading2 small"></div>
+        <div class="loading2" :class="[size]"></div>
     </div>
 </template>
 
 <script>
 export default {
     name: "CircleAnimation",
+    props: {
+        size: {
+            type: String,
+            default: "small",
+        },
+    },
 };
 </script>
 

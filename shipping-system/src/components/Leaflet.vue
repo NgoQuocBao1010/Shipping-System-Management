@@ -10,6 +10,13 @@
         </div>
 
         <div class="map">
+            <transition name="fade">
+                <div class="animation" v-if="!routes">
+                    <LoadingAnimation size="large" />
+                    <p>Tracking your order ...</p>
+                </div>
+            </transition>
+
             <l-map
                 style="height: 500px; width: 100%"
                 :zoom="mapConfig.zoom"
@@ -26,6 +33,7 @@
                 </l-marker> -->
             </l-map>
         </div>
+        <button @click="setZoomLevel">Reset Map</button>
     </div>
 </template>
 
@@ -35,6 +43,8 @@ import { mapState } from "vuex";
 import L from "leaflet";
 import { LMap, LTileLayer, LPopup, LCircle, LMarker } from "vue2-leaflet";
 
+import LoadingAnimation from "./CircleAnimation.vue";
+
 export default {
     name: "Map",
     components: {
@@ -43,6 +53,7 @@ export default {
         LCircle,
         LMarker,
         LPopup,
+        LoadingAnimation,
     },
     props: {
         order: Object,
@@ -56,12 +67,21 @@ export default {
                 zoom: 12,
             },
             icons: {
-                companyIcons: L.icon({
+                blueIcons: L.icon({
+                    iconUrl: require("../assets/markers/blue-marker.svg"),
+                    iconSize: [40, 40],
+                    iconAnchor: [20, 20],
+                }),
+                redIcons: L.icon({
                     iconUrl: require("../assets/markers/red-marker.svg"),
                     iconSize: [40, 40],
                     iconAnchor: [20, 0],
                 }),
             },
+
+            routes: null,
+            initialZoom: null,
+            initialC: null,
         };
     },
     computed: {
@@ -78,21 +98,26 @@ export default {
     },
     methods: {
         async routing() {
-            console.log(this.order.consignee.wardId);
-
             const coors = await this.$func.searchLocation(
                 this.order.consignee.wardId
             );
 
-            console.log(coors);
-            // let marker = L.marker(coors, {
-            //     icon: this.icons.companyIcons,
-            // });
-
             const routingControl = L.Routing.control({
                 waypoints: [L.latLng(this.center), L.latLng(coors)],
+                fitSelectedRoutes: true,
                 addWaypoints: false,
+                lineOptions: {
+                    styles: [{ color: "#7dccff", opacity: 1, weight: 5 }],
+                },
                 createMarker: (i, waypoint, n) => {
+                    const markerIcon =
+                        i === 0 ? this.icons.blueIcons : this.icons.redIcons;
+
+                    const popUpContent =
+                        i === 0
+                            ? "Kaz Shipping System"
+                            : "Estimated Consignee Location";
+
                     const marker = L.marker(waypoint.latLng, {
                         draggable: false,
                         bounceOnAdd: false,
@@ -100,11 +125,27 @@ export default {
                             duration: 1000,
                             height: 800,
                         },
-                        icon: this.icons.companyIcons,
-                    });
+                        icon: markerIcon,
+                    }).bindPopup(popUpContent);
                     return marker;
                 },
             }).addTo(this.mapOject);
+
+            routingControl.hide();
+
+            routingControl.on("routesfound", (e) => {
+                this.routes = e.routes;
+                console.log(e);
+            });
+
+            // this.mapOject.on("zoom", (e) => {
+            //     console.log(this.mapOject.getZoom());
+            //     console.log(this.mapOject.getCenter());
+            // });
+        },
+        setZoomLevel() {
+            console.log("WTF");
+            this.mapOject.setZoom(12);
         },
     },
     async created() {
@@ -134,6 +175,23 @@ export default {
         width: 80%;
         min-height: 500px;
         overflow: hidden;
+        position: relative;
+
+        .animation {
+            position: absolute;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.8);
+            z-index: 1200;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+
+            p {
+                font-size: 1.5rem;
+                font-weight: 500;
+            }
+        }
     }
 }
 </style>

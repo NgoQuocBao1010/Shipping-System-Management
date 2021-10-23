@@ -22,3 +22,5 @@ Công cụ:
     https://codepen.io/Manoz/pen/pydxK
 7. Best practice for Auth Vuejs:
     https://blog.sqreen.com/authentication-best-practices-vue/
+8. Edit svg:
+    https://iconscout.com/icon-editor
