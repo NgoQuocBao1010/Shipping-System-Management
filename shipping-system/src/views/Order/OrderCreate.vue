@@ -433,9 +433,7 @@ export default {
     },
     methods: {
         async submit() {
-            /*
-                Form submit handler
-            */
+            /* Form submit handler */
 
             // Handle input errors
             this.$v.$touch(); // validate input data
@@ -489,13 +487,10 @@ export default {
             this.modal = true;
         },
         async placeOrder() {
-            /* 
-                Call backend API to place an order after customer confirmation
-            */
+            /* Call backend API to place an order after customer confirmation */
             try {
                 const url = "http://127.0.0.1:8000/order/create/";
 
-                console.log(this.order);
                 const response = await axios.post(url, this.order, {
                     headers: {
                         Authorization: `Token ${this.token}`,
@@ -520,9 +515,7 @@ export default {
             }
         },
         async searchLocation(location) {
-            /*
-                Return latitude and longtitude of an given location's name
-            */
+            /* Return latitude and longtitude of an given location's name */
             try {
                 const url =
                     "https://nominatim.openstreetmap.org/search?format=json&limit=3&q=" +
@@ -547,8 +540,8 @@ export default {
             /*
                 Using OpenRoute Service API
                 Calculate destination between the given consignee location and the shop address
-
             */
+
             const orgCoors = [
                 this.currentLocation.longitude,
                 this.currentLocation.latitude,
@@ -579,9 +572,7 @@ export default {
             }
         },
         async estimatePrice(distance) {
-            /*
-                Call backend API to estimate the shipping money
-            */
+            /* Call backend API to estimate the shipping money */
 
             try {
                 const distanceInKm = distance / 1000;
@@ -599,18 +590,14 @@ export default {
             }
         },
         addProduct() {
-            /*
-                Add 1 more product input to the form
-            */
+            /* Add 1 more product input to the form */
             this.products.push({
                 name: "",
                 price: "",
             });
         },
         formatPrice(e, index) {
-            /*
-                Format the price as user typing
-            */
+            /* Format the price as user typing */
             const value = e.target.value;
 
             if (value)

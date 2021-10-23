@@ -14,13 +14,16 @@
                 style="height: 600px; width: 100%"
                 :zoom="mapConfig.zoom"
                 :center="center"
-                ref="myMap"
+                ref="map"
             >
                 <l-tile-layer
                     :url="mapConfig.url"
                     :attribution="mapConfig.attribution"
                 ></l-tile-layer>
-                <l-circle :lat-lng="center" :radius="10" color="red" />
+                <!-- <l-circle :lat-lng="center" :radius="10" color="red" /> -->
+                <l-marker :lat-lng="center" :icon="icons.companyIcons">
+                    <l-popup><h1>Kaz Shipping Comapny</h1></l-popup>
+                </l-marker>
             </l-map>
         </div>
     </div>
@@ -30,7 +33,7 @@
 import axios from "axios";
 import { mapState } from "vuex";
 import L from "leaflet";
-import { LMap, LTileLayer, LIcon, LCircle } from "vue2-leaflet";
+import { LMap, LTileLayer, LPopup, LCircle, LMarker } from "vue2-leaflet";
 
 export default {
     name: "Map",
@@ -38,6 +41,11 @@ export default {
         LMap,
         LTileLayer,
         LCircle,
+        LMarker,
+        LPopup,
+    },
+    props: {
+        order: Object,
     },
     data() {
         return {
@@ -46,6 +54,13 @@ export default {
                 attribution:
                     '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors',
                 zoom: 12,
+            },
+            icons: {
+                companyIcons: L.icon({
+                    iconUrl: require("../assets/markers/red-marker.svg"),
+                    iconSize: [40, 40],
+                    iconAnchor: [20, 0],
+                }),
             },
         };
     },
@@ -57,6 +72,26 @@ export default {
                 this.currentLocation.longitude,
             ];
         },
+        mapOject() {
+            return this.$refs.map.mapObject;
+        },
+    },
+    methods: {
+        async routing() {
+            console.log(this.order.consignee.wardId);
+
+            const coors = await this.$func.searchLocation(
+                this.order.consignee.wardId
+            );
+
+            console.log(coors);
+            let marker = L.marker(coors, {
+                icon: this.icons.companyIcons,
+            }).addTo(this.mapOject);
+        },
+    },
+    async created() {
+        this.routing();
     },
 };
 </script>

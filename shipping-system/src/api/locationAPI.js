@@ -31,9 +31,7 @@ const getAllDistricts = async () => {
 };
 
 const getWardList = async (districtId) => {
-    /* 
-        Get list of wards from given district id
-    */
+    /*  Get list of wards from given district id */
     try {
         const url = `https://provinces.open-api.vn/api/d/${districtId}/?depth=2`;
         const response = await axios.get(url);
@@ -54,9 +52,7 @@ const getWardList = async (districtId) => {
 };
 
 const getWard = async (wardCode) => {
-    /* 
-        Get a ward's info that correspond with given wardCode
-    */
+    /* Get a ward's info that correspond with given wardCode */
     try {
         const response = await axios.get(
             `https://provinces.open-api.vn/api/w/${wardCode}`
@@ -71,8 +67,4 @@ const getWard = async (wardCode) => {
     }
 };
 
-const test = () => {
-    console.log("Test");
-};
-
-export default { getAllDistricts, test, getWard, getWardList };
+export default { getAllDistricts, getWard, getWardList };

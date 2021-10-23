@@ -3,8 +3,8 @@
         <h1 v-if="error">{{ error }}</h1>
         <OrderDetail v-if="order" :order="order" />
 
-        <div class="map-container">
-            <Map />
+        <div class="map-container" v-if="order">
+            <Map :order="order" />
         </div>
     </div>
 </template>
