@@ -1,14 +1,23 @@
 <template>
     <div class="container">
+        <!-- Headers -->
         <div class="headers">
             <p class="title">Order's tracking</p>
-            <div class="orders-information">
-                <p>Consignee location: ...</p>
-                <p>Consignor location: ...</p>
-                <p>Current location: ...</p>
+            <div class="information">
+                <p>
+                    Company location
+                    <img src="../assets/markers/blue-marker.svg" alt="" />
+                </p>
+                <p>
+                    Consignee location
+                    <img src="../assets/markers/red-marker.svg" alt="" />
+                </p>
+                <!-- <p>Current location: ...</p> -->
             </div>
         </div>
 
+        {{ zoomLevle }}
+        <!-- Leaflet map -->
         <div class="map">
             <transition name="fade">
                 <div class="animation" v-if="!routes">
@@ -79,9 +88,11 @@ export default {
                 }),
             },
 
+            consigneeAddress: null,
+
             routes: null,
             initialZoom: null,
-            initialC: null,
+            initialCenter: null,
         };
     },
     computed: {
@@ -92,12 +103,21 @@ export default {
                 this.currentLocation.longitude,
             ];
         },
-        mapOject() {
+        mapObject() {
             return this.$refs.map.mapObject;
         },
+        zoomLevle() {
+            return this.mapObject._zoom;
+        },
+    },
+    watch: {
+        // mapObject(newVal, oldVal) {
+        //     console.log(newVal);
+        // },
     },
     methods: {
         async routing() {
+            /* Routing for order tracking */
             const coors = await this.$func.searchLocation(
                 this.order.consignee.wardId
             );
@@ -126,30 +146,32 @@ export default {
                             height: 800,
                         },
                         icon: markerIcon,
-                    }).bindPopup(popUpContent);
+                    }).bindPopup(`<h3>${popUpContent}</h3>`);
                     return marker;
                 },
-            }).addTo(this.mapOject);
+            }).addTo(this.mapObject);
 
             routingControl.hide();
 
             routingControl.on("routesfound", (e) => {
                 this.routes = e.routes;
-                console.log(e);
-            });
 
-            // this.mapOject.on("zoom", (e) => {
-            //     console.log(this.mapOject.getZoom());
-            //     console.log(this.mapOject.getCenter());
-            // });
+                this.mapObject.on("zoom", (e) => {
+                    // console.log(this.mapObject._zoom);
+                    // console.log(this.mapObject.getCenter());
+                });
+            });
         },
         setZoomLevel() {
-            console.log("WTF");
-            this.mapOject.setZoom(12);
+            this.mapObject.setZoom(12);
         },
     },
     async created() {
         this.routing();
+
+        this.consigneeAddress = await this.$func.getFullAddress(
+            this.order.consignee.wardId
+        );
     },
 };
 </script>
@@ -162,9 +184,26 @@ export default {
 
     .headers {
         width: 100%;
+
         .title {
-            font-size: 1.2rem;
+            font-size: 1.4rem;
             font-weight: bold;
+        }
+
+        .information {
+            margin-top: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-evenly;
+
+            p {
+                font-size: 1rem;
+                font-weight: 600;
+
+                img {
+                    height: 40px;
+                }
+            }
         }
     }
 

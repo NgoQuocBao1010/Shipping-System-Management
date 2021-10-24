@@ -58,6 +58,7 @@ Vue.prototype.$func = {
         return fullAddress;
     },
     async searchLocation(wardId) {
+        /* Return latitude and longitude of an given district ID */
         const uriAddress = await this.getFullAddress(wardId, true);
 
         try {
