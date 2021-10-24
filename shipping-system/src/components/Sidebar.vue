@@ -42,7 +42,7 @@ export default {
                 },
                 {
                     name: "Orders",
-                    iconClass: "fas fa-shipping-fast",
+                    iconClass: "fas fa-box-open",
                     adminOnly: false,
                 },
             ],

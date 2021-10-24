@@ -16,7 +16,6 @@
             </div>
         </div>
 
-        {{ zoomLevle }}
         <!-- Leaflet map -->
         <div class="map">
             <transition name="fade">
@@ -106,9 +105,6 @@ export default {
         mapObject() {
             return this.$refs.map.mapObject;
         },
-        zoomLevle() {
-            return this.mapObject._zoom;
-        },
     },
     watch: {
         // mapObject(newVal, oldVal) {
@@ -127,7 +123,7 @@ export default {
                 fitSelectedRoutes: true,
                 addWaypoints: false,
                 lineOptions: {
-                    styles: [{ color: "#7dccff", opacity: 1, weight: 5 }],
+                    styles: [{ color: "#362222", opacity: 1, weight: 5 }],
                 },
                 createMarker: (i, waypoint, n) => {
                     const markerIcon =

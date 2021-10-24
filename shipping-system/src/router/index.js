@@ -4,6 +4,7 @@ import VueRouter from "vue-router";
 import Profile from "../views/Management/Profile.vue";
 import Reports from "../views/Management/Reports.vue";
 import Management from "../views/Management/Management.vue";
+import DriverAdminis from "@/views/Management/DriverAdminis.vue";
 // Orders
 import Orders from "../views/Order/OrderList.vue";
 import Order from "../views/Order/Order.vue";
@@ -92,6 +93,17 @@ const routes = [
         component: Management,
         meta: {
             name: "Manangement",
+            requiredAuth: true,
+            adminOnly: true,
+        },
+    },
+    // Driver Account Administrator
+    {
+        path: "/driver-adminis",
+        name: "DriverAdministrator",
+        component: DriverAdminis,
+        meta: {
+            name: "Driver Administrator",
             requiredAuth: true,
             adminOnly: true,
         },

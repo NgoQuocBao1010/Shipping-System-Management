@@ -1,8 +1,9 @@
 <template>
     <transition name="modal-wrapper-animation">
-        <div v-show="active" class="modal-wrapper">
+        <div v-show="active" class="modal-wrapper" :class="size">
             <transition name="modal-animation">
-                <div v-show="active" class="modal">
+                <div v-show="active" class="modal" :class="size">
+                    <!-- Headers -->
                     <div class="header">
                         {{ header }}
                         <i
@@ -43,9 +44,17 @@ export default {
             type: String,
             default: "Modal Header",
         },
+        /* 
+            If this modal is used to submit something, define a string for the submit button
+            Also provide an method to handle the submit button
+        */
         submit: {
             type: String,
             default: null,
+        },
+        size: {
+            type: String,
+            default: "",
         },
     },
 };
@@ -62,6 +71,10 @@ export default {
     display: flex;
     justify-content: center;
 
+    &.small {
+        align-items: center;
+    }
+
     .modal {
         width: 70%;
         height: max-content;
@@ -75,6 +88,10 @@ export default {
         display: flex;
         flex-direction: column;
         justify-content: space-between;
+
+        &.small {
+            width: 50%;
+        }
 
         > * {
             width: 100%;

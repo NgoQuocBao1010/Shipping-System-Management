@@ -3,8 +3,9 @@
         <div class="management__header">
             <h1 class="title">Human Resources Management</h1>
             <div class="btn-header">
-                <button><i class="fas fa-plus-circle"></i>Add Employee</button>
-                <button>Status</button>
+                <router-link class="btn" :to="{ name: 'DriverAdministrator' }">
+                    <i class="fas fa-plus-circle"></i>Driver
+                </router-link>
             </div>
         </div>
 
@@ -104,6 +105,7 @@ export default {
         }
 
         .btn-header {
+            .btn,
             button {
                 padding-left: 1rem;
                 padding-right: 1rem;
