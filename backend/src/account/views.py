@@ -5,6 +5,8 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
+import unidecode
+import shortuuid
 
 from .models import Profile
 from .serializers import UserSerializer, ProfileSerializer
@@ -116,3 +118,47 @@ def profile(request, email):
     
     serializer = ProfileSerializer(query[0], many=False)
     return Response(status=status.HTTP_200_OK, data=serializer.data)
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated, AdminOnly])
+def createDriver(request):
+    """ Create an account for driver """
+    fullName = request.data.get("fullName")
+    license = request.data.get("license")
+
+    newEmail = emailGenerator(fullName)
+    newPassword = "kaz123"
+
+    try:
+        newDriver = User.objects.create_staffuser(newEmail, newPassword)
+
+        driverProfile = Profile.objects.get(user=newDriver)
+        driverProfile.fullName = fullName
+        driverProfile.driverLicense = license
+        driverProfile.save()
+
+    except Exception as e:
+        print("Error new driver", e)
+        return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR, data={"error": "error"})
+    
+    return Response(status=status.HTTP_200_OK)
+
+
+# Utils Functions
+def emailGenerator(fullName):
+    """ Generate an email from a fullname """
+    fullName = unidecode.unidecode(fullName)  # Remove accent from text
+    words = fullName.split(" ")
+    
+    name = ""
+    if len(words) >= 3:
+        name = "".join([word[0].lower() for word in words])
+    else:
+        name = words[len(words) - 1].lower()
+    
+    userId = shortuuid.ShortUUID(alphabet="01345678").random(length=5)
+
+    email = f"{name}D{userId}@kaz.company.com"
+    
+    return email

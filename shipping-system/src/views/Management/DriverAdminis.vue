@@ -10,7 +10,7 @@
                     <label for="driver-name">Driver Name</label>
                     <input
                         name="driver-name"
-                        v-model="driver.name"
+                        v-model="driver.fullName"
                         type="text"
                     />
                 </div>
@@ -49,7 +49,8 @@
         >
             <!-- Modal content -->
             <div class="content">
-                <form>
+                <!-- Verify password form -->
+                <form @submit.prevent="createAccount">
                     <div class="inputs">
                         <label for="password">
                             Enter your password for <b>{{ email }}</b>
@@ -62,6 +63,7 @@
                     </p>
                 </form>
 
+                <!-- Instruction -->
                 <p>
                     *** This action will create an account that could
                     potentially has access to your important data. Please
@@ -73,7 +75,7 @@
 </template>
 
 <script>
-import { required, numeric, minLength } from "vuelidate/lib/validators";
+import { required, minLength } from "vuelidate/lib/validators";
 import axios from "axios";
 
 export default {
@@ -85,7 +87,7 @@ export default {
     data() {
         return {
             driver: {
-                name: "",
+                fullName: "",
                 license: "",
             },
             error: null,
@@ -93,6 +95,8 @@ export default {
             userConfirmation: false,
             confirmPassword: "",
             passwordError: null,
+
+            verifyToken: null,
         };
     },
     computed: {
@@ -102,12 +106,13 @@ export default {
     },
     validations: {
         driver: {
-            name: { required },
+            fullName: { required },
             license: { required, minLength: minLength(5) },
         },
     },
     methods: {
         submit() {
+            /* Validation create driver form */
             this.$v.$touch();
 
             if (this.$v.$error) {
@@ -119,6 +124,7 @@ export default {
             this.error = null;
         },
         async createAccount() {
+            /* Make an API call to verify passoword */
             if (!this.confirmPassword) {
                 this.passwordError = "Please input your password!";
 
@@ -133,15 +139,35 @@ export default {
 
                 const url = `http://127.0.0.1:8000/account/login`;
                 const response = await axios.post(url, formInfo);
-                const authToken = response.data.auth_token;
 
-                console.log(authToken);
-                this.$toast.success("Corrent password");
+                this.verifyToken = response.data.auth_token;
+                await this.createDriver();
+                this.passwordError = null;
             } catch (e) {
                 console.log(e.response);
 
                 if (e.response.status === 400)
                     this.passwordError = "Your password is incorrent";
+            }
+        },
+        async createDriver() {
+            /* Make API call to create driver */
+            try {
+                const url = "http://127.0.0.1:8000/account/driver/add";
+                const response = await axios.post(url, this.driver, {
+                    headers: {
+                        Authorization: `Token ${this.verifyToken}`,
+                    },
+                });
+
+                if (response.status === 200) {
+                    this.$toast.success(
+                        `Successfully created an account for ${this.driver.fullName}`
+                    );
+                    this.$router.push({ name: "Management" });
+                }
+            } catch (e) {
+                console.log(e.response);
             }
         },
     },

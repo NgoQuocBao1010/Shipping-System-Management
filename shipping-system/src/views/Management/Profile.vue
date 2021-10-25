@@ -313,6 +313,8 @@ export default {
         }
 
         this.loadingData = false;
+
+        console.log(this.profile);
     },
 };
 </script>

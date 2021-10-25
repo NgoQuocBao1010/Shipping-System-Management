@@ -42,10 +42,11 @@ class Order(models.Model):
         (3, "Customer allow to try products"),
     )
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user")
     consignee = models.OneToOneField(
         Profile, on_delete=models.SET_NULL, null=True, related_name="order"
     )
+    shipper = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name="shipper")
     status = models.IntegerField(default=1, choices=STATUS)
     paymentMethod = models.IntegerField(null=True, choices=PAYMENT_METHODS)
     productPreview = models.IntegerField(null=True, choices=PRODUCT_PREVIEW)

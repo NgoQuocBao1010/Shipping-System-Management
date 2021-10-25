@@ -78,6 +78,7 @@ class Profile(models.Model):
     dateOfBirth = models.DateField(null=True, blank=True)
     phone = models.CharField(max_length=20, blank=True, null=True)
     address = models.CharField(max_length=255, blank=True, null=True)
+    driverLicense = models.CharField(max_length=12, null=True)
     districtId = models.IntegerField(null=True, blank=True)
     wardId = models.IntegerField(null=True, blank=True)
     dateCreated = models.DateTimeField(auto_now_add=True)

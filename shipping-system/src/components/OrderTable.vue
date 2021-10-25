@@ -1,6 +1,7 @@
 <template>
     <div class="wrapper">
         <table class="content-table">
+            <!-- Header -->
             <thead>
                 <tr>
                     <th class="id">ID</th>
@@ -11,9 +12,13 @@
                     <th class="status">Status</th>
                 </tr>
             </thead>
+
+            <!-- Body when empty -->
             <tbody class="empty" v-if="orders.length === 0">
                 <div class="empty__info">There is no order yet</div>
             </tbody>
+
+            <!-- Body -->
             <tbody v-else>
                 <tr
                     v-for="order in orders"
@@ -30,7 +35,7 @@
                                 .name
                         }}
                     </td>
-                    <td>Unassigned</td>
+                    <td>{{ order.shipper || "Unasigned" }}</td>
                     <td>
                         <div :class="'order-' + statusCodes[order.status]">
                             {{ statusCodes[order.status] }}
