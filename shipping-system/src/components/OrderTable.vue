@@ -1,59 +1,50 @@
 <template>
     <div class="wrapper">
-        <!-- Header -->
-        <div class="header">
-            <div class="column small">Order ID</div>
-            <div class="column medium">Order Date</div>
-            <div class="column medium">User</div>
-            <div class="column large">Place of Delivery</div>
-            <div class="column medium">Payment Method</div>
-            <div class="column medium">Shipper</div>
-            <div class="column medium">Status</div>
-        </div>
-
-        <!-- Contents -->
-        <div class="content">
-            <!-- No content -->
-            <div v-if="orders.length === 0" class="row empty">
-                There is no order yet
-            </div>
-
-            <!-- Main contents -->
-            <div
-                v-else
-                class="row"
-                v-for="order in orders"
-                :key="order.id"
-                @click="goToDetail(order.id)"
-            >
-                <div class="column small">{{ order.id }}</div>
-                <div class="column medium">{{ order.dateCreated }}</div>
-                <div class="column medium">{{ order.consignor.email }}</div>
-                <div class="column large">
-                    {{ order.consignee.address }},
-                    {{
-                        $store.getters.district(order.consignee.districtId).name
-                    }}
-                </div>
-                <div class="column medium">
-                    {{ paymentMethods[order.paymentMethod] }}
-                </div>
-                <div class="column medium">
-                    {{ order.shipper || "No information" }}
-                </div>
-                <div class="column medium status">
-                    <div :class="'order-' + statusCodes[order.status]">
-                        {{ statusCodes[order.status] }}
-                    </div>
-                </div>
-            </div>
-        </div>
+        <table class="content-table">
+            <thead>
+                <tr>
+                    <th class="id">ID</th>
+                    <th class="date">Date created</th>
+                    <th class="username">From Account</th>
+                    <th class="address">Place of delivery</th>
+                    <th class="account">Shipper</th>
+                    <th class="status">Status</th>
+                </tr>
+            </thead>
+            <tbody class="empty" v-if="orders.length === 0">
+                <div class="empty__info">There is no order yet</div>
+            </tbody>
+            <tbody v-else>
+                <tr
+                    v-for="order in orders"
+                    :key="order.id"
+                    @click="goToDetail(order.id)"
+                >
+                    <td>{{ order.id }}</td>
+                    <td>{{ order.dateCreated }}</td>
+                    <td>{{ order.consignor.email }}</td>
+                    <td>
+                        {{ order.consignee.address }},
+                        {{
+                            $store.getters.district(order.consignee.districtId)
+                                .name
+                        }}
+                    </td>
+                    <td>Unassigned</td>
+                    <td>
+                        <div :class="'order-' + statusCodes[order.status]">
+                            {{ statusCodes[order.status] }}
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </template>
 
 <script>
 export default {
-    name: "OrderTable",
+    name: "Table",
     data() {
         return {
             statusCodes: {
@@ -86,64 +77,63 @@ export default {
 <style lang="scss" scoped>
 .wrapper {
     width: 100%;
-    font-size: 14px;
 
-    @media only screen and (min-width: 1400px) {
-        font-size: 16px;
-    }
-
-    .header,
-    .row {
+    .content-table {
         width: 100%;
-        margin: 0 auto;
-        display: flex;
+        border-collapse: collapse;
+        margin: 25px 0;
+        font-size: 0.9em;
+        min-width: 400px;
+        border-radius: 5px 5px 0 0;
+        overflow: hidden;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+        position: relative;
 
-        &.empty {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: initial;
-            padding: 1rem;
-            font-weight: 900;
-        }
-
-        .column.small {
-            max-width: 100px;
-        }
-
-        .column.medium {
-            max-width: 200px;
-        }
-
-        .column.large {
-            min-width: 300px !important;
-        }
-    }
-
-    .header {
-        .column {
-            background: var(--primary-color);
-            color: #fff;
-            font-size: 1rem;
+        thead tr {
+            background-color: var(--primary-color);
+            color: #ffffff;
+            text-align: left;
             font-weight: bold;
         }
-    }
 
-    .column {
-        flex: 1;
-        padding: 1rem;
-        color: black;
-        font-weight: 600;
-    }
+        th,
+        td {
+            padding: 12px 15px;
+        }
 
-    .row {
-        background-color: rgb(241, 236, 236);
-        cursor: pointer;
+        tbody {
+            &.empty {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                cursor: initial;
+                padding: 2rem;
+                font-weight: 900;
 
-        transition: all 0.2s ease;
+                .empty__info {
+                    font-size: 1.2rem;
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, 10%);
+                }
+            }
 
-        &:hover {
-            background: lightgrey;
+            tr {
+                border-bottom: 1px solid #dddddd;
+                font-size: 1rem;
+                font-weight: 600;
+                cursor: pointer;
+
+                &:hover {
+                    color: var(--primary-color);
+                    background-color: #f3f3f3;
+                }
+
+                &:last-of-type {
+                    border-bottom: 2px solid var(--primary-color);
+                }
+            }
         }
     }
 }

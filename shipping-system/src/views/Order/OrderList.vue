@@ -57,7 +57,7 @@
         </div>
 
         <div class="orders__content">
-            <OrderTable :orders="orders" v-if="orders" />
+            <Table :orders="orders" v-if="orders" />
             <LoadingAnimation v-else />
         </div>
     </div>
@@ -69,13 +69,13 @@ import axios from "axios";
 import { mapState } from "vuex";
 
 import Dropdown from "@/components/DropdownInput.vue";
-import OrderTable from "@/components/OrderTable";
+import Table from "@/components/OrderTable.vue";
 import LoadingAnimation from "@/components/CircleAnimation.vue";
 
 export default {
     name: "Orders",
     components: {
-        OrderTable,
+        Table,
         Dropdown,
         LoadingAnimation,
     },

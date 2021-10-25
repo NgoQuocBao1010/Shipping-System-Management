@@ -22,7 +22,15 @@
                     <div class="info__title">Consignor Address</div>
                     <div class="info__detail">
                         <div class="name">
-                            {{ order.consignor.fullName }}
+                            <router-link
+                                class="normal-link"
+                                :to="{
+                                    name: 'Profile',
+                                    params: { email: order.consignor.email },
+                                }"
+                            >
+                                {{ order.consignor.fullName }}
+                            </router-link>
                         </div>
                         <div class="phone">
                             <b>{{ order.consignor.phone }}</b>
