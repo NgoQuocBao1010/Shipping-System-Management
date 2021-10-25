@@ -148,8 +148,8 @@ export default {
             statusCodes: {
                 0: "failed",
                 1: "processing",
-                2: "delivered",
-                3: "delivering",
+                2: "delivering",
+                3: "delivered",
             },
             paymentOptions: [
                 {

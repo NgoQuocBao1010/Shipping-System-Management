@@ -78,7 +78,7 @@ export default {
 <style lang="scss" scoped>
 .nav {
     width: 100%;
-    min-height: 10vh;
+    min-height: 9vh;
     display: flex;
     align-items: center;
     justify-content: space-between;

@@ -47,16 +47,19 @@
             submit="Confirm"
             @submit="createAccount"
         >
+            <!-- Modal content -->
             <div class="content">
                 <form>
                     <div class="inputs">
-                        <label for="password">Confirm your password</label>
-                        <input
-                            type="password"
-                            autocomplete="new-password"
-                            v-model="confirmPassword"
-                        />
+                        <label for="password">
+                            Enter your password for <b>{{ email }}</b>
+                        </label>
+                        <input type="password" v-model="confirmPassword" />
                     </div>
+
+                    <p class="error" v-show="passwordError">
+                        {{ passwordError }}
+                    </p>
                 </form>
 
                 <p>
@@ -71,14 +74,13 @@
 
 <script>
 import { required, numeric, minLength } from "vuelidate/lib/validators";
+import axios from "axios";
 
 export default {
     name: "Driver",
     components: {
-        Modal: () => ({
-            component: import("../../components/Modal.vue"),
-            delay: 5000,
-        }),
+        Modal: () => import("../../components/Modal.vue"),
+        LoadingAnimation: () => import("../../components/CircleAnimation.vue"),
     },
     data() {
         return {
@@ -90,7 +92,13 @@ export default {
 
             userConfirmation: false,
             confirmPassword: "",
+            passwordError: null,
         };
+    },
+    computed: {
+        email() {
+            return this.$store.getters.email;
+        },
     },
     validations: {
         driver: {
@@ -110,8 +118,31 @@ export default {
             this.userConfirmation = true;
             this.error = null;
         },
-        createAccount() {
-            console.log("Confirmed");
+        async createAccount() {
+            if (!this.confirmPassword) {
+                this.passwordError = "Please input your password!";
+
+                return;
+            }
+
+            try {
+                const formInfo = {
+                    email: this.email,
+                    password: this.confirmPassword,
+                };
+
+                const url = `http://127.0.0.1:8000/account/login`;
+                const response = await axios.post(url, formInfo);
+                const authToken = response.data.auth_token;
+
+                console.log(authToken);
+                this.$toast.success("Corrent password");
+            } catch (e) {
+                console.log(e.response);
+
+                if (e.response.status === 400)
+                    this.passwordError = "Your password is incorrent";
+            }
         },
     },
 };
@@ -135,17 +166,13 @@ export default {
             button {
                 margin-top: 2rem;
                 position: relative;
+            }
 
-                .error {
-                    width: max-content;
-                    color: red;
-                    font-weight: 600;
-                    position: absolute;
-                    right: 0;
-                    top: 0;
-                    transform: translate(120%, 40%);
-                    cursor: initial;
-                }
+            .error {
+                position: absolute;
+                right: 0;
+                top: 0;
+                transform: translate(120%, 40%);
             }
         }
 
@@ -161,10 +188,6 @@ export default {
             img {
                 width: 100%;
                 max-width: 300px;
-
-                @media only screen and (min-width: 1700px) {
-                    max-width: 500px;
-                }
 
                 border-radius: 20px;
             }
@@ -196,6 +219,14 @@ export default {
                 border: 2px solid var(--primary-color);
             }
         }
+    }
+
+    .error {
+        width: max-content;
+        color: red;
+        font-weight: 600;
+        font-style: normal;
+        cursor: initial;
     }
 
     .content {

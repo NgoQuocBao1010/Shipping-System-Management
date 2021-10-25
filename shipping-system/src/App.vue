@@ -165,21 +165,27 @@ input::-webkit-calendar-picker-indicator {
 .order-delivering,
 .order-delivered,
 .order-failed {
+    max-width: 120px;
     padding: 5px 10px;
     font-size: 14px;
-    font-weight: 500;
+    font-weight: 600;
     border-radius: 20px;
     color: #fff;
     text-align: center;
     text-transform: capitalize;
 }
 
-.order-processing,
+.order-processing {
+    background-color: var(--dark-color);
+}
+
 .order-delivering {
     background-color: var(--secondary-color);
 }
 
 .order-delivered {
+    font-weight: bold;
+    color: var(--dark-color);
     background-color: lightgreen;
 }
 
