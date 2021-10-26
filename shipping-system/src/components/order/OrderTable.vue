@@ -8,8 +8,9 @@
                     <th class="date">Date created</th>
                     <th class="username">From Account</th>
                     <th class="address">Place of delivery</th>
-                    <th class="account">Shipper</th>
+                    <th class="account" v-if="!assign">Shipper</th>
                     <th class="status">Status</th>
+                    <th class="checkbox" v-if="assign">Select</th>
                 </tr>
             </thead>
 
@@ -23,6 +24,7 @@
                 <tr
                     v-for="order in orders"
                     :key="order.id"
+                    :class="assign ? 'assign' : ''"
                     @click="goToDetail(order.id)"
                 >
                     <td>{{ order.id }}</td>
@@ -35,11 +37,26 @@
                                 .name
                         }}
                     </td>
-                    <td>{{ order.shipper || "Unasigned" }}</td>
+                    <td v-if="!assign">{{ order.shipper || "Unasigned" }}</td>
                     <td>
                         <div :class="'order-' + statusCodes[order.status]">
                             {{ statusCodes[order.status] }}
                         </div>
+                    </td>
+
+                    <!-- Assign checkbox -->
+                    <td class="checkbox" v-if="assign">
+                        <i
+                            v-if="!assignedOrders.includes(order.id)"
+                            @click="select(order.id)"
+                            class="fas fa-plus-circle"
+                        ></i>
+                        <i
+                            v-else
+                            @click="select(order.id)"
+                            class="fas fa-check-circle"
+                            style="color: var(--primary-color)"
+                        ></i>
                     </td>
                 </tr>
             </tbody>
@@ -62,6 +79,7 @@ export default {
                 1: "Pay by consignor",
                 2: "Pay by consignee",
             },
+            assignedOrders: [],
         };
     },
     props: {
@@ -69,11 +87,25 @@ export default {
             type: Array,
             default: () => [],
         },
+        assign: {
+            type: Boolean,
+            default: false,
+        },
     },
     methods: {
         goToDetail(id) {
             /* Redirect to order detail page */
+            if (this.assign) return;
+
             this.$router.push({ name: "OrderDetail", params: { id: id } });
+        },
+        select(id) {
+            if (this.assignedOrders.includes(id)) {
+                const index = this.assignedOrders.indexOf(id);
+                this.assignedOrders.splice(index, 1);
+            } else {
+                this.assignedOrders = [id, ...this.assignedOrders];
+            }
         },
     },
 };
@@ -104,6 +136,13 @@ export default {
         th,
         td {
             padding: 12px 15px;
+
+            &.checkbox {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                cursor: pointer;
+            }
         }
 
         tbody {
@@ -129,6 +168,10 @@ export default {
                 font-size: 1rem;
                 font-weight: 600;
                 cursor: pointer;
+
+                &.assign {
+                    cursor: initial;
+                }
 
                 &:hover {
                     color: var(--primary-color);

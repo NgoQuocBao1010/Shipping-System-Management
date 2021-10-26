@@ -1,6 +1,5 @@
 https://lukashermann.dev/writing/how-to-use-async-await-with-vuejs-components/
 
-https://github.com/ankurk91/vue-toast-notification/tree/v1.x
 
 
 Công cụ:
@@ -24,3 +23,5 @@ Công cụ:
     https://blog.sqreen.com/authentication-best-practices-vue/
 8. Edit svg:
     https://iconscout.com/icon-editor
+9. Vue 2 toast
+    https://github.com/ankurk91/vue-toast-notification/tree/v1.x

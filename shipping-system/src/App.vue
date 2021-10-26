@@ -3,7 +3,7 @@
         <Sidebar v-if="navigation" />
         <div class="container">
             <Navigation v-if="navigation" />
-            <router-view class="container__content" />
+            <router-view class="container__content" :key="$route.path" />
         </div>
     </div>
 </template>

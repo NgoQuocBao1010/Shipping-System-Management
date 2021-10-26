@@ -6,7 +6,7 @@
                 :key="index"
                 class="link"
                 :class="{ active: page.name === currentRoute }"
-                v-show="(page.adminOnly && isAdmin) || !page.adminOnly"
+                v-show="(page.staffMember && isStaff) || !page.staffMember"
             >
                 <router-link :to="{ name: page.name }">
                     <span class="icon"><i :class="page.iconClass"></i></span>
@@ -33,17 +33,17 @@ export default {
                 {
                     name: "Reports",
                     iconClass: "fas fa-clipboard-list",
-                    adminOnly: true,
+                    staffMember: true,
                 },
                 {
                     name: "Management",
                     iconClass: "fas fa-users",
-                    adminOnly: true,
+                    staffMember: true,
                 },
                 {
                     name: "Orders",
                     iconClass: "fas fa-box-open",
-                    adminOnly: false,
+                    staffMember: false,
                 },
             ],
             expand: false,
@@ -55,6 +55,9 @@ export default {
         },
         isAdmin() {
             return this.$store.getters.isAdmin;
+        },
+        isStaff() {
+            return this.$store.getters.isStaff;
         },
     },
 };

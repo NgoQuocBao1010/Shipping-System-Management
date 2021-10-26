@@ -83,6 +83,9 @@ export default {
                 await this.login(authToken);
 
                 this.$router.push({ name: "Orders" });
+                this.$toast.success("Welcomde to Kaz Shipping Company!", {
+                    duration: 2000,
+                });
             } catch (e) {
                 console.log("Error loggin in", e);
                 this.error = true;

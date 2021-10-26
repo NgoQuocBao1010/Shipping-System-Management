@@ -22,15 +22,7 @@
                     <div class="info__title">Consignor Address</div>
                     <div class="info__detail">
                         <div class="name">
-                            <router-link
-                                class="normal-link"
-                                :to="{
-                                    name: 'Profile',
-                                    params: { email: order.consignor.email },
-                                }"
-                            >
-                                {{ order.consignor.fullName }}
-                            </router-link>
+                            {{ order.consignor.fullName }}
                         </div>
                         <div class="phone">
                             <b>{{ order.consignor.phone }}</b>
@@ -73,7 +65,7 @@
             </div>
 
             <!-- Order status -->
-            <OrderStatus :status="order.status" />
+            <OrderStatus v-if="order.id" :status="order.status" />
 
             <!-- Other Information -->
             <div class="info">

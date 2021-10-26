@@ -5,6 +5,7 @@
         </div>
         <div class="card__info">
             <div class="ribbons color" :class="role">{{ role }}</div>
+            <!-- Card information -->
             <div class="header">
                 <!-- Staff member -->
                 <p class="header__name">
@@ -29,19 +30,33 @@
                     >
                 </div>
             </div>
-            <!-- Func button -->
+
+            <!-- Function button -->
             <div class="content">
-                <div class="content__btn" v-if="!profile.consignee">
+                <!-- Consignee -->
+                <div class="content__btn" v-if="profile.consignee">
                     <router-link
-                        to="#"
+                        :to="{
+                            name: 'OrderDetail',
+                            params: { id: profile.orderId },
+                        }"
                         class="btn small"
-                        v-if="profile.isAdmin"
+                    >
+                        <i class="fas fa-box-open"></i>Orders
+                        {{ profile.orderId }}
+                    </router-link>
+                </div>
+
+                <!-- Staff member -->
+                <div class="content__btn" v-else>
+                    <router-link
+                        :to="{ name: 'OrdersAssign' }"
+                        class="btn small"
+                        v-if="profile.isStaff & !profile.isAdmin"
                     >
                         <i class="fas fa-plus-circle"></i>Add Task
                     </router-link>
-                    <router-link to="#" class="btn small" v-else>
-                        <i class="fas fa-box-open"></i>Orders
-                    </router-link>
+
                     <router-link
                         :to="{
                             name: 'Profile',

@@ -43,6 +43,18 @@
                 />
             </div>
 
+            <!-- Driver License -->
+            <div class="input" v-if="profile.driverLicense">
+                <label for="license">Driver License: </label>
+                <input
+                    name="driverLicense"
+                    type="text"
+                    v-model="profile.driverLicense"
+                    :readonly="!edit"
+                    required
+                />
+            </div>
+
             <!-- Phone Number -->
             <div class="input">
                 <label for="phone">Phone Number: </label>
@@ -153,8 +165,13 @@
         </form>
 
         <!-- Table of orders -->
-        <div class="profile__orders">
-            <div class="title">{{ profile.email }} orders</div>
+        <div class="profile__orders" v-if="role !== 'driver'">
+            <div class="title">
+                Orders placed by
+                <span style="color: var(--primary-color); margin-left: 0">{{
+                    profile.email
+                }}</span>
+            </div>
             <OrderTable :orders="orders" />
         </div>
     </div>
@@ -283,6 +300,9 @@ export default {
         signOut() {
             this.logout();
             this.$router.push({ name: "Home" });
+            this.$toast.info("You are just logged out of your account!", {
+                duration: 2000,
+            });
         },
         async updateProfile() {
             /* Make API call to update profile */
@@ -318,8 +338,6 @@ export default {
         }
 
         this.loadingData = false;
-
-        console.log(this.$store.getters.isStaff);
     },
 };
 </script>

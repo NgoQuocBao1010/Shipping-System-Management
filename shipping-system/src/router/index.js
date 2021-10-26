@@ -9,6 +9,7 @@ import DriverAdminis from "@/views/Management/DriverAdminis.vue";
 import Orders from "../views/Order/OrderList.vue";
 import Order from "../views/Order/Order.vue";
 import OrderCreate from "../views/Order/OrderCreate.vue";
+import OrdersAssign from "../views/Order/OrdersAssign.vue";
 // Auth
 import Login from "../views/Auth/Login.vue";
 import Register from "../views/Auth/Register.vue";
@@ -71,6 +72,17 @@ const routes = [
         component: OrderCreate,
         meta: {
             name: "Order Create",
+            requiredAuth: true,
+            adminOnly: false,
+        },
+    },
+    // Order assign
+    {
+        path: "/orders/assign/",
+        name: "OrdersAssign",
+        component: OrdersAssign,
+        meta: {
+            name: "Assign Orders",
             requiredAuth: true,
             adminOnly: false,
         },
