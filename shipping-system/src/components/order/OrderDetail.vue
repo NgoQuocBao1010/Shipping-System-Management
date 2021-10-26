@@ -72,10 +72,16 @@
                 </div>
             </div>
 
+            <!-- Order status -->
+            <OrderStatus :status="order.status" />
+
             <!-- Other Information -->
             <div class="info">
                 <div class="info__title">Other Information</div>
                 <div class="info__detail">
+                    <div class="normal" v-if="order.id">
+                        Status: <b>{{ statusCodes[order.status] }}</b>
+                    </div>
                     <div class="normal" v-if="order.id">
                         Date Created: <b>{{ order.dateCreated }}</b>
                     </div>
@@ -149,15 +155,20 @@
 import { mapState } from "vuex";
 import moment from "moment";
 
+import OrderStatus from "@/components/order/OrderStatus.vue";
+
 export default {
     name: "OrderDetail",
+    components: {
+        OrderStatus,
+    },
     data() {
         return {
             statusCodes: {
-                0: "failed",
                 1: "processing",
                 2: "delivering",
                 3: "delivered",
+                4: "failed",
             },
             paymentOptions: [
                 {
@@ -261,7 +272,7 @@ export default {
             justify-content: space-between;
             gap: 20px;
             width: 100%;
-            margin-bottom: 1rem;
+            margin-bottom: 2.5rem;
 
             > * {
                 flex: 1 1 40%;

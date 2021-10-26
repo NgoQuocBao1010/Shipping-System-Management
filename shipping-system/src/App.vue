@@ -176,7 +176,7 @@ input::-webkit-calendar-picker-indicator {
 }
 
 .order-processing {
-    background-color: var(--dark-color);
+    background-color: #8fd6e1;
 }
 
 .order-delivering {
@@ -197,6 +197,7 @@ input::-webkit-calendar-picker-indicator {
 .role {
     font-size: 0.8rem;
     width: max-content;
+    min-width: 120px;
     padding: 0.2rem 0.5rem;
     margin: 0.2rem 0;
     text-align: center;
@@ -210,7 +211,7 @@ input::-webkit-calendar-picker-indicator {
     }
 
     &.driver {
-        background-color: var(--secondary-color);
+        background-color: lightgreen;
     }
 
     &.customer {

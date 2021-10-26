@@ -27,10 +27,10 @@ class ShipDistance(models.Model):
 
 class Order(models.Model):
     STATUS = (
-        (0, "Failed"),
         (1, "Processing"),
         (2, "Delivering"),
         (3, "Delivered"),
+        (4, "Failed"),
     )
     PAYMENT_METHODS = (
         (1, "Pay by consignor"),
@@ -46,7 +46,9 @@ class Order(models.Model):
     consignee = models.OneToOneField(
         Profile, on_delete=models.SET_NULL, null=True, related_name="order"
     )
-    shipper = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name="shipper")
+    shipper = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, blank=True, related_name="shipper"
+    )
     status = models.IntegerField(default=1, choices=STATUS)
     paymentMethod = models.IntegerField(null=True, choices=PAYMENT_METHODS)
     productPreview = models.IntegerField(null=True, choices=PRODUCT_PREVIEW)

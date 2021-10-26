@@ -234,9 +234,11 @@ router.beforeEach((to, from, next) => {
 
 /* Navigation guard for each role */
 router.beforeEach((to, from, next) => {
+    // Unauth user
     if (!store.state.authenticated) return next();
 
-    if (store.getters.isAdmin) return next();
+    // Auth user
+    if (store.getters.isAdmin || store.getters.isStaff) return next();
     else {
         if (to.meta.adminOnly) return next({ name: "Unauthorized" });
         else next();

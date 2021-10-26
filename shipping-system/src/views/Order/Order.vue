@@ -13,7 +13,7 @@
 import axios from "axios";
 import { mapState } from "vuex";
 
-import OrderDetail from "@/components/OrderDetail.vue";
+import OrderDetail from "@/components/order/OrderDetail.vue";
 import Map from "@/components/Leaflet.vue";
 
 export default {

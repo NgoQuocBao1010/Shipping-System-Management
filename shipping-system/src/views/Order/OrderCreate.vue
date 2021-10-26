@@ -289,7 +289,7 @@ export default {
         Dropdown,
         Loading,
         Modal: () => import("@/components/Modal.vue"),
-        OrderDetail: () => import("@/components/OrderDetail.vue"),
+        OrderDetail: () => import("@/components/order/OrderDetail.vue"),
     },
     data() {
         return {

@@ -53,10 +53,10 @@ export default {
     data() {
         return {
             statusCodes: {
-                0: "failed",
                 1: "processing",
                 2: "delivering",
                 3: "delivered",
+                4: "failed",
             },
             paymentMethods: {
                 1: "Pay by consignor",

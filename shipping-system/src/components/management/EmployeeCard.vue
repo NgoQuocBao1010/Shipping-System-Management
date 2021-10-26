@@ -6,13 +6,16 @@
         <div class="card__info">
             <div class="ribbons color" :class="role">{{ role }}</div>
             <div class="header">
+                <!-- Staff member -->
                 <p class="header__name">
                     {{ profile.fullName || "No information" }}
                 </p>
+
                 <!-- Cosnsignor -->
                 <div class="role color" v-if="!profile.consignee" :class="role">
                     {{ profile.email }}
                 </div>
+
                 <!-- Consignee -->
                 <div class="role color" v-else>
                     Consignee of
@@ -70,7 +73,9 @@ export default {
     },
     computed: {
         role() {
-            return this.profile.isAdmin ? "manager" : "customer";
+            if (this.profile.isAdmin) return "manager";
+            if (this.profile.isStaff) return "driver";
+            else return "customer";
         },
     },
 };

@@ -90,8 +90,8 @@ def profileList(request):
     query = request.GET.get("q") or "employee"
 
     queries = {
-        "employee": Profile.objects.filter(user__admin=True),
-        "consignor": Profile.objects.filter(user__admin=False),
+        "employee": Profile.objects.filter(user__staff=True),
+        "consignor": Profile.objects.filter(user__staff=False),
         "consignee": Profile.objects.filter(consignee=True),
     }
 
@@ -114,8 +114,10 @@ def profile(request, email):
     query = Profile.objects.filter(user__email=email)
 
     if not query.exists():
-        return Response(status=status.HTTP_404_NOT_FOUND, data={"error": "Profile did not exists"})
-    
+        return Response(
+            status=status.HTTP_404_NOT_FOUND, data={"error": "Profile did not exists"}
+        )
+
     serializer = ProfileSerializer(query[0], many=False)
     return Response(status=status.HTTP_200_OK, data=serializer.data)
 
@@ -123,7 +125,7 @@ def profile(request, email):
 @api_view(["POST"])
 @permission_classes([IsAuthenticated, AdminOnly])
 def createDriver(request):
-    """ Create an account for driver """
+    """Create an account for driver"""
     fullName = request.data.get("fullName")
     license = request.data.get("license")
 
@@ -140,25 +142,27 @@ def createDriver(request):
 
     except Exception as e:
         print("Error new driver", e)
-        return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR, data={"error": "error"})
-    
+        return Response(
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR, data={"error": "error"}
+        )
+
     return Response(status=status.HTTP_200_OK)
 
 
 # Utils Functions
 def emailGenerator(fullName):
-    """ Generate an email from a fullname """
+    """Generate an email from a fullname"""
     fullName = unidecode.unidecode(fullName)  # Remove accent from text
     words = fullName.split(" ")
-    
+
     name = ""
     if len(words) >= 3:
         name = "".join([word[0].lower() for word in words])
     else:
         name = words[len(words) - 1].lower()
-    
+
     userId = shortuuid.ShortUUID(alphabet="01345678").random(length=5)
 
     email = f"{name}D{userId}@kaz.company.com"
-    
+
     return email

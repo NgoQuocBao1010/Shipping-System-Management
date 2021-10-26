@@ -1,5 +1,6 @@
 <template>
     <div class="profile">
+        <!-- Headers -->
         <div class="profile__header">
             <h1 class="title">
                 Profile Information
@@ -15,6 +16,7 @@
             </h1>
         </div>
 
+        <!-- Edit Profile form -->
         <form class="profile__content">
             <!-- Name -->
             <div class="input">
@@ -150,6 +152,7 @@
             </div>
         </form>
 
+        <!-- Table of orders -->
         <div class="profile__orders">
             <div class="title">{{ profile.email }} orders</div>
             <OrderTable :orders="orders" />
@@ -162,7 +165,7 @@ import { mapState, mapMutations } from "vuex";
 import axios from "axios";
 
 import CircleAnimation from "@/components/CircleAnimation.vue";
-import OrderTable from "@/components/OrderTable.vue";
+import OrderTable from "@/components/order/OrderTable.vue";
 
 export default {
     name: "Profile",
@@ -201,7 +204,9 @@ export default {
             return this.email === this.$store.getters.email;
         },
         role() {
-            return !this.profile.isAdmin ? "customer" : "manager";
+            if (this.profile.isAdmin) return "manager";
+            if (this.profile.isStaff) return "driver";
+            else return "customer";
         },
     },
     watch: {
@@ -314,7 +319,7 @@ export default {
 
         this.loadingData = false;
 
-        console.log(this.profile);
+        console.log(this.$store.getters.isStaff);
     },
 };
 </script>

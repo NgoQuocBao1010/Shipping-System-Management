@@ -80,6 +80,10 @@ export default new Vuex.Store({
             /* Return if user is admin */
             return state.user ? state.user.isAdmin : false;
         },
+        isStaff: (state) => {
+            /* Return if user is a staff member */
+            return state.user ? state.user.isStaff : false;
+        },
         email: (state) => {
             /* Return current user's email */
             return state.user ? state.user.email : "email";

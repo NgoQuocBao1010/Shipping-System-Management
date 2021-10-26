@@ -69,7 +69,7 @@ import axios from "axios";
 import { mapState } from "vuex";
 
 import Dropdown from "@/components/DropdownInput.vue";
-import Table from "@/components/OrderTable.vue";
+import Table from "@/components/order/OrderTable.vue";
 import LoadingAnimation from "@/components/CircleAnimation.vue";
 
 export default {
