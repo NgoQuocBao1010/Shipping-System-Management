@@ -19,8 +19,8 @@
         <!-- Main content -->
         <div class="profile__content">
             <TabWrapper>
+                <!-- Edit Profile form -->
                 <Tab title="Profile">
-                    <!-- Edit Profile form -->
                     <div class="form-container">
                         <form class="profile__content">
                             <!-- Name -->
@@ -173,6 +173,8 @@
                         </form>
                     </div>
                 </Tab>
+
+                <!-- Table of orders for each user -->
                 <Tab
                     title="Orders"
                     iconClass="fas fa-box-open"
@@ -182,12 +184,9 @@
                 </Tab>
 
                 <!-- Driver navigation -->
-                <Tab
-                    title="Assigned Order"
-                    iconClass="fas fa-plus-circle"
-                    v-else
-                >
-                    <DriverOrder :orders="orders" />
+                <!-- Assigned table orders -->
+                <Tab title="Assign Order" iconClass="fas fa-plus-circle" v-else>
+                    <DriverOrder :token="token" :profile="profile" />
                 </Tab>
             </TabWrapper>
         </div>
@@ -293,7 +292,8 @@ export default {
                     }
                 }
             }
-            await this.getOrderList();
+
+            if (this.role !== "driver") await this.getOrderList();
         },
         async getOrderList() {
             /* Call backend API to retrieve list of all orders */

@@ -47,7 +47,7 @@
                     <!-- Assign checkbox -->
                     <td class="checkbox" v-if="assign">
                         <i
-                            v-if="!assignedOrders.includes(order.id)"
+                            v-if="!selectOrders.includes(order.id)"
                             @click="select(order.id)"
                             class="fas fa-plus-circle"
                         ></i>
@@ -61,6 +61,12 @@
                 </tr>
             </tbody>
         </table>
+
+        <transition name="fade">
+            <div class="submit" v-show="assign & (selectOrders.length > 0)">
+                <button type="submit" @click="handleChosenOrder">Assign</button>
+            </div>
+        </transition>
     </div>
 </template>
 
@@ -79,7 +85,7 @@ export default {
                 1: "Pay by consignor",
                 2: "Pay by consignee",
             },
-            assignedOrders: [],
+            selectOrders: [],
         };
     },
     props: {
@@ -100,12 +106,17 @@ export default {
             this.$router.push({ name: "OrderDetail", params: { id: id } });
         },
         select(id) {
-            if (this.assignedOrders.includes(id)) {
-                const index = this.assignedOrders.indexOf(id);
-                this.assignedOrders.splice(index, 1);
+            if (this.selectOrders.includes(id)) {
+                const index = this.selectOrders.indexOf(id);
+                this.selectOrders.splice(index, 1);
             } else {
-                this.assignedOrders = [id, ...this.assignedOrders];
+                this.selectOrders = [id, ...this.selectOrders];
             }
+        },
+        handleChosenOrder() {
+            /* Handle chosen orders */
+            this.$emit("assign", this.selectOrders);
+            this.selectOrders = [];
         },
     },
 };
@@ -182,6 +193,14 @@ export default {
                 }
             }
         }
+    }
+
+    .submit {
+        margin-top: 1rem;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 }
 </style>

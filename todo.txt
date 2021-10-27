@@ -3,3 +3,4 @@ Front End
 - Viết trang Home, 404, Unauth. 
 - Viết trang show tiền theo đường đi. 
 - Viết lại trang Login, Register
+- Thêm phần số lượng vào phần sản phẩm khi đặt hàng create order

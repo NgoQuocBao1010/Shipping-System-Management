@@ -8,8 +8,11 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from account.serializers import ProfileSerializer
+from account.permissions import AdminOnly
 from .models import Order, ProductOrder, ShipDistance
 from .serializers import ShipDistanceSerializer, OrderSerializer
+
+User = get_user_model()
 
 
 @api_view(["GET"])
@@ -55,8 +58,10 @@ def ordersList(request):
     if not request.user.is_admin:  # if not admin
         orders = orders.filter(user=request.user)
     else:  # if the user is admin
-        profileId = request.GET.get("profileId")
+        # Filters orders on get request
 
+        # Filter orders on profile
+        profileId = request.GET.get("profileId")
         if profileId:
             if not profileId.isnumeric():
                 return Response(
@@ -65,6 +70,16 @@ def ordersList(request):
                 )
 
             orders = orders.filter(user__profile__id=profileId)
+
+        # Filter orders on shipper
+        shipper = request.GET.get("shipper")
+        if shipper:
+            orders = orders.filter(shipper__profile__id=shipper)
+    
+    # Filter orders on status
+    orderStatus = request.GET.get("status")
+    if orderStatus:
+        orders = orders.filter(status=orderStatus)
 
     serializers = OrderSerializer(orders, many=True)
     return Response(status=status.HTTP_200_OK, data=serializers.data)
@@ -152,6 +167,25 @@ def orderCreateApi(request):
             status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             data={"error": "Internal error"},
         )
+
+    return Response(
+        status=status.HTTP_200_OK, data={"message": "Succesfully place order"}
+    )
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated, AdminOnly])
+def ordersAssign(request):
+    driverId = request.data.get("driverId")
+    orders = request.data.get("orders")
+
+    driver = User.objects.get(profile__id=driverId)
+
+    for orderId in orders:
+        order = Order.objects.get(id=orderId)
+        order.shipper = driver
+        order.status = 2
+        order.save()
 
     return Response(
         status=status.HTTP_200_OK, data={"message": "Succesfully place order"}
