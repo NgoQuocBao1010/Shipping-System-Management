@@ -118,7 +118,6 @@ export default {
     .content-table {
         width: 100%;
         border-collapse: collapse;
-        margin: 25px 0;
         font-size: 0.9em;
         min-width: 400px;
         border-radius: 5px 5px 0 0;

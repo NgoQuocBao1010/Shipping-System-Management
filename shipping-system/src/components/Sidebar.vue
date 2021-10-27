@@ -23,13 +23,16 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
-
 export default {
     name: "Sidebar",
     data() {
         return {
             pages: [
+                {
+                    name: "Orders",
+                    iconClass: "fas fa-box-open",
+                    staffMember: false,
+                },
                 {
                     name: "Reports",
                     iconClass: "fas fa-clipboard-list",
@@ -39,11 +42,6 @@ export default {
                     name: "Management",
                     iconClass: "fas fa-users",
                     staffMember: true,
-                },
-                {
-                    name: "Orders",
-                    iconClass: "fas fa-box-open",
-                    staffMember: false,
                 },
             ],
             expand: false,

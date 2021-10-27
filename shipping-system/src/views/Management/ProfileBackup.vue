@@ -3,7 +3,7 @@
         <!-- Headers -->
         <div class="profile__header">
             <h1 class="title">
-                {{ email }}
+                Profile Information
                 <span
                     class="role color"
                     :class="role"
@@ -16,180 +16,163 @@
             </h1>
         </div>
 
-        <!-- Main content -->
-        <div class="profile__content">
-            <TabWrapper>
-                <Tab title="Profile">
-                    <!-- Edit Profile form -->
-                    <div class="form-container">
-                        <form class="profile__content">
-                            <!-- Name -->
-                            <div class="input">
-                                <label for="name">Full Name: </label>
-                                <input
-                                    :class="{ active: edit }"
-                                    name="name"
-                                    type="text"
-                                    v-model="profile.fullName"
-                                    :readonly="!edit"
-                                    required
-                                />
-                            </div>
+        <!-- Edit Profile form -->
+        <form class="profile__content">
+            <!-- Name -->
+            <div class="input">
+                <label for="name">Full Name: </label>
+                <input
+                    :class="{ active: edit }"
+                    name="name"
+                    type="text"
+                    v-model="profile.fullName"
+                    :readonly="!edit"
+                    required
+                />
+            </div>
 
-                            <!-- Email -->
-                            <div class="input">
-                                <label for="email">Email: </label>
-                                <input
-                                    name="email"
-                                    type="email"
-                                    v-model="profile.email"
-                                    readonly="true"
-                                    required
-                                />
-                            </div>
+            <!-- Email -->
+            <div class="input">
+                <label for="email">Email: </label>
+                <input
+                    name="email"
+                    type="email"
+                    v-model="profile.email"
+                    readonly="true"
+                    required
+                />
+            </div>
 
-                            <!-- Driver License -->
-                            <div class="input" v-if="profile.driverLicense">
-                                <label for="license">Driver License: </label>
-                                <input
-                                    name="driverLicense"
-                                    type="text"
-                                    v-model="profile.driverLicense"
-                                    :readonly="!edit"
-                                    required
-                                />
-                            </div>
+            <!-- Driver License -->
+            <div class="input" v-if="profile.driverLicense">
+                <label for="license">Driver License: </label>
+                <input
+                    name="driverLicense"
+                    type="text"
+                    v-model="profile.driverLicense"
+                    :readonly="!edit"
+                    required
+                />
+            </div>
 
-                            <!-- Phone Number -->
-                            <div class="input">
-                                <label for="phone">Phone Number: </label>
-                                <input
-                                    :class="{ active: edit }"
-                                    name="phone"
-                                    type="text"
-                                    v-model="profile.phone"
-                                    :readonly="!edit"
-                                    required
-                                />
-                            </div>
+            <!-- Phone Number -->
+            <div class="input">
+                <label for="phone">Phone Number: </label>
+                <input
+                    :class="{ active: edit }"
+                    name="phone"
+                    type="text"
+                    v-model="profile.phone"
+                    :readonly="!edit"
+                    required
+                />
+            </div>
 
-                            <!-- Date of birth -->
-                            <div class="input">
-                                <label for="dob">Date of birth: </label>
-                                <input
-                                    name="dob"
-                                    type="date"
-                                    v-model="profile.dateOfBirth"
-                                    :readonly="!edit"
-                                    :class="{ active: edit }"
-                                />
-                            </div>
+            <!-- Date of birth -->
+            <div class="input">
+                <label for="dob">Date of birth: </label>
+                <input
+                    name="dob"
+                    type="date"
+                    v-model="profile.dateOfBirth"
+                    :readonly="!edit"
+                    :class="{ active: edit }"
+                />
+            </div>
 
-                            <!-- Address -->
-                            <div class="input">
-                                <label for="address">Address: </label>
-                                <input
-                                    :class="{ active: edit }"
-                                    name="address"
-                                    v-model="profile.address"
-                                    type="text"
-                                    :readonly="!edit"
-                                />
-                            </div>
+            <!-- Address -->
+            <div class="input">
+                <label for="address">Address: </label>
+                <input
+                    :class="{ active: edit }"
+                    name="address"
+                    v-model="profile.address"
+                    type="text"
+                    :readonly="!edit"
+                />
+            </div>
 
-                            <!-- Ward -->
-                            <div class="input">
-                                <label for="subdistrict">Ward</label>
-                                <div class="select" :class="{ active: edit }">
-                                    <i class="fas fa-chevron-down"></i>
-                                    <select
-                                        name="subdistrict"
-                                        v-model="profile.wardId"
-                                        :disabled="!edit"
-                                    >
-                                        <option
-                                            v-for="ward in wards"
-                                            :key="ward.id"
-                                            :value="ward.id"
-                                        >
-                                            {{ ward.name }}
-                                        </option>
-                                    </select>
-                                </div>
-                            </div>
+            <!-- Ward -->
+            <div class="input">
+                <label for="subdistrict">Ward</label>
+                <div class="select" :class="{ active: edit }">
+                    <i class="fas fa-chevron-down"></i>
+                    <select
+                        name="subdistrict"
+                        v-model="profile.wardId"
+                        :disabled="!edit"
+                    >
+                        <option
+                            v-for="ward in wards"
+                            :key="ward.id"
+                            :value="ward.id"
+                        >
+                            {{ ward.name }}
+                        </option>
+                    </select>
+                </div>
+            </div>
 
-                            <!-- District -->
-                            <div class="input">
-                                <label for="province">District - City</label>
-                                <div class="select" :class="{ active: edit }">
-                                    <i class="fas fa-chevron-down"></i>
-                                    <select
-                                        name="province"
-                                        v-model="profile.districtId"
-                                        :disabled="!edit"
-                                    >
-                                        <option
-                                            v-for="dstr in provinces"
-                                            :key="dstr.id"
-                                            :value="dstr.id"
-                                        >
-                                            {{ dstr.name }}
-                                        </option>
-                                    </select>
-                                </div>
-                            </div>
+            <!-- District -->
+            <div class="input">
+                <label for="province">District - City</label>
+                <div class="select" :class="{ active: edit }">
+                    <i class="fas fa-chevron-down"></i>
+                    <select
+                        name="province"
+                        v-model="profile.districtId"
+                        :disabled="!edit"
+                    >
+                        <option
+                            v-for="dstr in provinces"
+                            :key="dstr.id"
+                            :value="dstr.id"
+                        >
+                            {{ dstr.name }}
+                        </option>
+                    </select>
+                </div>
+            </div>
 
-                            <!-- Error for validations -->
-                            <p class="error" v-show="error">
-                                <i class="fas fa-exclamation-circle"></i> Please
-                                fill out all the input
-                            </p>
+            <!-- Error for validations -->
+            <p class="error" v-show="error">
+                <i class="fas fa-exclamation-circle"></i> Please fill out all
+                the input
+            </p>
 
-                            <!-- Editing section -->
-                            <CircleAnimation
-                                class="animation"
-                                v-show="loadingData"
-                            />
-                            <div class="edit-buttons">
-                                <div
-                                    class="btn small"
-                                    @click="edit = true"
-                                    v-show="!edit && isCurrentUser"
-                                >
-                                    <i class="far fa-edit"></i>Edit
-                                </div>
-                                <div class="btn small editing" v-show="edit">
-                                    <i class="far fa-edit"></i>Editing ...
-                                </div>
-                                <button
-                                    class="btn small"
-                                    type="submit"
-                                    @click.prevent="updateProfile"
-                                    v-show="edit"
-                                >
-                                    <i class="fas fa-save"></i>Save
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </Tab>
-                <Tab
-                    title="Orders"
-                    iconClass="fas fa-box-open"
-                    v-if="role !== 'driver'"
+            <!-- Editing section -->
+            <CircleAnimation class="animation" v-show="loadingData" />
+            <div class="edit-buttons">
+                <div
+                    class="btn small"
+                    @click="edit = true"
+                    v-show="!edit && isCurrentUser"
                 >
-                    <OrderTable :orders="orders" />
-                </Tab>
-
-                <!-- Driver navigation -->
-                <Tab
-                    title="Assigned Order"
-                    iconClass="fas fa-plus-circle"
-                    v-else
+                    <i class="far fa-edit"></i>Edit
+                </div>
+                <div class="btn small editing" v-show="edit">
+                    <i class="far fa-edit"></i>Editing ...
+                </div>
+                <button
+                    class="btn small"
+                    type="submit"
+                    @click.prevent="updateProfile"
+                    v-show="edit"
                 >
-                    <DriverOrder :orders="orders" />
-                </Tab>
-            </TabWrapper>
+                    <i class="fas fa-save"></i>Save
+                </button>
+            </div>
+        </form>
+
+        <!-- Table of orders -->
+        <div class="profile__orders" v-if="role !== 'driver'">
+            <div class="title">
+                Orders placed by
+                <span style="color: var(--primary-color); margin-left: 0">{{
+                    profile.email
+                }}</span>
+            </div>
+            <OrderTable :orders="orders" />
         </div>
     </div>
 </template>
@@ -198,20 +181,14 @@
 import { mapState, mapMutations } from "vuex";
 import axios from "axios";
 
-import TabWrapper from "@/components/profile/TabWrapper.vue";
-import Tab from "@/components/profile/Tab.vue";
-import OrderTable from "@/components/order/OrderTable.vue";
-import DriverOrder from "@/components/order/DriverOrder.vue";
 import CircleAnimation from "@/components/CircleAnimation.vue";
+import OrderTable from "@/components/order/OrderTable.vue";
 
 export default {
     name: "Profile",
     components: {
         CircleAnimation,
         OrderTable,
-        DriverOrder,
-        Tab,
-        TabWrapper,
     },
     props: {
         email: String,
@@ -293,6 +270,7 @@ export default {
                     }
                 }
             }
+
             await this.getOrderList();
         },
         async getOrderList() {
@@ -366,6 +344,14 @@ export default {
 
 <style lang="scss" scoped>
 .profile {
+    .title {
+        font-size: 1.5rem;
+
+        display: flex;
+        align-items: center;
+        gap: 3rem;
+    }
+
     &__header {
         display: flex;
         justify-content: space-between;
@@ -378,23 +364,14 @@ export default {
             position: absolute;
             right: 10px;
         }
+    }
 
-        .title {
-            font-size: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 3rem;
-        }
+    &__loading {
+        margin: 1rem 0;
     }
 
     &__content {
-        width: 100%;
-        margin-top: 2rem;
-    }
-
-    .form-container {
-        padding: 0 2rem;
-        padding-bottom: 1rem;
+        padding: 2rem;
         display: flex;
         flex-direction: column;
         box-shadow: rgba(17, 17, 26, 0.05) 0px 1px 0px,
@@ -524,6 +501,15 @@ export default {
             position: absolute;
             bottom: 15px;
             left: 30px;
+        }
+    }
+
+    &__orders {
+        margin: 2rem 0;
+
+        .title {
+            margin: 1rem 0;
+            font-weight: bold;
         }
     }
 }
