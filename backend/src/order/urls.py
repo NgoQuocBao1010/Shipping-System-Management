@@ -6,5 +6,6 @@ urlpatterns = [
     path("list/", views.ordersList, name="ordersList"),
     path("detail/<str:id>/", views.order, name="order"),
     path("create/", views.orderCreateApi, name="orderCreate"),
+    path("edit/", views.orderEdit, name="orderEdit"),
     path("assign/", views.ordersAssign, name="ordersAssign"),
 ]

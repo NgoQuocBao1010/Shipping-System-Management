@@ -41,7 +41,7 @@ export default {
     },
     watch: {
         selectedIndex(newVal) {
-            this.$router.replace({ query: { tab: newVal } });
+            this.$router.replace({ query: { tab: newVal } }).catch(() => {});
         },
     },
     methods: {

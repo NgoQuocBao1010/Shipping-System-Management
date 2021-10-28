@@ -193,11 +193,18 @@ def ordersAssign(request):
 @api_view(["POST"])
 @permission_classes([IsAuthenticated, AdminOnly])
 def orderEdit(request):
+    """ Edit and delete order """
     if request.method == "POST":
-        print(request.data)
+        if request.data.get("orders"):
+            for orderId in request.data.get("orders"):
+                unassignedOrder(orderId)
+        
+        if request.data.get("order"):
+            unassignedOrder(request.data.get("order"))
+
 
     return Response(
-        status=status.HTTP_200_OK, data={"message": "Succesfully place order"}
+        status=status.HTTP_200_OK, data={"message": "Succesfully edited orders"}
     )
 
 
@@ -235,3 +242,14 @@ def makeConsigneeProfile(info):
         print(f"[SERVER]: Error creating profile {serializer.errors}")
 
     return profile
+
+
+def unassignedOrder(orderId):
+    """ Unassigned any order that has a driver """
+
+    order = Order.objects.get(id=orderId)
+    order.shipper = None
+    order.status = 1
+    order.save()
+
+    return True

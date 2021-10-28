@@ -1,6 +1,6 @@
 <template>
     <div class="wrapper">
-        <table class="content-table">
+        <table class="content-table" ref="table">
             <!-- Header -->
             <thead>
                 <tr>
@@ -57,7 +57,9 @@
 
         <transition name="fade">
             <div class="submit" v-show="selectOrders.length > 0">
-                <button type="submit" @click="handleChosenOrder">Assign</button>
+                <button type="submit" @click="handleChosenOrder">
+                    {{ emitButton }}
+                </button>
             </div>
         </transition>
     </div>
@@ -96,6 +98,9 @@ export default {
     computed: {
         selectIconClass() {
             return this.remove ? "fas fa-minus-circle" : "fas fa-plus-circle";
+        },
+        emitButton() {
+            return this.remove ? "Remove" : "Assign";
         },
     },
     methods: {

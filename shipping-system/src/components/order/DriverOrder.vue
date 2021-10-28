@@ -16,6 +16,7 @@
         <SelectTable
             :orders="orders"
             @assign="assignOrder"
+            @remove="unassignOrder"
             :remove="selectedIndex === 1"
         />
 
@@ -137,7 +138,32 @@ export default {
                     },
                 });
 
-                console.log(response.data);
+                if (response.status === 200) {
+                    this.$toast.success("Completed!!!");
+                    this.selectedIndex = 1;
+                }
+            } catch (e) {
+                console.log(e);
+            }
+        },
+        async unassignOrder(chosenOrders) {
+            /* Unassigned certain orders from driver */
+            try {
+                const data = {
+                    orders: chosenOrders,
+                };
+
+                const url = `http://127.0.0.1:8000/order/edit/`;
+                const response = await axios.post(url, data, {
+                    headers: {
+                        Authorization: `Token ${this.token}`,
+                    },
+                });
+
+                if (response.status === 200) {
+                    this.$toast.success("Completed!!!");
+                    this.selectedIndex = 0;
+                }
             } catch (e) {
                 console.log(e);
             }
