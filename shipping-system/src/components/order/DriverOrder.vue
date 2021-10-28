@@ -13,10 +13,10 @@
         </ul>
 
         <!-- Order table -->
-        <OrderTable
+        <SelectTable
             :orders="orders"
-            :assign="[0, 1].includes(selectedIndex)"
-            @assign="confirmAction"
+            @assign="assignOrder"
+            :remove="selectedIndex === 1"
         />
 
         <!-- Confirm password modal -->
@@ -57,13 +57,13 @@
 <script>
 import axios from "axios";
 
-import OrderTable from "./OrderTable.vue";
+import SelectTable from "./SelectTable.vue";
 import Modal from "../Modal.vue";
 
 export default {
     name: "DriverOrder",
     components: {
-        OrderTable,
+        SelectTable,
         Modal,
     },
     props: {
@@ -107,7 +107,6 @@ export default {
         async getOrderList() {
             /* Get list of order depends on chosen category */
             const query = this.tabs[this.selectedIndex].query;
-            console.log(query);
 
             try {
                 const url = `http://127.0.0.1:8000/order/list/?${query}`;
@@ -123,17 +122,12 @@ export default {
                 console.log(e);
             }
         },
-        async confirmAction(chosenOrders) {
-            this.chosenOrders = chosenOrders;
-            // this.userConfirmation = true;
-
-            await this.assignOrder();
-        },
-        async assignOrder() {
+        async assignOrder(chosenOrders) {
+            /* Assign chosen order to driver */
             try {
                 const data = {
                     driverId: this.profile.id,
-                    orders: this.chosenOrders,
+                    orders: chosenOrders,
                 };
 
                 const url = `http://127.0.0.1:8000/order/assign/`;

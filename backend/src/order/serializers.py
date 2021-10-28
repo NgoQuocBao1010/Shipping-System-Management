@@ -20,6 +20,7 @@ class ProductOrderSerializer(serializers.ModelSerializer):
 class OrderSerializer(serializers.ModelSerializer):
     consignor = serializers.SerializerMethodField()  # get consignor serializer
     consignee = ProfileSerializer(read_only=True)  # get consignor serializer
+    shipperInfo = serializers.SerializerMethodField()
     products = ProductOrderSerializer(read_only=True, many=True)
     dateCreated = serializers.DateTimeField(format="%d-%m-%Y")
 
@@ -27,6 +28,16 @@ class OrderSerializer(serializers.ModelSerializer):
         consignorProfile = ProfileSerializer(obj.user.profile, many=False)
         return consignorProfile.data
 
+    def get_shipperInfo(self, obj):
+        if not obj.shipper:
+            return None
+
+        shipperProfile = ProfileSerializer(obj.shipper.profile, many=False)
+        return shipperProfile.data
+
     class Meta:
         model = Order
-        exclude = ("user",)
+        exclude = (
+            "user",
+            "shipper",
+        )

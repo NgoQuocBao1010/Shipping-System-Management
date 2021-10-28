@@ -71,17 +71,32 @@
             <div class="info">
                 <div class="info__title">Other Information</div>
                 <div class="info__detail">
+                    <!-- Status -->
                     <div class="normal" v-if="order.id">
                         Status: <b>{{ statusCodes[order.status] }}</b>
                     </div>
+
+                    <!-- Date created -->
                     <div class="normal" v-if="order.id">
                         Date Created: <b>{{ order.dateCreated }}</b>
                     </div>
                     <div class="normal" v-else>
                         Date Created: <b>{{ today }}</b>
                     </div>
+
+                    <!-- Payment method -->
                     <div class="normal">
                         Payment Method: <b>{{ payment }}</b>
+                    </div>
+
+                    <!-- Shipper information -->
+                    <div class="normal" v-if="order.shipperInfo">
+                        Shipper Informtion:
+                        <b>
+                            {{ order.shipperInfo.fullName }} ({{
+                                order.shipperInfo.email
+                            }}) - {{ order.shipperInfo.phone }}
+                        </b>
                     </div>
                     <div class="normal" style="font-weight: bold">
                         {{ preview }}

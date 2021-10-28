@@ -50,7 +50,11 @@
                 <!-- Staff member -->
                 <div class="content__btn" v-else>
                     <router-link
-                        :to="{ name: 'OrdersAssign' }"
+                        :to="{
+                            name: 'Profile',
+                            params: { email: profile.email },
+                            query: { tab: 1 },
+                        }"
                         class="btn small"
                         v-if="profile.isStaff & !profile.isAdmin"
                     >

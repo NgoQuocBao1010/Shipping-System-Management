@@ -1,7 +1,4 @@
 from django.contrib.auth import get_user_model, authenticate
-from django.http import JsonResponse
-from django.conf import settings
-from django.db.models import F
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
@@ -75,7 +72,7 @@ def ordersList(request):
         shipper = request.GET.get("shipper")
         if shipper:
             orders = orders.filter(shipper__profile__id=shipper)
-    
+
     # Filter orders on status
     orderStatus = request.GET.get("status")
     if orderStatus:
@@ -176,6 +173,7 @@ def orderCreateApi(request):
 @api_view(["POST"])
 @permission_classes([IsAuthenticated, AdminOnly])
 def ordersAssign(request):
+    """Assign proccessing orders to driver"""
     driverId = request.data.get("driverId")
     orders = request.data.get("orders")
 
@@ -186,6 +184,17 @@ def ordersAssign(request):
         order.shipper = driver
         order.status = 2
         order.save()
+
+    return Response(
+        status=status.HTTP_200_OK, data={"message": "Succesfully place order"}
+    )
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated, AdminOnly])
+def orderEdit(request):
+    if request.method == "POST":
+        print(request.data)
 
     return Response(
         status=status.HTTP_200_OK, data={"message": "Succesfully place order"}

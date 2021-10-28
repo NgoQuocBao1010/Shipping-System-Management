@@ -18,7 +18,7 @@
 
         <!-- Main content -->
         <div class="profile__content">
-            <TabWrapper>
+            <TabWrapper :preferredTab="tab">
                 <!-- Edit Profile form -->
                 <Tab title="Profile">
                     <div class="form-container">
@@ -241,6 +241,12 @@ export default {
         ...mapState(["user", "token", "provinces"]),
         isCurrentUser() {
             return this.email === this.$store.getters.email;
+        },
+        tab() {
+            let chosenTab = this.$route.query.tab;
+            chosenTab = /^-?\d+$/.test(chosenTab) ? chosenTab : 0;
+
+            return parseInt(chosenTab);
         },
         role() {
             if (this.profile.isAdmin) return "manager";

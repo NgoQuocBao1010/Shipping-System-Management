@@ -27,14 +27,30 @@
 <script>
 export default {
     name: "TabWrapper",
+    props: {
+        preferredTab: {
+            type: Number,
+            default: 0,
+        },
+    },
     data() {
         return {
             selectedIndex: 0,
             tabs: [],
         };
     },
+    watch: {
+        selectedIndex(newVal) {
+            this.$router.replace({ query: { tab: newVal } });
+        },
+    },
     methods: {
         selectTab(index) {
+            if (index >= this.tabs.length) {
+                this.selectTab(0);
+                return;
+            }
+
             this.selectedIndex = index;
 
             this.tabs.forEach((tab, i) => {
@@ -46,8 +62,7 @@ export default {
         this.tabs = this.$children;
     },
     mounted() {
-        // this.tabs = this.$refs.transition.$children;
-        this.selectTab(0);
+        this.selectTab(this.preferredTab);
     },
 };
 </script>
@@ -65,8 +80,6 @@ export default {
         .slot__wrapper {
             flex: 1 1 80%;
             max-width: 1440px;
-            // box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px,
-            //     rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
         }
 
         .tab-navigation {

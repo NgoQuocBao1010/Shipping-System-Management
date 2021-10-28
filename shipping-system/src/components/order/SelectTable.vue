@@ -8,8 +8,8 @@
                     <th class="date">Date created</th>
                     <th class="username">From Account</th>
                     <th class="address">Place of delivery</th>
-                    <th class="account">Shipper</th>
                     <th class="status">Status</th>
+                    <th class="checkbox">Select</th>
                 </tr>
             </thead>
 
@@ -20,11 +20,7 @@
 
             <!-- Body -->
             <tbody v-else>
-                <tr
-                    v-for="order in orders"
-                    :key="order.id"
-                    @click="goToDetail(order.id)"
-                >
+                <tr v-for="order in orders" :key="order.id" class="assign">
                     <td>{{ order.id }}</td>
                     <td>{{ order.dateCreated }}</td>
                     <td>{{ order.consignor.email }}</td>
@@ -36,20 +32,34 @@
                         }}
                     </td>
                     <td>
-                        {{
-                            order.shipperInfo
-                                ? order.shipperInfo.email
-                                : "Unasigned"
-                        }}
-                    </td>
-                    <td>
                         <div :class="'order-' + statusCodes[order.status]">
                             {{ statusCodes[order.status] }}
                         </div>
                     </td>
+
+                    <!-- Assign checkbox -->
+                    <td class="checkbox">
+                        <i
+                            v-if="!selectOrders.includes(order.id)"
+                            @click="select(order.id)"
+                            :class="selectIconClass"
+                        ></i>
+                        <i
+                            v-else
+                            @click="select(order.id)"
+                            class="fas fa-check-circle"
+                            style="color: var(--primary-color)"
+                        ></i>
+                    </td>
                 </tr>
             </tbody>
         </table>
+
+        <transition name="fade">
+            <div class="submit" v-show="selectOrders.length > 0">
+                <button type="submit" @click="handleChosenOrder">Assign</button>
+            </div>
+        </transition>
     </div>
 </template>
 
@@ -73,24 +83,43 @@ export default {
     },
     props: {
         orders: {
+            // List of orders to display
             type: Array,
             default: () => [],
+        },
+        remove: {
+            // If true, will display a minus icon on the select col
+            type: Boolean,
+            default: false,
+        },
+    },
+    computed: {
+        selectIconClass() {
+            return this.remove ? "fas fa-minus-circle" : "fas fa-plus-circle";
         },
     },
     methods: {
         goToDetail(id) {
             /* Redirect to order detail page */
-            if (this.assign) return;
 
             this.$router.push({ name: "OrderDetail", params: { id: id } });
         },
         select(id) {
+            /* Select or remove clicked order */
             if (this.selectOrders.includes(id)) {
                 const index = this.selectOrders.indexOf(id);
                 this.selectOrders.splice(index, 1);
             } else {
                 this.selectOrders = [id, ...this.selectOrders];
             }
+        },
+        handleChosenOrder() {
+            /* Emit selected orders to the parent */
+
+            const emitEvent = this.remove ? "remove" : "assign";
+
+            this.$emit(emitEvent, this.selectOrders);
+            this.selectOrders = [];
         },
     },
 };
@@ -126,6 +155,14 @@ export default {
                 justify-content: center;
                 align-items: center;
                 cursor: pointer;
+
+                i {
+                    font-size: 20px;
+
+                    &.fa-minus-circle {
+                        color: rgb(245, 77, 77);
+                    }
+                }
             }
         }
 
