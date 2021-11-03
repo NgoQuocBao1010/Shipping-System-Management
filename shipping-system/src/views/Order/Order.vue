@@ -10,8 +10,10 @@
 </template>
 
 <script>
-import axios from "axios";
 import { mapState } from "vuex";
+
+import { RepositoryFactory } from "../../api/Factory";
+const OrderRepo = RepositoryFactory.get("order");
 
 import OrderDetail from "@/components/order/OrderDetail.vue";
 import Map from "@/components/Leaflet.vue";
@@ -40,14 +42,8 @@ export default {
                 Call backend API to retrieve order data that correspond to the query id
             */
             try {
-                const url = `http://127.0.0.1:8000/order/detail/${this.id}/`;
-                const response = await axios.get(url, {
-                    headers: {
-                        Authorization: `Token ${this.token}`,
-                    },
-                });
-
-                this.order = response.data;
+                const { data } = await OrderRepo.get(this.id);
+                this.order = data;
             } catch (e) {
                 if (e.response.status === 404) {
                     this.error = "Not found";

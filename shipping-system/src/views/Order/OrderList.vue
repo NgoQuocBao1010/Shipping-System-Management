@@ -65,12 +65,14 @@
 
 <script>
 import moment from "moment";
-import axios from "axios";
 import { mapState } from "vuex";
 
 import Dropdown from "@/components/DropdownInput.vue";
 import Table from "@/components/order/OrderTable.vue";
 import LoadingAnimation from "@/components/CircleAnimation.vue";
+
+import { RepositoryFactory } from "../../api/Factory";
+const OrderRepo = RepositoryFactory.get("order");
 
 export default {
     name: "Orders",
@@ -162,27 +164,14 @@ export default {
         async getOrderList() {
             /* Call backend API to retrieve list of all orders */
             try {
-                const url = `http://127.0.0.1:8000/order/list/?status=${this.status}&payment=${this.payment}`;
-                const response = await axios.get(url, {
-                    headers: {
-                        Authorization: `Token ${this.token}`,
-                    },
-                });
-
-                this.orders = response.data;
+                const { data } = await OrderRepo.getList(
+                    this.status,
+                    this.payment,
+                    this.fromDate
+                );
+                this.orders = data;
             } catch (e) {
-                console.log(this.$options.name);
                 this.$func.handleError(e);
-
-                if (e.response.status === 400) {
-                    this.orders = [];
-                    this.$toast.error(
-                        "An error has occured while retriving orders! Please try again later!",
-                        {
-                            duration: 3000,
-                        }
-                    );
-                }
             }
         },
     },
@@ -190,6 +179,7 @@ export default {
         const { status, payment } = this.$route.query;
 
         this.status = status ? parseInt(status) : null;
+        this.payment = payment ? parseInt(payment) : null;
     },
     async mounted() {
         this.toDate = this.getToday();

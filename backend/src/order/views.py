@@ -80,7 +80,7 @@ def ordersList(request):
     if orderStatus and orderStatus.isnumeric():
         orders = orders.filter(status=orderStatus)
     if paymentMethod and paymentMethod.isnumeric():
-        pass
+        orders = orders.filter(paymentMethod=paymentMethod)
 
     serializers = OrderSerializer(orders, many=True)
     return Response(status=status.HTTP_200_OK, data=serializers.data)

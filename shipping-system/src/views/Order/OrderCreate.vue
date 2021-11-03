@@ -280,6 +280,9 @@ import { mapState } from "vuex";
 import axios from "axios";
 import { required, numeric, minLength } from "vuelidate/lib/validators";
 
+import { RepositoryFactory } from "../../api/Factory";
+const OrderRepo = RepositoryFactory.get("order");
+
 import Dropdown from "@/components/DropdownInput.vue";
 import Loading from "@/components/CircleAnimation.vue";
 
@@ -489,15 +492,9 @@ export default {
         async placeOrder() {
             /* Call backend API to place an order after customer confirmation */
             try {
-                const url = "http://127.0.0.1:8000/order/create/";
+                const { status } = await OrderRepo.create(this.order);
 
-                const response = await axios.post(url, this.order, {
-                    headers: {
-                        Authorization: `Token ${this.token}`,
-                    },
-                });
-
-                if (response.status === 200) {
+                if (status === 200) {
                     this.$router.push({ name: "Orders" });
                     this.$toast.success("Your order has been placed!");
                 }
