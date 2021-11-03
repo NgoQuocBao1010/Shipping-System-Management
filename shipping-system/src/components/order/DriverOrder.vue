@@ -13,59 +13,27 @@
         </ul>
 
         <!-- Order table -->
-        <SelectTable
+        <component
+            :is="table"
             :orders="orders"
             @assign="assignOrder"
             @remove="unassignOrder"
             :remove="selectedIndex === 1"
         />
-
-        <!-- Confirm password modal -->
-        <Modal
-            header="User Confirmation"
-            size="small"
-            :active="userConfirmation"
-            @toggle="userConfirmation = false"
-            submit="Confirm"
-            @submit.prevent=""
-        >
-            <!-- Modal content -->
-            <div class="content">
-                <!-- Verify password form -->
-                <form @submit.prevent="">
-                    <div class="inputs">
-                        <label for="password">
-                            Enter your password for
-                            <b>{{ $store.getters.email }}</b>
-                        </label>
-                        <input type="password" v-model="confirmPassword" />
-                    </div>
-
-                    <p class="error" v-show="passwordError">
-                        {{ passwordError }}
-                    </p>
-                </form>
-
-                <!-- Instruction -->
-                <p>
-                    *** Please enter your password to confirm this action. ***
-                </p>
-            </div>
-        </Modal>
     </div>
 </template>
 
 <script>
 import axios from "axios";
 
+import OrderTable from "./OrderTable.vue";
 import SelectTable from "./SelectTable.vue";
-import Modal from "../Modal.vue";
 
 export default {
     name: "DriverOrder",
     components: {
         SelectTable,
-        Modal,
+        OrderTable,
     },
     props: {
         token: String,
@@ -91,13 +59,12 @@ export default {
 
             orders: [],
             assignedOrder: null,
-
-            // Modal
-            userConfirmation: false,
-            confirmPassword: "",
-            passwordError: null,
-            verifyToken: null,
         };
+    },
+    computed: {
+        table() {
+            return this.selectedIndex === 2 ? "OrderTable" : "SelectTable";
+        },
     },
     watch: {
         async selectedIndex() {

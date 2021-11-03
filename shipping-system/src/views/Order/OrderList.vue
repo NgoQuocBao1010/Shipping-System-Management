@@ -82,22 +82,24 @@ export default {
     data() {
         return {
             orders: null,
+
+            // status
             statusOptions: [
                 {
                     id: 1,
-                    name: "Failed",
-                },
-                {
-                    id: 2,
                     name: "Processing",
                 },
                 {
-                    id: 3,
+                    id: 2,
                     name: "Delivering",
                 },
                 {
-                    id: 4,
+                    id: 3,
                     name: "Delivered",
+                },
+                {
+                    id: 4,
+                    name: "Failed",
                 },
             ],
             status: null,
@@ -113,6 +115,7 @@ export default {
                 },
             ],
             payment: null,
+
             fromDate: null,
             toDate: null,
             loading: false,
@@ -120,6 +123,36 @@ export default {
     },
     computed: {
         ...mapState(["token"]),
+    },
+    watch: {
+        async status(newVal) {
+            const data = JSON.parse(JSON.stringify(this.$route.query)); // ??
+            data["status"] = newVal;
+
+            this.$router
+                .replace({
+                    name: "Orders",
+                    query: data,
+                })
+                .catch(() => {});
+
+            this.orders = null;
+            await this.getOrderList();
+        },
+        async payment(newVal) {
+            const data = JSON.parse(JSON.stringify(this.$route.query)); // ??
+            data["payment"] = newVal;
+
+            this.$router
+                .replace({
+                    name: "Orders",
+                    query: data,
+                })
+                .catch(() => {});
+
+            this.orders = null;
+            await this.getOrderList();
+        },
     },
     methods: {
         getToday() {
@@ -129,7 +162,7 @@ export default {
         async getOrderList() {
             /* Call backend API to retrieve list of all orders */
             try {
-                const url = "http://127.0.0.1:8000/order/list/";
+                const url = `http://127.0.0.1:8000/order/list/?status=${this.status}&payment=${this.payment}`;
                 const response = await axios.get(url, {
                     headers: {
                         Authorization: `Token ${this.token}`,
@@ -153,9 +186,14 @@ export default {
             }
         },
     },
-    async created() {
+    created() {
+        const { status, payment } = this.$route.query;
+
+        this.status = status ? parseInt(status) : null;
+    },
+    async mounted() {
         this.toDate = this.getToday();
-        this.fromDate = moment().subtract(1, "weeks").format("YYYY-MM-DD");
+        this.fromDate = moment().subtract(1, "months").format("YYYY-MM-DD");
 
         await this.getOrderList();
     },

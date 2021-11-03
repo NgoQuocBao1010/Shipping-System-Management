@@ -75,8 +75,12 @@ def ordersList(request):
 
     # Filter orders on status
     orderStatus = request.GET.get("status")
-    if orderStatus:
+    paymentMethod = request.GET.get("payment")
+
+    if orderStatus and orderStatus.isnumeric():
         orders = orders.filter(status=orderStatus)
+    if paymentMethod and paymentMethod.isnumeric():
+        pass
 
     serializers = OrderSerializer(orders, many=True)
     return Response(status=status.HTTP_200_OK, data=serializers.data)
@@ -193,15 +197,14 @@ def ordersAssign(request):
 @api_view(["POST"])
 @permission_classes([IsAuthenticated, AdminOnly])
 def orderEdit(request):
-    """ Edit and delete order """
+    """Edit and delete order"""
     if request.method == "POST":
         if request.data.get("orders"):
             for orderId in request.data.get("orders"):
                 unassignedOrder(orderId)
-        
+
         if request.data.get("order"):
             unassignedOrder(request.data.get("order"))
-
 
     return Response(
         status=status.HTTP_200_OK, data={"message": "Succesfully edited orders"}
@@ -245,7 +248,7 @@ def makeConsigneeProfile(info):
 
 
 def unassignedOrder(orderId):
-    """ Unassigned any order that has a driver """
+    """Unassigned any order that has a driver"""
 
     order = Order.objects.get(id=orderId)
     order.shipper = None

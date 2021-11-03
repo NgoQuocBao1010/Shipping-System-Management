@@ -90,7 +90,11 @@
                     </div>
 
                     <!-- Shipper information -->
-                    <div class="normal" v-if="order.shipperInfo">
+                    <div
+                        class="normal"
+                        v-if="order.shipperInfo"
+                        style="text-transform: initial"
+                    >
                         Shipper Informtion:
                         <b>
                             {{ order.shipperInfo.fullName }} ({{
@@ -98,6 +102,8 @@
                             }}) - {{ order.shipperInfo.phone }}
                         </b>
                     </div>
+
+                    <!-- Preview -->
                     <div class="normal" style="font-weight: bold">
                         {{ preview }}
                     </div>
