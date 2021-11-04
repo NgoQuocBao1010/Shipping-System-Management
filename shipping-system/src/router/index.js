@@ -10,7 +10,7 @@ import Orders from "../views/Order/OrderList.vue";
 import Order from "../views/Order/Order.vue";
 import OrderCreate from "../views/Order/OrderCreate.vue";
 import OrdersAssign from "../views/Order/OrdersAssign.vue";
-// Auth
+// Authorization
 import Login from "../views/Auth/Login.vue";
 import Register from "../views/Auth/Register.vue";
 import ResetPassword from "../views/Auth/ResetPassword.vue";
@@ -20,6 +20,7 @@ import InternalError from "../views/Error/500.vue";
 import NotFoundError from "../views/Error/404.vue";
 // Others
 import Home from "../views/Home.vue";
+import PriceShipping from "../views/PriceShipping.vue";
 
 import store from "../store/index";
 
@@ -37,7 +38,7 @@ const routes = [
         props: true,
         meta: {
             name: "Profile",
-            requiredAuth: true,
+            authOnly: true,
             adminOnly: false,
         },
     },
@@ -48,7 +49,7 @@ const routes = [
         component: Orders,
         meta: {
             name: "Orders",
-            requiredAuth: true,
+            authOnly: true,
             adminOnly: false,
         },
     },
@@ -60,7 +61,7 @@ const routes = [
         props: true,
         meta: {
             name: "Order Detail",
-            requiredAuth: true,
+            authOnly: true,
             adminOnly: false,
         },
     },
@@ -71,7 +72,7 @@ const routes = [
         component: OrderCreate,
         meta: {
             name: "Order Create",
-            requiredAuth: true,
+            authOnly: true,
             adminOnly: false,
         },
     },
@@ -82,7 +83,7 @@ const routes = [
         component: OrdersAssign,
         meta: {
             name: "Assign Orders",
-            requiredAuth: true,
+            authOnly: true,
             adminOnly: false,
         },
     },
@@ -104,7 +105,7 @@ const routes = [
         component: Management,
         meta: {
             name: "Manangement",
-            requiredAuth: true,
+            authOnly: true,
             adminOnly: true,
         },
     },
@@ -115,7 +116,7 @@ const routes = [
         component: DriverAdminis,
         meta: {
             name: "Driver Administrator",
-            requiredAuth: true,
+            authOnly: true,
             adminOnly: true,
         },
     },
@@ -126,7 +127,7 @@ const routes = [
         component: Unauthorized,
         meta: {
             name: "Unauthorized",
-            requiredAuth: true,
+            authOnly: true,
             adminOnly: false,
         },
     },
@@ -137,7 +138,7 @@ const routes = [
         component: InternalError,
         meta: {
             name: "Internal Error",
-            requiredAuth: true,
+            authOnly: true,
             adminOnly: false,
         },
     },
@@ -148,7 +149,7 @@ const routes = [
         component: NotFoundError,
         meta: {
             name: "Not Found",
-            requiredAuth: true,
+            authOnly: true,
             adminOnly: false,
         },
     },
@@ -162,7 +163,17 @@ const routes = [
         component: Home,
         meta: {
             name: "Home",
-            requiredAuth: false,
+            nonAuthOnly: true,
+        },
+    },
+    // Shipping Price
+    {
+        path: "/price-shipping",
+        name: "PriceShipping",
+        component: PriceShipping,
+        meta: {
+            name: "Shipping Price",
+            easy: true,
         },
     },
     // Login
@@ -173,7 +184,7 @@ const routes = [
         props: true,
         meta: {
             name: "Login",
-            requiredAuth: false,
+            nonAuthOnly: true,
         },
     },
     // Register
@@ -183,7 +194,7 @@ const routes = [
         component: Register,
         meta: {
             name: "Register",
-            requiredAuth: false,
+            nonAuthOnly: true,
         },
     },
     // Reset password
@@ -193,7 +204,7 @@ const routes = [
         component: ResetPassword,
         meta: {
             name: "Reset Password",
-            requiredAuth: false,
+            nonAuthOnly: true,
         },
     },
 ];
@@ -220,13 +231,18 @@ router.beforeEach(async (to, from, next) => {
 
 /*  Check user authorization for each route */
 router.beforeEach((to, from, next) => {
-    if (store.state.authenticated && !to.meta.requiredAuth) {
+    // Easy page can access whether user is auth or not
+    if (to.meta.easy) return next();
+
+    // Restrict auth user to visit un-auth page
+    if (store.state.authenticated && to.meta.nonAuthOnly) {
         console.log("Logged in user not allowed to view this page");
         return from.name ? next(false) : next({ name: "Orders" });
     }
 
-    if (!store.state.authenticated && to.meta.requiredAuth) {
-        console.log("Log in first");
+    // Resctrict un-auth user to visit auth only page
+    if (!store.state.authenticated && to.meta.authOnly) {
+        console.log("Unauth user not allowed to view this page in first");
         return from.name ? next(false) : next({ name: "Home" });
     }
 
@@ -235,8 +251,8 @@ router.beforeEach((to, from, next) => {
 
 /* Navigation guard for each role */
 router.beforeEach((to, from, next) => {
-    // Unauth user
-    if (!store.state.authenticated) return next();
+    // Unauth user or access easy page
+    if (!store.state.authenticated || to.meta.easy) return next();
 
     // Auth user
     if (store.getters.isAdmin || store.getters.isStaff) return next();

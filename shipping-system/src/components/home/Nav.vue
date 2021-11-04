@@ -1,20 +1,23 @@
 <template>
     <div class="wrapper">
-        <div class="header">
+        <router-link :to="{ name: 'Home' }" class="header">
             <img src="@/assets/logo/Color logo - no background.png" alt="" />
             <p>Kaz Shipping Company</p>
-        </div>
+        </router-link>
 
         <!-- Search bar -->
         <form @submit.prevent="search" class="search__container">
             <input
                 class="search__input"
                 type="text"
-                placeholder="Enter order Id ..."
+                placeholder="Look for your order here"
             />
         </form>
 
         <div class="navigation">
+            <router-link :to="{ name: 'PriceShipping' }" class="btn small">
+                <i class="fas fa-sign-in-alt"></i> Shipping Price
+            </router-link>
             <router-link :to="{ name: 'Login' }" class="btn small">
                 <i class="fas fa-sign-in-alt"></i> Login
             </router-link>
@@ -46,6 +49,7 @@ export default {
 
     /* Image Logo */
     .header {
+        text-decoration: none;
         display: flex;
         flex-direction: column;
         justify-content: center;

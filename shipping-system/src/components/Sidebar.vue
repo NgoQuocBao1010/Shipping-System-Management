@@ -43,6 +43,11 @@ export default {
                     iconClass: "fas fa-users",
                     staffMember: true,
                 },
+                {
+                    name: "PriceShipping",
+                    iconClass: "fas fa-info-circle",
+                    staffMember: false,
+                },
             ],
             expand: false,
         };

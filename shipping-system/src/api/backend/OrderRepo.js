@@ -32,16 +32,23 @@ export default {
             `${resource}/list/?profileId=${profileId}&shipper=${shipper}`
         );
     },
-    getPrice(distance) {
+    getPrice(distance = null) {
         /* get the shipping price of given distance */
         const distanceInKm = distance / 1000;
         return Repository.get(
             `${resource}/shipping-money/?distance=${distanceInKm}`
         );
     },
+    getAllPrices() {
+        return Repository.get(`${resource}/shipping-money/`);
+    },
     // POST method
     create(data) {
         useLocalToken();
         return Repository.post(`${resource}/create/`, data);
+    },
+    editShippingPrice(data) {
+        useLocalToken();
+        return Repository.post(`${resource}/shipping-money/`, data);
     },
 };

@@ -1,8 +1,9 @@
 Front End
 - Viết lại trang Profile X
 - Sửa bug filter tất cả trong quản lý đơn hàng X
+- Viết trang show tiền theo đường đi. X
 - Viết trang Home, 404, Unauth. 
-- Viết trang show tiền theo đường đi. 
+- Viết trang theo dõi đơn hàng cho người chưa đăng nhập
 - Thêm phần số lượng vào phần sản phẩm khi đặt hàng create order
 - Thêm phần sửa, đánh dấu đã giao trang quản lý đơn hàng
 - Thêm phần thể hiện trạng thái tài xế trong profile

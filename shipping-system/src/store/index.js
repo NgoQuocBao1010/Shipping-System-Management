@@ -70,6 +70,9 @@ export default new Vuex.Store({
         },
     },
     getters: {
+        isAuthenticated: (state) => {
+            return state.authenticated;
+        },
         district: (state) => (id) => {
             /* Return district object by given id */
             return state.provinces

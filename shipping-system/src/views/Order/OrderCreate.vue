@@ -521,8 +521,8 @@ export default {
             try {
                 const { data } = await OrderRepo.getPrice(distance);
 
-                if (data.data.length > 0) {
-                    return data.data[0].price;
+                if (data.length > 0) {
+                    return data[0].price;
                 }
 
                 console.log("Error retriving price info");

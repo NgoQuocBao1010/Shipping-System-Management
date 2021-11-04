@@ -1,6 +1,5 @@
 <template>
     <div class="home">
-        <HomeNav />
         <h1>This is the home page</h1>
         <router-link :to="{ name: 'Login' }">Login</router-link>
         <br />
@@ -9,13 +8,8 @@
 </template>
 
 <script>
-import HomeNav from "../components/home/Nav.vue";
-
 export default {
     name: "Home",
-    components: {
-        HomeNav,
-    },
 };
 </script>
 

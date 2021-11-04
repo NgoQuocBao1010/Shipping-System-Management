@@ -1,8 +1,9 @@
 <template>
     <div id="app">
-        <Sidebar v-if="navigation" />
+        <Sidebar v-if="showNav" />
         <div class="container">
-            <Navigation v-if="navigation" />
+            <AuthNavigation v-if="showNav" />
+            <UnauthNav v-else />
             <router-view class="container__content" :key="$route.path" />
         </div>
     </div>
@@ -19,50 +20,28 @@ import L from "leaflet";
 import { IRouter, IGeocoder, LineOptions } from "leaflet-routing-machine";
 
 import Sidebar from "./components/Sidebar.vue";
-import Navigation from "./components/Navigation.vue";
+import AuthNavigation from "./components/Navigation.vue";
+import UnauthNav from "./components/home/Nav.vue";
 
 export default {
     name: "App",
     components: {
         Sidebar,
-        Navigation,
+        AuthNavigation,
+        UnauthNav,
     },
-    data() {
-        return {
-            navigation: null,
-        };
-    },
-    watch: {
-        $route() {
-            this.checkRoute();
+    computed: {
+        showNav() {
+            return this.$store.getters.isAuthenticated;
         },
     },
     methods: {
         ...mapMutations(["saveProvinceInfo"]),
         ...mapActions(["login"]),
-        checkRoute() {
-            // Hide and show navigation bar depending on the page
-            const routesWithNoNav = [
-                "Login",
-                "Register",
-                "ResetPassword",
-                "Home",
-            ];
-
-            if (routesWithNoNav.includes(this.$route.name)) {
-                this.navigation = false;
-                return;
-            }
-
-            this.navigation = true;
-        },
     },
     async beforeCreate() {
         const districts = await this.$province.getAllDistricts();
         this.saveProvinceInfo(districts);
-    },
-    created() {
-        this.checkRoute();
     },
 };
 </script>

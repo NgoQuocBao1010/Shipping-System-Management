@@ -1,4 +1,4 @@
-from django.contrib.auth import get_user_model, authenticate
+from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
@@ -15,7 +15,7 @@ from .serializers import ShipDistanceSerializer, OrderSerializer
 User = get_user_model()
 
 
-@api_view(["GET"])
+@api_view(["GET", "POST"])
 def shippingPrice(request):
     """
     Accept a numeric string as a query parameters preresent a distance (kilometer)
@@ -23,25 +23,34 @@ def shippingPrice(request):
     If there is no parameters, the whole price tag will be return
     ?distance=100000
     """
+    if request.method == "POST":
+        if not request.user.is_admin:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+        priceId = request.data.get("id")
+        priceObj = ShipDistance.objects.get(id=priceId)
+
+        serializer = ShipDistanceSerializer(priceObj, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+        else:
+            print(f"[SERVER]: Error  {serializer.errors}")
+
+        return Response(status=status.HTTP_200_OK)
+
+
     allPrices = ShipDistance.objects.all()
     distance = request.GET.get("distance")
 
     if distance:
         try:
             distance = float(distance)
-            print(distance)
+            allPrices = allPrices.filter(lowerLimit__lte=distance, upperLimit__gt=distance)
         except Exception as e:
-            return Response(
-                status=status.HTTP_400_BAD_REQUEST,
-                data={
-                    "error": "Invalid Input. Distance query parameters should be an number"
-                },
-            )
-
-        allPrices = allPrices.filter(lowerLimit__lte=distance, upperLimit__gt=distance)
-
+            pass
+    
     serializers = ShipDistanceSerializer(allPrices, many=True)
-    return Response(status=status.HTTP_200_OK, data={"data": serializers.data})
+    return Response(status=status.HTTP_200_OK, data=serializers.data)
 
 
 @api_view(["GET"])
