@@ -9,10 +9,14 @@
 </template>
 
 <script>
-import "leaflet/dist/leaflet.css";
-import "leaflet-routing-machine/dist/leaflet-routing-machine.css";
 import "vue-toast-notification/dist/theme-sugar.css";
 import { mapMutations, mapActions } from "vuex";
+
+// Leaflet requirements
+import "leaflet/dist/leaflet.css";
+import "leaflet-routing-machine/dist/leaflet-routing-machine.css";
+import L from "leaflet";
+import { IRouter, IGeocoder, LineOptions } from "leaflet-routing-machine";
 
 import Sidebar from "./components/Sidebar.vue";
 import Navigation from "./components/Navigation.vue";

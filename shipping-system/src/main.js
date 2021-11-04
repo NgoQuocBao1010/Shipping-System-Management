@@ -6,7 +6,7 @@ import Vuelidate from "vuelidate";
 import VueToast from "vue-toast-notification";
 import axios from "axios";
 
-import ProvincesAPI from "./api/locationAPI";
+import ProvincesAPI from "./api/routing/province-api";
 
 Vue.config.productionTip = false;
 Vue.use(Vuelidate);

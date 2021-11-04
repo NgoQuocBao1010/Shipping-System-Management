@@ -4,6 +4,9 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from datetime import datetime, timezone, timedelta
+
+
 from account.serializers import ProfileSerializer
 from account.permissions import AdminOnly
 from .models import Order, ProductOrder, ShipDistance
@@ -74,13 +77,7 @@ def ordersList(request):
             orders = orders.filter(shipper__profile__id=shipper)
 
     # Filter orders on status
-    orderStatus = request.GET.get("status")
-    paymentMethod = request.GET.get("payment")
-
-    if orderStatus and orderStatus.isnumeric():
-        orders = orders.filter(status=orderStatus)
-    if paymentMethod and paymentMethod.isnumeric():
-        orders = orders.filter(paymentMethod=paymentMethod)
+    orders = filterOrders(request, orders)
 
     serializers = OrderSerializer(orders, many=True)
     return Response(status=status.HTTP_200_OK, data=serializers.data)
@@ -212,6 +209,32 @@ def orderEdit(request):
 
 
 # Utils Functions
+def filterOrders(request, orderQuery):
+    """Filter order from get method"""
+    orderStatus = request.GET.get("status")
+    paymentMethod = request.GET.get("payment")
+    startDate = request.GET.get("start")
+    endDate = request.GET.get("end")
+
+    if orderStatus and orderStatus.isnumeric():
+        orderQuery = orderQuery.filter(status=orderStatus)
+    if paymentMethod and paymentMethod.isnumeric():
+        orderQuery = orderQuery.filter(paymentMethod=paymentMethod)
+
+    if startDate and endDate:
+        startDate = datetime.strptime(startDate, "%Y-%m-%d")
+        endDate = datetime.strptime(endDate, "%Y-%m-%d")
+
+        startDate = startDate.replace(tzinfo=timezone.utc)
+        endDate = endDate.replace(tzinfo=timezone.utc)
+
+        endDate += timedelta(days=1)
+
+        orderQuery = orderQuery.filter(dateCreated__range=(startDate, endDate))
+
+    return orderQuery
+
+
 def savePackageInfo(products, order):
     """
     Save all products in the new order

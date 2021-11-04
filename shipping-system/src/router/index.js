@@ -19,7 +19,6 @@ import Unauthorized from "../views/Error/Unauthorized.vue";
 import InternalError from "../views/Error/500.vue";
 import NotFoundError from "../views/Error/404.vue";
 // Others
-import TestMap from "../views/Map.vue";
 import Home from "../views/Home.vue";
 
 import store from "../store/index";
@@ -163,16 +162,6 @@ const routes = [
         component: Home,
         meta: {
             name: "Home",
-            requiredAuth: false,
-        },
-    },
-    // Test Map
-    {
-        path: "/test",
-        name: "Map",
-        component: TestMap,
-        meta: {
-            name: "TestMap",
             requiredAuth: false,
         },
     },

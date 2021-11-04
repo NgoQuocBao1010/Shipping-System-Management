@@ -71,7 +71,7 @@ import Dropdown from "@/components/DropdownInput.vue";
 import Table from "@/components/order/OrderTable.vue";
 import LoadingAnimation from "@/components/CircleAnimation.vue";
 
-import { RepositoryFactory } from "../../api/Factory";
+import { RepositoryFactory } from "@/api/backend/Factory";
 const OrderRepo = RepositoryFactory.get("order");
 
 export default {
@@ -155,6 +155,16 @@ export default {
             this.orders = null;
             await this.getOrderList();
         },
+        async toDate(newVal, oldVal) {
+            if (oldVal) {
+                await this.getOrderList();
+            }
+        },
+        async fromDate(newVal, oldVal) {
+            if (oldVal) {
+                await this.getOrderList();
+            }
+        },
     },
     methods: {
         getToday() {
@@ -167,7 +177,8 @@ export default {
                 const { data } = await OrderRepo.getList(
                     this.status,
                     this.payment,
-                    this.fromDate
+                    this.fromDate,
+                    this.toDate
                 );
                 this.orders = data;
             } catch (e) {

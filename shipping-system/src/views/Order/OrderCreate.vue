@@ -280,8 +280,9 @@ import { mapState } from "vuex";
 import axios from "axios";
 import { required, numeric, minLength } from "vuelidate/lib/validators";
 
-import { RepositoryFactory } from "../../api/Factory";
+import { RepositoryFactory } from "../../api/backend/Factory";
 const OrderRepo = RepositoryFactory.get("order");
+import LocationAPI from "../../api/routing/location";
 
 import Dropdown from "@/components/DropdownInput.vue";
 import Loading from "@/components/CircleAnimation.vue";
@@ -461,12 +462,15 @@ export default {
             this.loading = true; // Trigger loading animation
 
             // Get consignee location and estimate the shipping distance
-            const location = await this.searchLocation(
+            const location = await LocationAPI.search(
                 this.consignee.fullAddress
             );
             console.log("Done getting location", location);
             const routing = location
-                ? await this.calculateDistance(location)
+                ? await LocationAPI.estimateDistance(
+                      this.currentLocation,
+                      location
+                  )
                 : null;
             console.log("Done routing", routing);
             const estimatedPrice = routing
@@ -511,79 +515,20 @@ export default {
                 }
             }
         },
-        async searchLocation(location) {
-            /* Return latitude and longtitude of an given location's name */
-            try {
-                const url =
-                    "https://nominatim.openstreetmap.org/search?format=json&limit=3&q=" +
-                    encodeURIComponent(location);
-                const response = await axios.get(url);
-
-                if (response.data.length > 0) {
-                    const result = response.data[0];
-
-                    return {
-                        latitude: parseFloat(result.lat),
-                        longitude: parseFloat(result.lon),
-                    };
-                }
-                console.log("Error finding location");
-                return;
-            } catch (e) {
-                console.log("Error finding location", e);
-            }
-        },
-        async calculateDistance(destination) {
-            /*
-                Using OpenRoute Service API
-                Calculate destination between the given consignee location and the shop address
-            */
-
-            const orgCoors = [
-                this.currentLocation.longitude,
-                this.currentLocation.latitude,
-            ];
-            const descriptionCoors = [
-                destination.longitude,
-                destination.latitude,
-            ];
-
-            try {
-                const headers = {
-                    Accept: "application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8",
-                    Authorization:
-                        "5b3ce3597851110001cf6248f8c35fd1e82d4754933bf5d8fea33263",
-                    "Content-Type": "application/json; charset=utf-8",
-                };
-                const response = await axios.post(
-                    "https://api.openrouteservice.org/v2/directions/driving-car/geojson",
-                    { coordinates: [orgCoors, descriptionCoors] },
-                    { headers }
-                );
-
-                const routing = response.data.features[0].properties.summary;
-
-                return routing;
-            } catch (e) {
-                console.log(e);
-            }
-        },
         async estimatePrice(distance) {
             /* Call backend API to estimate the shipping money */
 
             try {
-                const distanceInKm = distance / 1000;
-                const response = await axios.get(
-                    `http://127.0.0.1:8000/order/shipping-money/?distance=${distanceInKm}`
-                );
-                if (response.data.data.length > 0) {
-                    return response.data.data[0].price;
+                const { data } = await OrderRepo.getPrice(distance);
+
+                if (data.data.length > 0) {
+                    return data.data[0].price;
                 }
 
                 console.log("Error retriving price info");
                 return null;
             } catch (e) {
-                console.log("Error retriving price info", e.response);
+                console.log("Error retriving price info", e);
             }
         },
         addProduct() {

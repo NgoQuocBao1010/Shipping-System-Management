@@ -4,3 +4,4 @@ Front End
 - Viết trang show tiền theo đường đi. 
 - Viết lại trang Login, Register
 - Thêm phần số lượng vào phần sản phẩm khi đặt hàng create order
+- Thêm phần sửa, đánh dấu đã giao trang quản lý đơn hàng

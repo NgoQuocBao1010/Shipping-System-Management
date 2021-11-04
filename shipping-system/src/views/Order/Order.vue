@@ -12,7 +12,7 @@
 <script>
 import { mapState } from "vuex";
 
-import { RepositoryFactory } from "../../api/Factory";
+import { RepositoryFactory } from "@/api/backend/Factory";
 const OrderRepo = RepositoryFactory.get("order");
 
 import OrderDetail from "@/components/order/OrderDetail.vue";

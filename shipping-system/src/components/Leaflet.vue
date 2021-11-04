@@ -46,10 +46,11 @@
 </template>
 
 <script>
-import axios from "axios";
 import { mapState } from "vuex";
 import L from "leaflet";
 import { LMap, LTileLayer, LPopup, LCircle, LMarker } from "vue2-leaflet";
+
+import LocationAPI from "../api/routing/location";
 
 import LoadingAnimation from "./CircleAnimation.vue";
 
@@ -106,20 +107,19 @@ export default {
             return this.$refs.map.mapObject;
         },
     },
-    watch: {
-        // mapObject(newVal, oldVal) {
-        //     console.log(newVal);
-        // },
-    },
     methods: {
         async routing() {
             /* Routing for order tracking */
-            const coors = await this.$func.searchLocation(
-                this.order.consignee.wardId
-            );
+            const { latitude, longitude } = await LocationAPI.search(
+                this.consigneeAddress
+            ); // Get consignee location
 
+            // Routing process configuration
             const routingControl = L.Routing.control({
-                waypoints: [L.latLng(this.center), L.latLng(coors)],
+                waypoints: [
+                    L.latLng(this.center),
+                    L.latLng({ lat: latitude, lon: longitude }),
+                ],
                 fitSelectedRoutes: true,
                 addWaypoints: false,
                 lineOptions: {
@@ -147,9 +147,10 @@ export default {
                 },
             }).addTo(this.mapObject);
 
-            routingControl.hide();
+            routingControl.hide(); // Hide routing instruction
 
             routingControl.on("routesfound", (e) => {
+                /* Handle event when routes found */
                 this.routes = e.routes;
 
                 this.mapObject.on("zoom", (e) => {
@@ -163,11 +164,11 @@ export default {
         },
     },
     async created() {
-        this.routing();
-
         this.consigneeAddress = await this.$func.getFullAddress(
             this.order.consignee.wardId
         );
+
+        this.routing();
     },
 };
 </script>

@@ -1,5 +1,9 @@
 import axios from "axios";
 
+// const BASE_DOMAIN = "https://provinces.open-api.vn";
+// const BASE_URL = `${BASE_DOMAIN}`;
+// let axiosInstance = `${BASE_DOMAIN}/api/`;
+
 const getAllDistricts = async () => {
     /* 
         Provinces Open API
