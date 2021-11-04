@@ -195,7 +195,10 @@
 
 <script>
 import { mapState, mapMutations } from "vuex";
-import axios from "axios";
+
+import { RepositoryFactory } from "../../api/backend/Factory";
+const AccountAPI = RepositoryFactory.get("account");
+const OrderAPI = RepositoryFactory.get("order");
 
 import TabWrapper from "@/components/profile/TabWrapper.vue";
 import Tab from "@/components/profile/Tab.vue";
@@ -272,8 +275,7 @@ export default {
             /*
                 Get the user profile
                 If it is the current user own profile, return the global user store
-                else
-                    the user can only make API call to get other's profile only when he/she is the admin 
+                else the user can only make API call to get other's profile only when he/she is the admin 
             */
             if (this.isCurrentUser) this.profile = this.user;
             else {
@@ -282,17 +284,9 @@ export default {
 
                 try {
                     this.loadingData = true;
-                    const url = `http://127.0.0.1:8000/account/profile/${this.email}`;
-                    const response = await axios.get(url, {
-                        headers: {
-                            Authorization: `Token ${this.token}`,
-                        },
-                    });
-
-                    this.profile = response.data;
+                    const { data } = await AccountAPI.get(this.email);
+                    this.profile = data;
                 } catch (e) {
-                    console.log(e);
-
                     if (e.response.status === 404) {
                         this.$router.push({ name: "NotFoundError" });
                     }
@@ -304,14 +298,11 @@ export default {
         async getOrderList() {
             /* Call backend API to retrieve list of all orders */
             try {
-                const url = `http://127.0.0.1:8000/order/list/?profileId=${this.profile.id}`;
-                const response = await axios.get(url, {
-                    headers: {
-                        Authorization: `Token ${this.token}`,
-                    },
+                const { data } = await OrderAPI.getListAsAdmin({
+                    profileId: this.profile.id,
                 });
 
-                this.orders = response.data;
+                this.orders = data;
             } catch (e) {
                 console.log(e);
                 if (e.response.status === 400) {
@@ -336,13 +327,7 @@ export default {
             /* Make API call to update profile */
             try {
                 this.loadingData = true;
-                const url = "http://127.0.0.1:8000/account/verify";
-                const response = await axios.post(url, this.profile, {
-                    headers: {
-                        Authorization: `Token ${this.token}`,
-                    },
-                });
-
+                await AccountAPI.update(this.profile);
                 this.edit = false;
                 this.error = false;
                 this.loadingData = false;

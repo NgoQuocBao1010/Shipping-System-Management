@@ -58,8 +58,6 @@ def ordersList(request):
     if not request.user.is_admin:  # if not admin
         orders = orders.filter(user=request.user)
     else:  # if the user is admin
-        # Filters orders on get request
-
         # Filter orders on profile
         profileId = request.GET.get("profileId")
         if profileId:
@@ -73,7 +71,7 @@ def ordersList(request):
 
         # Filter orders on shipper
         shipper = request.GET.get("shipper")
-        if shipper:
+        if shipper and shipper.isnumeric():
             orders = orders.filter(shipper__profile__id=shipper)
 
     # Filter orders on status
@@ -225,10 +223,11 @@ def filterOrders(request, orderQuery):
         startDate = datetime.strptime(startDate, "%Y-%m-%d")
         endDate = datetime.strptime(endDate, "%Y-%m-%d")
 
+        # Add timezone sensitive to datetime obj
         startDate = startDate.replace(tzinfo=timezone.utc)
         endDate = endDate.replace(tzinfo=timezone.utc)
 
-        endDate += timedelta(days=1)
+        endDate += timedelta(days=1)  # add 1 day to include the endate from query
 
         orderQuery = orderQuery.filter(dateCreated__range=(startDate, endDate))
 

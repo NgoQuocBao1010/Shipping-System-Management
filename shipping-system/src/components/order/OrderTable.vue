@@ -8,6 +8,7 @@
                     <th class="date">Date created</th>
                     <th class="username">From Account</th>
                     <th class="address">Place of delivery</th>
+                    <th class="address">Payment Method</th>
                     <th class="account">Shipper</th>
                     <th class="status">Status</th>
                 </tr>
@@ -35,6 +36,7 @@
                                 .name
                         }}
                     </td>
+                    <td>{{ paymentMethods[order.paymentMethod] }}</td>
                     <td>
                         {{
                             order.shipperInfo

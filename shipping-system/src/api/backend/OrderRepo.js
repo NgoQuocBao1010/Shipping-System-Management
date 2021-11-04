@@ -25,6 +25,13 @@ export default {
             `${resource}/list/?status=${status}&payment=${payment}&start=${startDate}&end=${endDate}`
         );
     },
+    getListAsAdmin({ profileId = null, shipper = null }) {
+        /* Query list of orders correspond to user account, only admin */
+        useLocalToken();
+        return Repository.get(
+            `${resource}/list/?profileId=${profileId}&shipper=${shipper}`
+        );
+    },
     getPrice(distance) {
         /* get the shipping price of given distance */
         const distanceInKm = distance / 1000;

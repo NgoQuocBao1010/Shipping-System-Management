@@ -12,6 +12,7 @@
                             placeholder="All"
                             label="Status"
                             :noSearch="true"
+                            :all="true"
                         />
                     </div>
 
@@ -23,6 +24,7 @@
                             placeholder="All"
                             label="Payment Methods"
                             :noSearch="true"
+                            :all="true"
                         />
                     </div>
 

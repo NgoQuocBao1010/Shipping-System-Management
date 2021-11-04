@@ -41,7 +41,7 @@ const routes = [
             adminOnly: false,
         },
     },
-    // Orders
+    // Orders List for Management
     {
         path: "/orders",
         name: "Orders",

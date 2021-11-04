@@ -79,6 +79,10 @@ export default {
             type: Boolean,
             default: false,
         }, // no filter options needed
+        all: {
+            type: Boolean,
+            default: false,
+        }, // return null to v-model
     },
     data() {
         return {
@@ -132,6 +136,13 @@ export default {
     },
     created() {
         this.filterArr = this.options;
+
+        if (this.all) {
+            this.filterArr.push({
+                id: null,
+                name: "All",
+            });
+        }
 
         if (this.value) {
             this.filterArr.forEach((obj, index) => {

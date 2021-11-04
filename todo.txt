@@ -1,7 +1,18 @@
 Front End
 - Viết lại trang Profile X
+- Sửa bug filter tất cả trong quản lý đơn hàng X
 - Viết trang Home, 404, Unauth. 
 - Viết trang show tiền theo đường đi. 
-- Viết lại trang Login, Register
 - Thêm phần số lượng vào phần sản phẩm khi đặt hàng create order
 - Thêm phần sửa, đánh dấu đã giao trang quản lý đơn hàng
+- Thêm phần thể hiện trạng thái tài xế trong profile
+- Trang báo cáo
+- Hoàn thành demo mobile app cho tài xế
+
+
+
+- Thêm phân trang cho quản lý đơn hàng
+- Viết lại trang Login, Register
+
+Backend
+- Custom id cho Order
