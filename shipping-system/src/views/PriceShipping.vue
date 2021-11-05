@@ -1,9 +1,16 @@
 <template>
     <div class="wrapper">
+        <!-- Header -->
         <div class="header">
             <span>Kaz Shipping System</span>
             <i class="fas fa-shipping-fast icon"></i> price list
+
+            <button class="small" @click="editPriceObj(-1)">
+                <i class="fas fa-plus-circle"></i>Add Price
+            </button>
         </div>
+
+        <!-- Main content -->
         <div class="content">
             <!-- Table of pricing list -->
             <table>
@@ -12,7 +19,7 @@
                         <th>Distance</th>
                         <th>Price</th>
                         <th>Estimated Time to Shipped</th>
-                        <th v-if="$store.getters.isAdmin">Edit</th>
+                        <th v-if="$store.getters.isAdmin">Edit / Delete</th>
                     </tr>
                 </thead>
 
@@ -27,11 +34,15 @@
                         </td>
                         <td>{{ $func.formatMoneyToVND(price.price) }} VND</td>
                         <td>Less than 1 day</td>
-                        <td
-                            v-if="$store.getters.isAdmin"
-                            @click="editObj(index)"
-                        >
-                            <i class="fas fa-edit"></i>
+                        <td v-if="$store.getters.isAdmin">
+                            <i
+                                class="fas fa-edit"
+                                @click="editPriceObj(index)"
+                            ></i>
+                            <i
+                                class="fas fa-minus-circle"
+                                @click="deletePrice(index)"
+                            ></i>
                         </td>
                     </tr>
                 </tbody>
@@ -55,9 +66,26 @@
                         <input type="number" v-model="editPrice.price" />
                     </div>
 
-                    <button type="submit" class="small" @click.prevent="submit">
-                        Save
-                    </button>
+                    <p v-show="error" class="error">
+                        <i class="fas fa-exclamation-circle"></i>{{ error }}
+                    </p>
+
+                    <div class="buttons-container">
+                        <button
+                            type="submit"
+                            class="small"
+                            @click.prevent="submit"
+                        >
+                            Save
+                        </button>
+
+                        <button
+                            class="small close"
+                            @click.prevent="edit = false"
+                        >
+                            Close
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -65,6 +93,8 @@
 </template>
 
 <script>
+import { required, minLength } from "vuelidate/lib/validators";
+
 import { RepositoryFactory } from "../api/backend/Factory";
 const OrderAPI = RepositoryFactory.get("order");
 
@@ -72,30 +102,88 @@ export default {
     data() {
         return {
             prices: null,
-
             edit: false,
             editPrice: {
                 lowerLimit: null,
                 upperLimit: null,
                 price: null,
             },
+
+            // form error
+            error: null,
         };
     },
+    computed: {
+        submitMsg() {
+            return false;
+        },
+    },
     methods: {
-        editObj(index) {
+        async getPrices() {
+            /* Get all prices */
+            const { data } = await OrderAPI.getAllPrices();
+            this.prices = data;
+        },
+        editPriceObj(index) {
             this.edit = true;
-            this.editPrice = this.prices[index];
+            if (index !== -1) {
+                this.editPrice = this.prices[index];
+            } else {
+                this.editPrice = {
+                    lowerLimit: null,
+                    upperLimit: null,
+                    price: null,
+                };
+            }
+        },
+        async deletePrice(index) {
+            const userConfirm = confirm(`Are you sure to delete this price?`);
+
+            if (userConfirm) {
+                try {
+                    const priceId = this.prices[index].id;
+                    await OrderAPI.deletePrice(priceId);
+
+                    this.$toast.success("Delete successfully");
+                    await this.getPrices();
+                } catch (e) {
+                    console.log(e);
+                }
+            }
         },
         async submit() {
-            this.edit = false;
-            console.log(this.editPrice);
+            /* Submit handler */
 
-            await OrderAPI.editShippingPrice(this.editPrice);
+            this.$v.$touch();
+            if (this.$v.$error) {
+                this.error =
+                    "Please fill out all the field and make sure the price is at least 10.000 VND";
+
+                return;
+            }
+
+            this.error = null;
+
+            try {
+                this.edit = false;
+                await OrderAPI.editShippingPrice(this.editPrice);
+
+                this.$toast.success("Update successfully");
+                await this.getPrices();
+            } catch (e) {
+                console.log(e.response);
+            }
+        },
+    },
+    validations: {
+        editPrice: {
+            lowerLimit: { required },
+            upperLimit: { required },
+            price: { required, minLength: minLength(5) },
         },
     },
     async mounted() {
-        const { data } = await OrderAPI.getAllPrices();
-        this.prices = data;
+        await this.getPrices();
     },
 };
 </script>
@@ -165,6 +253,18 @@ export default {
                     padding: 5px;
                     font-size: 1.3rem;
                     cursor: pointer;
+                    margin-right: 10px;
+                    color: var(--secondary-color);
+
+                    transition: 0.2s ease all;
+
+                    &.fa-minus-circle {
+                        color: rgb(247, 63, 63);
+                    }
+
+                    &:hover {
+                        color: var(--primary-color);
+                    }
                 }
             }
         }
@@ -172,6 +272,8 @@ export default {
 
     form {
         margin: 1rem 0;
+        padding: 1rem;
+        border-bottom: 3px solid var(--primary-color);
 
         .inputs {
             display: flex;
@@ -179,6 +281,10 @@ export default {
             align-items: center;
             font-size: 1.2rem;
             margin: 1rem 0;
+
+            label {
+                font-weight: 500;
+            }
 
             input {
                 padding: 4px 12px;
@@ -192,6 +298,26 @@ export default {
                     border: 2px solid var(--primary-color) !important;
                     outline: none;
                 }
+            }
+        }
+
+        .error {
+            color: red;
+            font-weight: 600;
+            font-style: italic;
+
+            i {
+                margin-right: 5px;
+                margin-bottom: 10px;
+            }
+        }
+
+        .buttons-container {
+            display: flex;
+            gap: 2rem;
+
+            .close {
+                background: rgb(248, 62, 62);
             }
         }
     }

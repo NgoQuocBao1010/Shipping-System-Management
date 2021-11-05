@@ -4,6 +4,7 @@
         <div class="order-container__header">
             <h1 class="title" v-if="order.id">
                 Order #{{ order.id }}
+                <i class="far fa-copy" @click="generatePreviewLink"></i>
                 <span
                     class="status"
                     :class="'order-' + statusCodes[order.status]"
@@ -242,6 +243,19 @@ export default {
             );
         },
     },
+    methods: {
+        generatePreviewLink() {
+            const orderPreviewLink = document.createElement("a");
+            orderPreviewLink.href = this.$router.resolve({
+                name: "OrderPreview",
+                params: { id: this.order.id },
+            }).href;
+
+            navigator.clipboard.writeText(orderPreviewLink.href);
+
+            this.$toast.info("Copy to clipboard");
+        },
+    },
     async created() {
         const wardObj = await this.$province.getWard(
             this.order.consignor.wardId
@@ -266,7 +280,14 @@ export default {
             font-size: 2rem;
             display: flex;
             align-items: center;
-            gap: 5rem;
+            gap: 2rem;
+
+            i {
+                font-size: 1.2rem;
+                padding: 1rem;
+                color: rgb(109, 106, 106);
+                cursor: pointer;
+            }
 
             .status {
                 text-transform: capitalize;

@@ -41,3 +41,23 @@ class OrderSerializer(serializers.ModelSerializer):
             "user",
             "shipper",
         )
+
+
+class OrderPreviewSerializer(serializers.ModelSerializer):
+    consignee = ProfileSerializer(read_only=True)
+    shipperInfo = serializers.SerializerMethodField()
+    dateCreated = serializers.DateTimeField(format="%d-%m-%Y")
+
+    def get_shipperInfo(self, obj):
+        if not obj.shipper:
+            return None
+
+        shipperProfile = ProfileSerializer(obj.shipper.profile, many=False)
+        return shipperProfile.data
+
+    class Meta:
+        model = Order
+        exclude = (
+            "user",
+            "shipper",
+        )

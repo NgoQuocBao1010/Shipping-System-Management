@@ -10,6 +10,7 @@ import Orders from "../views/Order/OrderList.vue";
 import Order from "../views/Order/Order.vue";
 import OrderCreate from "../views/Order/OrderCreate.vue";
 import OrdersAssign from "../views/Order/OrdersAssign.vue";
+import OrderPreview from "../views/Order/OrderPreview.vue";
 // Authorization
 import Login from "../views/Auth/Login.vue";
 import Register from "../views/Auth/Register.vue";
@@ -149,8 +150,7 @@ const routes = [
         component: NotFoundError,
         meta: {
             name: "Not Found",
-            authOnly: true,
-            adminOnly: false,
+            easy: true,
         },
     },
     /* 
@@ -173,6 +173,17 @@ const routes = [
         component: PriceShipping,
         meta: {
             name: "Shipping Price",
+            easy: true,
+        },
+    },
+    // Order Preview
+    {
+        path: "/preview/:id",
+        name: "OrderPreview",
+        props: true,
+        component: OrderPreview,
+        meta: {
+            name: "Order Preview",
             easy: true,
         },
     },

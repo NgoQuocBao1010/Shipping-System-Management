@@ -14,7 +14,6 @@
             <li class="step" :class="deliveredClass" data-step="3">
                 Delivered
             </li>
-            <!-- <li class="step" data-step="4">Confirm</li> -->
         </ol>
 
         <ol class="steps fail" v-else>
@@ -74,8 +73,8 @@ export default {
             position: relative;
             display: table-cell;
             text-align: center;
-            font-size: 0.875rem;
-            font-weight: 500;
+            font-size: 1rem;
+            font-weight: 900;
             color: #6d6875;
 
             &:before {
@@ -110,7 +109,7 @@ export default {
                 display: none;
             }
             &.is-complete {
-                color: #6d6875;
+                color: black;
 
                 &:before {
                     content: "\2713";

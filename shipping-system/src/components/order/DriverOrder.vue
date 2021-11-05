@@ -1,5 +1,10 @@
 <template>
     <div class="wrapper">
+        <p class="status" v-if="ordersInDeliver">
+            Delivering <span>{{ ordersInDeliver }}</span> orders
+        </p>
+        <p class="status" v-else>No orders are delivering at the moment</p>
+
         <!-- Tab navigation -->
         <ul class="navigation">
             <li
@@ -18,13 +23,16 @@
             :orders="orders"
             @assign="assignOrder"
             @remove="unassignOrder"
-            :remove="selectedIndex === 1"
+            :remove="selectedIndex === 0"
         />
     </div>
 </template>
 
 <script>
 import axios from "axios";
+
+import { RepositoryFactory } from "@/api/backend/Factory";
+const OrderAPI = RepositoryFactory.get("order");
 
 import OrderTable from "./OrderTable.vue";
 import SelectTable from "./SelectTable.vue";
@@ -43,21 +51,22 @@ export default {
         return {
             tabs: [
                 {
-                    name: "Assigned Order",
-                    query: "status=1",
+                    name: "Order Delivering",
+                    query: { status: 2, shipper: this.profile.id },
                 },
                 {
-                    name: "Status",
-                    query: `status=2&shipper=${this.profile.id}`,
+                    name: "Processing Order",
+                    query: { status: 1 },
                 },
                 {
                     name: "History",
-                    query: `status=3&shipper=${this.profile.id}`,
+                    query: { status: 2, shipper: this.profile.id },
                 },
             ],
             selectedIndex: 0,
 
             orders: [],
+            ordersInDeliver: 0,
             assignedOrder: null,
         };
     },
@@ -77,15 +86,11 @@ export default {
             const query = this.tabs[this.selectedIndex].query;
 
             try {
-                const url = `http://127.0.0.1:8000/order/list/?${query}`;
-                const response = await axios.get(url, {
-                    headers: {
-                        Authorization: `Token ${this.token}`,
-                    },
-                });
+                const { data } = await OrderAPI.getListAsAdmin(query);
+                this.orders = data;
 
-                // console.log(response.data);
-                this.orders = response.data;
+                if (this.selectedIndex === 0)
+                    this.ordersInDeliver = data.length;
             } catch (e) {
                 console.log(e);
             }
@@ -98,17 +103,10 @@ export default {
                     orders: chosenOrders,
                 };
 
-                const url = `http://127.0.0.1:8000/order/assign/`;
-                const response = await axios.post(url, data, {
-                    headers: {
-                        Authorization: `Token ${this.token}`,
-                    },
-                });
+                await OrderAPI.assignOrders(data);
 
-                if (response.status === 200) {
-                    this.$toast.success("Completed!!!");
-                    this.selectedIndex = 1;
-                }
+                this.$toast.success("Assign Completed!!!");
+                this.selectedIndex = 0;
             } catch (e) {
                 console.log(e);
             }
@@ -120,17 +118,12 @@ export default {
                     orders: chosenOrders,
                 };
 
-                const url = `http://127.0.0.1:8000/order/edit/`;
-                const response = await axios.post(url, data, {
-                    headers: {
-                        Authorization: `Token ${this.token}`,
-                    },
-                });
+                await OrderAPI.unassignOrders(data);
 
-                if (response.status === 200) {
-                    this.$toast.success("Completed!!!");
-                    this.selectedIndex = 0;
-                }
+                this.$toast.success("Unassign Completed!!!");
+                this.selectedIndex = 1;
+                this.ordersInDeliver =
+                    this.ordersInDeliver - chosenOrders.length;
             } catch (e) {
                 console.log(e);
             }
@@ -144,6 +137,17 @@ export default {
 
 <style lang="scss" scoped>
 .wrapper {
+    .status {
+        font-size: 1.4rem;
+        font-weight: 600;
+        margin-bottom: 2rem;
+
+        span {
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+    }
+
     .navigation {
         margin-bottom: 1rem;
         display: flex;

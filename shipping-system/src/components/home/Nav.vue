@@ -10,6 +10,7 @@
             <input
                 class="search__input"
                 type="text"
+                v-model="orderId"
                 placeholder="Look for your order here"
             />
         </form>
@@ -31,6 +32,22 @@
 <script>
 export default {
     name: "HomeNav",
+    data() {
+        return {
+            orderId: null,
+        };
+    },
+    methods: {
+        async search() {
+            /* Search order id */
+            this.$router.push({
+                name: "OrderPreview",
+                params: { id: this.orderId },
+            });
+
+            this.orderId = null;
+        },
+    },
 };
 </script>
 

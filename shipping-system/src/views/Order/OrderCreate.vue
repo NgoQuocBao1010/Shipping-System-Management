@@ -277,7 +277,6 @@
 
 <script>
 import { mapState } from "vuex";
-import axios from "axios";
 import { required, numeric, minLength } from "vuelidate/lib/validators";
 
 import { RepositoryFactory } from "../../api/backend/Factory";

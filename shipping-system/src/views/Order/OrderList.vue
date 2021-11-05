@@ -176,12 +176,12 @@ export default {
         async getOrderList() {
             /* Call backend API to retrieve list of all orders */
             try {
-                const { data } = await OrderRepo.getList(
-                    this.status,
-                    this.payment,
-                    this.fromDate,
-                    this.toDate
-                );
+                const { data } = await OrderRepo.getList({
+                    status: this.status,
+                    payment: this.payment,
+                    startDate: this.fromDate,
+                    endDate: this.toDate,
+                });
                 this.orders = data;
             } catch (e) {
                 this.$func.handleError(e);

@@ -10,9 +10,9 @@ User = get_user_model()
 class ShipDistance(models.Model):
     MAX_VALUE = 1000
 
-    lowerLimit = models.IntegerField(null=True, blank=True)
-    upperLimit = models.IntegerField(null=True, blank=True, default=MAX_VALUE)
-    price = models.IntegerField(null=True, blank=True)
+    lowerLimit = models.IntegerField(default=0)
+    upperLimit = models.IntegerField(default=MAX_VALUE)
+    price = models.IntegerField(default=20000)
 
     class Meta:
         constraints = [

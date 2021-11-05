@@ -35,10 +35,6 @@
                     :url="mapConfig.url"
                     :attribution="mapConfig.attribution"
                 ></l-tile-layer>
-                <!-- <l-circle :lat-lng="center" :radius="10" color="red" /> -->
-                <!-- <l-marker :lat-lng="center" :icon="icons.companyIcons">
-                    <l-popup><h1>Kaz Shipping Comapny</h1></l-popup>
-                </l-marker> -->
             </l-map>
         </div>
         <button @click="setZoomLevel">Reset Map</button>

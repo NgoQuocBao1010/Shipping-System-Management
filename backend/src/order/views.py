@@ -10,7 +10,7 @@ from datetime import datetime, timezone, timedelta
 from account.serializers import ProfileSerializer
 from account.permissions import AdminOnly
 from .models import Order, ProductOrder, ShipDistance
-from .serializers import ShipDistanceSerializer, OrderSerializer
+from .serializers import ShipDistanceSerializer, OrderSerializer, OrderPreviewSerializer
 
 User = get_user_model()
 
@@ -28,29 +28,56 @@ def shippingPrice(request):
             return Response(status=status.HTTP_401_UNAUTHORIZED)
 
         priceId = request.data.get("id")
-        priceObj = ShipDistance.objects.get(id=priceId)
 
-        serializer = ShipDistanceSerializer(priceObj, data=request.data)
+        if priceId:
+            priceObj = ShipDistance.objects.get(id=priceId)
+            serializer = ShipDistanceSerializer(priceObj, data=request.data)
+        else:
+            serializer = ShipDistanceSerializer(data=request.data)
+
         if serializer.is_valid():
             serializer.save()
         else:
             print(f"[SERVER]: Error  {serializer.errors}")
+            return Response(status=status.HTTP_400_BAD_REQUEST, data=serializer.errors)
 
         return Response(status=status.HTTP_200_OK)
 
-
-    allPrices = ShipDistance.objects.all()
+    allPrices = ShipDistance.objects.all().order_by("lowerLimit")
     distance = request.GET.get("distance")
 
     if distance:
         try:
             distance = float(distance)
-            allPrices = allPrices.filter(lowerLimit__lte=distance, upperLimit__gt=distance)
+            allPrices = allPrices.filter(
+                lowerLimit__lte=distance, upperLimit__gt=distance
+            )
         except Exception as e:
             pass
-    
+
     serializers = ShipDistanceSerializer(allPrices, many=True)
     return Response(status=status.HTTP_200_OK, data=serializers.data)
+
+
+@api_view(["DELETE", "PUT"])
+@permission_classes([IsAuthenticated, AdminOnly])
+def priceEdit(request, id):
+    try:
+        price = ShipDistance.objects.get(id=id)
+    except ShipDistance.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == "PUT":
+        serializer = ShipDistanceSerializer(price, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    if request.method == "DELETE":
+        price.delete()
+
+    return Response(status=status.HTTP_200_OK)
 
 
 @api_view(["GET"])
@@ -69,13 +96,7 @@ def ordersList(request):
     else:  # if the user is admin
         # Filter orders on profile
         profileId = request.GET.get("profileId")
-        if profileId:
-            if not profileId.isnumeric():
-                return Response(
-                    status=status.HTTP_400_BAD_REQUEST,
-                    data={"error": "Invalid profile id"},
-                )
-
+        if profileId and profileId.isnumeric():
             orders = orders.filter(user__profile__id=profileId)
 
         # Filter orders on shipper
@@ -90,7 +111,7 @@ def ordersList(request):
     return Response(status=status.HTTP_200_OK, data=serializers.data)
 
 
-@api_view(["GET", "POST"])
+@api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def order(request, id):
     """
@@ -119,6 +140,19 @@ def order(request, id):
 
     serializers = OrderSerializer(order, many=False)
     return Response(status=status.HTTP_200_OK, data=serializers.data)
+
+
+@api_view(["GET"])
+def orderPreview(request, id):
+    """Return the brief preview of an order for non-account user"""
+
+    try:
+        order = Order.objects.get(id=id)
+    except Order.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    serializer = OrderPreviewSerializer(order, many=False)
+    return Response(status=status.HTTP_200_OK, data=serializer.data)
 
 
 @api_view(["POST"])

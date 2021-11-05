@@ -3,7 +3,13 @@
         <h1>Oops, this page is not available</h1>
         <p>
             Go back to
-            <router-link :to="{ name: 'Orders' }"> your orders </router-link>
+            <router-link
+                v-if="$store.getters.isAuthenticated"
+                :to="{ name: 'Orders' }"
+            >
+                your orders
+            </router-link>
+            <router-link v-else :to="{ name: 'Home' }"> Home page </router-link>
         </p>
     </div>
 </template>
