@@ -4,8 +4,8 @@ Front End
 - Viết trang show tiền theo đường đi. X
 - Viết trang theo dõi đơn hàng cho người chưa đăng nhập X
 - Thêm phần thể hiện trạng thái tài xế trong profile X
+- Thêm phần sửa, đánh dấu đã giao trang quản lý đơn hàng X
 - Viết trang Home, 404, Unauth. 
-- Thêm phần sửa, đánh dấu đã giao trang quản lý đơn hàng
 - Trang báo cáo
 - Hoàn thành demo mobile app cho tài xế
 

@@ -5,7 +5,11 @@
             <span>Kaz Shipping System</span>
             <i class="fas fa-shipping-fast icon"></i> price list
 
-            <button class="small" @click="editPriceObj(-1)">
+            <button
+                v-if="$store.getters.isAuthenticated"
+                class="small"
+                @click="editPriceObj(-1)"
+            >
                 <i class="fas fa-plus-circle"></i>Add Price
             </button>
         </div>

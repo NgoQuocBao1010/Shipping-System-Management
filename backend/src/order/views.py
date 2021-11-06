@@ -9,6 +9,7 @@ from datetime import datetime, timezone, timedelta
 
 from account.serializers import ProfileSerializer
 from account.permissions import AdminOnly
+from account.models import Profile
 from .models import Order, ProductOrder, ShipDistance
 from .serializers import ShipDistanceSerializer, OrderSerializer, OrderPreviewSerializer
 
@@ -111,7 +112,7 @@ def ordersList(request):
     return Response(status=status.HTTP_200_OK, data=serializers.data)
 
 
-@api_view(["GET"])
+@api_view(["GET", "DELETE", "POST"])
 @permission_classes([IsAuthenticated])
 def order(request, id):
     """
@@ -123,7 +124,7 @@ def order(request, id):
             status=status.HTTP_400_BAD_REQUEST, data={"error": "Invalid query"}
         )
 
-    order = None
+    
     try:
         order = Order.objects.get(id=id)
 
@@ -137,6 +138,15 @@ def order(request, id):
         return Response(
             status=status.HTTP_404_NOT_FOUND, data={"error": "Order does not exist"}
         )
+    
+    if request.method == 'DELETE':
+        print(order)
+        # order.delete()
+        return Response(status=status.HTTP_200_OK)
+    
+    if request.method == "POST":
+        editOrder(order, request.data)
+        return Response(status=status.HTTP_200_OK)
 
     serializers = OrderSerializer(order, many=False)
     return Response(status=status.HTTP_200_OK, data=serializers.data)
@@ -153,6 +163,7 @@ def orderPreview(request, id):
 
     serializer = OrderPreviewSerializer(order, many=False)
     return Response(status=status.HTTP_200_OK, data=serializer.data)
+
 
 
 @api_view(["POST"])
@@ -234,7 +245,7 @@ def ordersAssign(request):
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated, AdminOnly])
-def orderEdit(request):
+def ordersUnassign(request):
     """Edit and delete order"""
     if request.method == "POST":
         if request.data.get("orders"):
@@ -276,6 +287,25 @@ def filterOrders(request, orderQuery):
 
     return orderQuery
 
+
+def editOrder(order, data):
+    print(order, data)
+
+    newStatus = data.get("status")
+    if newStatus:
+        order.status = newStatus
+    
+    newPayment = data.get("paymentMethod")
+    if newPayment:
+        order.paymentMethod = newPayment
+    
+    driverId = data.get("driverId")
+    if driverId:
+        driverProfile = Profile.objects.get(id=driverId)
+        order.shipper = driverProfile.user
+
+    order.save()
+    return True
 
 def savePackageInfo(products, order):
     """

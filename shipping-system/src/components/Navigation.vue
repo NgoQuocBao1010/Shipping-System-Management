@@ -17,11 +17,7 @@
 
         <!-- Noti, profile, ... -->
         <div class="nav__icons">
-            <router-link
-                :to="{ name: 'OrderCreate' }"
-                class="btn"
-                v-show="makeOrder"
-            >
+            <router-link :to="{ name: 'OrderCreate' }" class="btn">
                 <i class="fas fa-pen"></i>Make order
             </router-link>
             <i class="fas fa-bell notification"></i>
@@ -45,7 +41,6 @@ export default {
     data() {
         return {
             searchContent: "",
-            makeOrder: null,
         };
     },
     watch: {
@@ -57,7 +52,6 @@ export default {
             }
         },
     },
-    computed: {},
     methods: {
         async search() {
             /* Search order id */
@@ -82,10 +76,6 @@ export default {
                 this.searchContent = "";
             }
         },
-    },
-    mounted() {
-        if (this.$route.name === "Orders") this.makeOrder = true;
-        else this.makeOrder = false;
     },
 };
 </script>

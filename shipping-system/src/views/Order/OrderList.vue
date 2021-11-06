@@ -69,12 +69,14 @@
 import moment from "moment";
 import { mapState } from "vuex";
 
+import { RepositoryFactory } from "@/api/backend/Factory";
+const OrderAPI = RepositoryFactory.get("order");
+
+import { statusOptions, paymentOptions } from "../../globalVariables";
+
 import Dropdown from "@/components/DropdownInput.vue";
 import Table from "@/components/order/OrderTable.vue";
 import LoadingAnimation from "@/components/CircleAnimation.vue";
-
-import { RepositoryFactory } from "@/api/backend/Factory";
-const OrderRepo = RepositoryFactory.get("order");
 
 export default {
     name: "Orders",
@@ -88,36 +90,10 @@ export default {
             orders: null,
 
             // status
-            statusOptions: [
-                {
-                    id: 1,
-                    name: "Processing",
-                },
-                {
-                    id: 2,
-                    name: "Delivering",
-                },
-                {
-                    id: 3,
-                    name: "Delivered",
-                },
-                {
-                    id: 4,
-                    name: "Failed",
-                },
-            ],
+            statusOptions,
             status: null,
             // Payment Information
-            paymentOptions: [
-                {
-                    id: 1,
-                    name: "Pay by consignor",
-                },
-                {
-                    id: 2,
-                    name: "Pay by consignee",
-                },
-            ],
+            paymentOptions,
             payment: null,
 
             fromDate: null,
@@ -176,7 +152,7 @@ export default {
         async getOrderList() {
             /* Call backend API to retrieve list of all orders */
             try {
-                const { data } = await OrderRepo.getList({
+                const { data } = await OrderAPI.getList({
                     status: this.status,
                     payment: this.payment,
                     startDate: this.fromDate,

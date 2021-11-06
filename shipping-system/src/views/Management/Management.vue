@@ -42,6 +42,9 @@
 import { mapState } from "vuex";
 import axios from "axios";
 
+import { RepositoryFactory } from "../../api/backend/Factory";
+const AccountAPI = RepositoryFactory.get("account");
+
 import EmployeeCard from "@/components/management/EmployeeCard.vue";
 import LoadingAnimation from "../../components/CircleAnimation.vue";
 
@@ -74,14 +77,9 @@ export default {
             try {
                 const role = this.categories[this.selectedIndex];
 
-                const url = `http://127.0.0.1:8000/account/list?q=${role}`;
-                const response = await axios.get(url, {
-                    headers: {
-                        Authorization: `Token ${this.token}`,
-                    },
-                });
+                const { data } = await AccountAPI.queryProfile({ role });
 
-                this.profileList = response.data;
+                this.profileList = data;
             } catch (e) {
                 console.log(e);
             }

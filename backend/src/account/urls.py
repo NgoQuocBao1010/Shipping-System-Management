@@ -8,7 +8,7 @@ urlpatterns = [
     path("verify/", views.verifyAccount, name="verifyAccount"),
     # profile information
     path("profile/<str:email>", views.profile, name="profile"),
-    path("list", views.profileList, name="profileList"),
+    path("list/", views.profileList, name="profileList"),
     # driver administrator
     path("driver/add", views.createDriver, name="createDriver"),
 ]

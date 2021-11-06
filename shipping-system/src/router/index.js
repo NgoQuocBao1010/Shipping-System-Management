@@ -9,7 +9,7 @@ import DriverAdminis from "@/views/Management/DriverAdminis.vue";
 import Orders from "../views/Order/OrderList.vue";
 import Order from "../views/Order/Order.vue";
 import OrderCreate from "../views/Order/OrderCreate.vue";
-import OrdersAssign from "../views/Order/OrdersAssign.vue";
+import OrderEdit from "../views/Order/OrderEdit.vue";
 import OrderPreview from "../views/Order/OrderPreview.vue";
 // Authorization
 import Login from "../views/Auth/Login.vue";
@@ -66,6 +66,21 @@ const routes = [
             adminOnly: false,
         },
     },
+    // Order Edit
+    {
+        path: "/orders/edit/:id",
+        name: "OrderEdit",
+        component: OrderEdit,
+        props: (route) => ({
+            id: route.params.id,
+            orderInstance: route.params.orderInstance,
+        }),
+        meta: {
+            name: "Order Edit",
+            authOnly: true,
+            adminOnly: false,
+        },
+    },
     // Order create
     {
         path: "/orders/create/",
@@ -73,17 +88,6 @@ const routes = [
         component: OrderCreate,
         meta: {
             name: "Order Create",
-            authOnly: true,
-            adminOnly: false,
-        },
-    },
-    // Order assign
-    {
-        path: "/orders/assign/",
-        name: "OrdersAssign",
-        component: OrdersAssign,
-        meta: {
-            name: "Assign Orders",
             authOnly: true,
             adminOnly: false,
         },

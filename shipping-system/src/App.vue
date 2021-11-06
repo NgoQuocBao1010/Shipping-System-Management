@@ -3,7 +3,14 @@
         <Sidebar v-if="showNav" />
         <div class="container">
             <AuthNavigation v-if="showNav" />
-            <UnauthNav v-else />
+            <UnauthNav
+                v-if="
+                    !showNav &&
+                    !['Login', 'Register', 'ResetPassword'].includes(
+                        $route.name
+                    )
+                "
+            />
             <router-view class="container__content" :key="$route.path" />
         </div>
     </div>

@@ -12,6 +12,18 @@
                     {{ statusCodes[order.status] }}
                 </span>
             </h1>
+
+            <!-- Edit Button -->
+            <router-link
+                v-if="$store.getters.isAuthenticated && order.id"
+                :to="{
+                    name: 'OrderEdit',
+                    params: { id: order.id, orderInstance: order },
+                }"
+                class="btn small"
+            >
+                <i class="fas fa-edit"></i>Edit
+            </router-link>
         </div>
 
         <!-- Order Information -->
@@ -274,6 +286,7 @@ export default {
     &__header {
         display: flex;
         justify-content: space-between;
+        align-items: center;
         margin-bottom: 2rem;
 
         .title {
@@ -292,6 +305,15 @@ export default {
             .status {
                 text-transform: capitalize;
                 font-size: 12px;
+            }
+        }
+
+        a {
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+
+            i {
+                font-size: 1rem;
             }
         }
     }

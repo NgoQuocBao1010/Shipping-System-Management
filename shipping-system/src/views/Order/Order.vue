@@ -13,7 +13,7 @@
 import { mapState } from "vuex";
 
 import { RepositoryFactory } from "@/api/backend/Factory";
-const OrderRepo = RepositoryFactory.get("order");
+const OrderAPI = RepositoryFactory.get("order");
 
 import OrderDetail from "@/components/order/OrderDetail.vue";
 import Map from "@/components/Leaflet.vue";
@@ -42,7 +42,7 @@ export default {
                 Call backend API to retrieve order data that correspond to the query id
             */
             try {
-                const { data } = await OrderRepo.get(this.id);
+                const { data } = await OrderAPI.get(this.id);
                 this.order = data;
             } catch (e) {
                 if (e.response.status === 404) {

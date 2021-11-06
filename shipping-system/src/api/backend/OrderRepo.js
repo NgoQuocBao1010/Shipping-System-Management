@@ -42,8 +42,19 @@ export default {
         );
     },
     create(data) {
+        /* Create new order */
         useLocalToken();
         return Repository.post(`${resource}/create/`, data);
+    },
+    edit({ orderId = null, data = null }) {
+        /* Delete an order */
+        useLocalToken();
+        return Repository.post(`${resource}/detail/${orderId}/`, data);
+    },
+    delete(orderId) {
+        /* Delete an order */
+        useLocalToken();
+        return Repository.delete(`${resource}/detail/${orderId}/`);
     },
     assignOrders(data) {
         /* assign orders to driver */
@@ -53,7 +64,7 @@ export default {
     unassignOrders(data) {
         /* assign orders to driver */
         useLocalToken();
-        return Repository.post(`${resource}/edit/`, data);
+        return Repository.post(`${resource}/unassign/`, data);
     },
     /* Price List API */
     getPrice(distance = null) {

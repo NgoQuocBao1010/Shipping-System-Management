@@ -22,4 +22,8 @@ export default {
         useLocalToken();
         return Repository.post(`${resource}/verify/`, data);
     },
+    queryProfile({ role = null }) {
+        useLocalToken();
+        return Repository.get(`${resource}/list/?q=${role}`);
+    },
 };
