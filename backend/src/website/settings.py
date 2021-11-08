@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",
     "corsheaders",
     "djoser",
+    "django_extensions",
     # My apps
     "api.apps.ApiConfig",
     "account.apps.AccountConfig",

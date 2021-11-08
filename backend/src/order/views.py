@@ -6,7 +6,6 @@ from rest_framework.response import Response
 
 from datetime import datetime, timezone, timedelta
 
-
 from account.serializers import ProfileSerializer
 from account.permissions import AdminOnly
 from account.models import Profile
@@ -119,12 +118,7 @@ def order(request, id):
     Get order by giving order id
     Unless you are logged in as admin, you are only allowed to view your own order
     """
-    if not id.isnumeric():
-        return Response(
-            status=status.HTTP_400_BAD_REQUEST, data={"error": "Invalid query"}
-        )
 
-    
     try:
         order = Order.objects.get(id=id)
 
@@ -138,12 +132,11 @@ def order(request, id):
         return Response(
             status=status.HTTP_404_NOT_FOUND, data={"error": "Order does not exist"}
         )
-    
-    if request.method == 'DELETE':
-        print(order)
-        # order.delete()
+
+    if request.method == "DELETE":
+        order.delete()
         return Response(status=status.HTTP_200_OK)
-    
+
     if request.method == "POST":
         editOrder(order, request.data)
         return Response(status=status.HTTP_200_OK)
@@ -163,7 +156,6 @@ def orderPreview(request, id):
 
     serializer = OrderPreviewSerializer(order, many=False)
     return Response(status=status.HTTP_200_OK, data=serializer.data)
-
 
 
 @api_view(["POST"])
@@ -186,6 +178,7 @@ def orderCreateApi(request):
             productPreview=request.data.get("productPreview"),
             note=request.data.get("note"),
             estimateDistance=request.data.get("estimateDistance"),
+            deliverTime=request.data.get("deliverTime"),
             shippingPrice=request.data.get("shippingPrice"),
         )
 
@@ -289,16 +282,15 @@ def filterOrders(request, orderQuery):
 
 
 def editOrder(order, data):
-    print(order, data)
-
+    """Edit some field of an order"""
     newStatus = data.get("status")
     if newStatus:
         order.status = newStatus
-    
+
     newPayment = data.get("paymentMethod")
     if newPayment:
         order.paymentMethod = newPayment
-    
+
     driverId = data.get("driverId")
     if driverId:
         driverProfile = Profile.objects.get(id=driverId)
@@ -306,6 +298,7 @@ def editOrder(order, data):
 
     order.save()
     return True
+
 
 def savePackageInfo(products, order):
     """
@@ -335,7 +328,6 @@ def makeConsigneeProfile(info):
 
     if serializer.is_valid():
         profile = serializer.save()
-
     else:
         print(f"[SERVER]: Error creating profile {serializer.errors}")
 

@@ -16,9 +16,6 @@
         </form>
 
         <div class="navigation">
-            <router-link :to="{ name: 'PriceShipping' }" class="btn small">
-                <i class="fas fa-sign-in-alt"></i> Shipping Price
-            </router-link>
             <router-link :to="{ name: 'Login' }" class="btn small">
                 <i class="fas fa-sign-in-alt"></i> Login
             </router-link>

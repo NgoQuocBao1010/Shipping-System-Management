@@ -1,6 +1,6 @@
 <template>
     <div class="wrapper">
-        <h2>Order {{ id }}</h2>
+        <h2>Order #{{ id }}</h2>
         <div class="preview">
             <p class="message">{{ statusMessage }}</p>
             <div class="message" v-if="order && order.shipperInfo">

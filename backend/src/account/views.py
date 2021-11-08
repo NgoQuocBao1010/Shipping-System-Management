@@ -95,13 +95,7 @@ def profileList(request):
         "consignee": Profile.objects.filter(consignee=True),
     }
 
-    profiles = queries.get(query.lower(), None)
-
-    if not profiles:
-        return Response(
-            status=status.HTTP_400_BAD_REQUEST,
-            data={"error": "Invalid query parameters"},
-        )
+    profiles = queries.get(query.lower())
 
     serializers = ProfileSerializer(profiles, many=True)
     return Response(status=status.HTTP_200_OK, data=serializers.data)

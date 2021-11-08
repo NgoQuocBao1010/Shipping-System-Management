@@ -1,9 +1,5 @@
 import axios from "axios";
 
-// const BASE_DOMAIN = "https://provinces.open-api.vn";
-// const BASE_URL = `${BASE_DOMAIN}`;
-// let axiosInstance = `${BASE_DOMAIN}/api/`;
-
 const getAllDistricts = async () => {
     /* 
         Provinces Open API
@@ -13,7 +9,8 @@ const getAllDistricts = async () => {
         const url = `https://provinces.open-api.vn/api/?depth=2`;
         const response = await axios.get(url);
 
-        const provicesData = [];
+        let provicesData = [];
+        let canthoDistrict = [];
 
         // Restructure response api data
         response.data.forEach((provinceData) => {
@@ -24,12 +21,16 @@ const getAllDistricts = async () => {
                     provinceCode: provinceData.code,
                     cityName: provinceData.name,
                 };
-                provicesData.push(district);
+
+                if (provinceData.code !== 92) provicesData.push(district);
+                else canthoDistrict.push(district);
             });
         });
+
+        provicesData = [...canthoDistrict, ...provicesData];
         return provicesData;
     } catch (e) {
-        console.log("API: Error get province info");
+        console.log("API: Error get province info", e);
         return {};
     }
 };

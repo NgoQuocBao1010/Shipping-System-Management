@@ -89,6 +89,11 @@
                         Status: <b>{{ statusCodes[order.status] }}</b>
                     </div>
 
+                    <!-- Delivery time -->
+                    <div class="normal" v-if="order.id && order.shipperInfo">
+                        Estimate Deliver time: <b>Around {{ estimatedTime }}</b>
+                    </div>
+
                     <!-- Date created -->
                     <div class="normal" v-if="order.id">
                         Date Created: <b>{{ order.dateCreated }}</b>
@@ -196,16 +201,6 @@ export default {
                 3: "delivered",
                 4: "failed",
             },
-            paymentOptions: [
-                {
-                    id: 1,
-                    name: "Pay by consignor",
-                },
-                {
-                    id: 2,
-                    name: "Pay by consignee",
-                },
-            ],
             paymentOptions: {
                 1: "Pay by consignor",
                 2: "Pay by consignee",
@@ -253,6 +248,23 @@ export default {
                 parseFloat(this.order.shippingPrice) +
                 parseFloat(this.packagePrice)
             );
+        },
+        estimatedTime() {
+            let timeUnit = "days";
+            let time = Math.floor((this.order.deliverTime / 3600) * 24);
+
+            if (this.order.deliverTime < 3600) {
+                timeUnit = "minutes";
+                time = Math.floor(this.order.deliverTime / 60);
+            } else if (
+                this.order.deliverTime > 3600 &&
+                this.order.deliverTime < 3600 * 24
+            ) {
+                timeUnit = "hours";
+                time = Math.floor(this.order.deliverTime / 3600);
+            }
+
+            return `${time} ${timeUnit}`;
         },
     },
     methods: {

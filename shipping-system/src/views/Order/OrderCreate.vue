@@ -486,6 +486,7 @@ export default {
                 productPreview: this.preview,
                 note: this.note,
                 estimateDistance: routing ? routing.distance : null,
+                deliverTime: routing ? routing.duration : null,
                 shippingPrice: estimatedPrice ? estimatedPrice : null,
             };
 

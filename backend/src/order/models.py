@@ -3,6 +3,7 @@ from django.db.models import CheckConstraint, Q, F, constraints
 from django.contrib.auth import get_user_model
 
 from account.models import Profile
+from .utils import customOrderId
 
 User = get_user_model()
 
@@ -42,6 +43,9 @@ class Order(models.Model):
         (3, "Customer allow to try products"),
     )
 
+    id = models.CharField(
+        primary_key=True, max_length=11, unique=True, default=customOrderId
+    )
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user")
     consignee = models.OneToOneField(
         Profile, on_delete=models.SET_NULL, null=True, related_name="order"
@@ -55,6 +59,7 @@ class Order(models.Model):
     note = models.TextField(null=True, blank=True)
     dateCreated = models.DateTimeField(auto_now_add=True)
     estimateDistance = models.FloatField(null=True, blank=True)
+    deliverTime = models.FloatField(default=1000)
     shippingPrice = models.IntegerField(null=True, blank=True)
 
     def __str__(self):

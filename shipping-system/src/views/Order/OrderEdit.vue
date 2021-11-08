@@ -139,7 +139,6 @@ export default {
             }
         },
         "order.shipperInfo.id"(newVal, oldVal) {
-            console.log(newVal, oldVal);
             if (oldVal) {
                 this.editOrder({ driverId: newVal });
             }
