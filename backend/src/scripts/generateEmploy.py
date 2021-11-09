@@ -22,6 +22,7 @@ BOYS = {
 
 
 def nameGenerator():
+    """Generate a Vietnamese name"""
     gender = random.choice([GIRLS, BOYS])
 
     firstName = random.choice(gender.get("FIRST_NAMES"))
@@ -40,7 +41,7 @@ def emailGenerator(fullName):
     name += words[-1].lower()
     userId = shortuuid.ShortUUID(alphabet="01345678").random(length=3)
 
-    email = f"{name}K{userId}@kaz.company.com"
+    email = f"{name}@gmail.com"
 
     return email
 
@@ -52,24 +53,50 @@ def phoneGenerator():
     return random.choice(openings) + rest
 
 
-def createManager(length=3):
-    for i in range(length):
+def addressGenerator():
+    streetNames = ["Nguyễn Văn Cừ", "Mạc Thiên Tích", "Quang Trung"]
+    district_n_wards = [
+        (919, 31189),
+        (917, 31153),
+        (916, 31117),
+        (918, 31171),
+        (916, 31149),
+    ]
+
+    homeId = random.randint(1, 200)
+
+    address = f"Số {homeId} đường {random.choice(streetNames)}"
+    return (address, *random.choice(district_n_wards))
+
+
+def createUser(length=5):
+    for _ in range(length):
         name = nameGenerator()
         email = emailGenerator(name)
         password = "kaz123"
         phone = phoneGenerator()
 
-        # manager = User.objects.create_superuser(email=email, password=password)
+        user = User.objects.create_user(email=email, password=password)
 
-        pprint(
-            {
-                "name": name,
-                "email": email,
-                "password": password,
-                "phone": phone,
-            }
-        )
+        address, districtId, wardId = addressGenerator()
+        profile = Profile.objects.get(user=user)
+        profile.fullName = name
+        profile.phone = phone
+        profile.address = address
+        profile.districtId = districtId
+        profile.wardId = wardId
+
+        profile.save()
+
+
+def updateDriverLicense():
+    drivers = Profile.objects.filter(user__admin=False, user__staff=True)
+
+    for driver in drivers:
+        license = shortuuid.ShortUUID(alphabet="01345678").random(length=8)
+        driver.driverLicense = license
+        driver.save()
 
 
 def run():
-    createManager()
+    createUser(length=10)

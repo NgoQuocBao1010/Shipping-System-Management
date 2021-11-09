@@ -6,7 +6,7 @@
             <i class="fas fa-shipping-fast icon"></i> price list
 
             <button
-                v-if="$store.getters.isAuthenticated"
+                v-if="$store.getters.isAdmin"
                 class="small"
                 @click="editPriceObj(-1)"
             >

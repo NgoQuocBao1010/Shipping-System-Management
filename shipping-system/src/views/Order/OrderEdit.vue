@@ -129,23 +129,31 @@ export default {
         async "order.status"(newVal, oldVal) {
             if (oldVal) {
                 await this.editOrder({ status: newVal });
-
-                if (newVal === 1) this.order.shipperInfo.id = null;
+                this.$toast.success("Order updated!", {
+                    duration: 2000,
+                });
             }
         },
         "order.paymentMethod"(newVal, oldVal) {
             if (oldVal) {
                 this.editOrder({ paymentMethod: newVal });
+                this.$toast.success("Order updated!", {
+                    duration: 2000,
+                });
             }
         },
         "order.shipperInfo.id"(newVal, oldVal) {
-            if (oldVal) {
+            if (newVal) {
                 this.editOrder({ driverId: newVal });
+                this.$toast.success("Order updated!", {
+                    duration: 2000,
+                });
             }
         },
     },
     methods: {
         async deleteOrder() {
+            /* Delete order */
             const userConfirm = confirm("Are you sure to delete this order?");
 
             if (userConfirm) {
@@ -153,12 +161,18 @@ export default {
                     this.loading = true;
                     const { status } = await OrderAPI.delete(this.id);
                     this.loading = false;
+
+                    if (status === 200) {
+                        this.$router.replace({ name: "Orders" });
+                        this.$toast.info(`Order #${this.id} has been deleted`);
+                    }
                 } catch (e) {
                     console.log(e);
                 }
             }
         },
         async editOrder(data) {
+            /* Edit order */
             try {
                 this.loading = true;
                 const { status } = await OrderAPI.edit({

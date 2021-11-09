@@ -78,7 +78,7 @@ const routes = [
         meta: {
             name: "Order Edit",
             authOnly: true,
-            adminOnly: false,
+            adminOnly: true,
         },
     },
     // Order create

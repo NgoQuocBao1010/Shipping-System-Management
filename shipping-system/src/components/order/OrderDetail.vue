@@ -15,7 +15,7 @@
 
             <!-- Edit Button -->
             <router-link
-                v-if="$store.getters.isAuthenticated && order.id"
+                v-if="$store.getters.isAdmin && order.id"
                 :to="{
                     name: 'OrderEdit',
                     params: { id: order.id, orderInstance: order },

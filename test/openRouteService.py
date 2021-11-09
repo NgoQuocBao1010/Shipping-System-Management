@@ -1,5 +1,6 @@
 import requests
 import pprint
+import json
 
 body = {"coordinates": [[105.739714, 10.0184892], [105.78839074112506, 10.01792665]]}
 
@@ -14,5 +15,8 @@ call = requests.post(
     headers=headers,
 )
 
-print(call.status_code, call.reason)
-pprint.pprint(call.text)
+# print(call.status_code, call.reason)
+# pprint.pprint(call.text)
+
+obj = json.loads(call.text)
+print(obj.get("features")[0].get("properties").get("summary"))
