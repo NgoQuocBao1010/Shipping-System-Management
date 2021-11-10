@@ -60,7 +60,7 @@ export default {
                 },
                 {
                     name: "History",
-                    query: { status: 2, shipper: this.profile.id },
+                    query: { status: 3, shipper: this.profile.id },
                 },
             ],
             selectedIndex: 0,

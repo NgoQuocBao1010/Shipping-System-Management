@@ -62,6 +62,9 @@ class Order(models.Model):
     deliverTime = models.FloatField(default=1000)
     shippingPrice = models.IntegerField(null=True, blank=True)
 
+    class Meta:
+        ordering = ["-dateCreated"]
+
     def __str__(self):
         return f"Order {self.id} ({self.get_status_display()}), distance {self.estimateDistance / 1000} KM, shipping price {self.shippingPrice} VND"
 

@@ -90,7 +90,7 @@
                     </div>
 
                     <!-- Delivery time -->
-                    <div class="normal" v-if="order.id && order.shipperInfo">
+                    <div class="normal" v-if="order.id && order.status === 2">
                         Estimate Deliver time: <b>Around {{ estimatedTime }}</b>
                     </div>
 
