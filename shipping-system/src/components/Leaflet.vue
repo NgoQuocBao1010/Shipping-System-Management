@@ -37,7 +37,7 @@
                 ></l-tile-layer>
             </l-map>
         </div>
-        <button @click="setZoomLevel">Reset Map</button>
+        <button @click="orderFocus">Focus In Your Order</button>
     </div>
 </template>
 
@@ -89,6 +89,7 @@ export default {
             routes: null,
             initialZoom: null,
             initialCenter: null,
+            routingMarkers: [],
         };
     },
     computed: {
@@ -127,8 +128,8 @@ export default {
 
                     const popUpContent =
                         i === 0
-                            ? "Kaz Shipping System"
-                            : "Estimated Consignee Location";
+                            ? `<i class="fas fa-shipping-fast"></i> Your Order`
+                            : `<i class="fas fa-street-view"></i> Estimated Consignee Location`;
 
                     const marker = L.marker(waypoint.latLng, {
                         draggable: false,
@@ -138,8 +139,11 @@ export default {
                             height: 800,
                         },
                         icon: markerIcon,
-                    }).bindPopup(`<h3>${popUpContent}</h3>`);
+                    }).bindPopup(`<h3>${popUpContent}</h3>`, { autoClose: false });
+
+                    this.routingMarkers.push(marker);
                     return marker;
+                    
                 },
             }).addTo(this.mapObject);
 
@@ -149,14 +153,11 @@ export default {
                 /* Handle event when routes found */
                 this.routes = e.routes;
 
-                this.mapObject.on("zoom", (e) => {
-                    // console.log(this.mapObject._zoom);
-                    // console.log(this.mapObject.getCenter());
-                });
+                this.routingMarkers.forEach(marker => marker.openPopup())
             });
         },
-        setZoomLevel() {
-            this.mapObject.setZoom(12);
+        orderFocus() {
+            this.mapObject.setView(this.center, 11, { animation: true });
         },
     },
     async created() {
