@@ -61,6 +61,12 @@ class Order(models.Model):
     estimateDistance = models.FloatField(null=True, blank=True)
     deliverTime = models.FloatField(default=1000)
     shippingPrice = models.IntegerField(null=True, blank=True)
+    location = models.CharField(
+        default="{latitude: 10.0171277, longitude: 105.7842959}",
+        max_length=100,
+        blank=True,
+        null=True,
+    )
 
     class Meta:
         ordering = ["-dateCreated"]

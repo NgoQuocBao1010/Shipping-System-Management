@@ -1,7 +1,7 @@
 from django.db.models import Q
 from django.contrib.auth import get_user_model
 
-from order.models import Order
+from order.models import Order, ProductOrder
 from account.models import Profile
 from scripts.generateEmploy import phoneGenerator
 
@@ -57,20 +57,48 @@ def random_date():
     return result
 
 
-def generate():
+def productGenerate(order):
+
+    DUMP_PRODUCTS = [
+        {"name": "Chair", "price": 100_000},
+        {"name": "Table", "price": 250_000},
+        {"name": "Clothes", "price": 400_000},
+        {"name": "Books", "price": 2_500_000},
+    ]
+
+    product = random.choice(DUMP_PRODUCTS)
+
+    ProductOrder.objects.create(
+        order=order,
+        name=product.get("name"),
+        price=product.get("price"),
+    )
+
+
+def generate(email="ntklinh@gmail.com"):
     rebuildOrders = Order.objects.filter(user__email__icontains="nhqtrong@gmail.com")
 
+    # New order
     newOrder = random.choice(rebuildOrders)
     newOrder.pk = None
 
+    # New consignee
     newConsignee = newOrder.consignee
     newConsignee.pk = None
     newConsignee.fullName = nameGenerator()
     newConsignee.phone = phoneGenerator()
     newConsignee.save()
 
-    consignor = User.objects.get(email__icontains="ntklinh@gmail.com")
+    # Order's information
+    consignor = User.objects.get(email__icontains=email)
     status = 3 if random.randint(0, 101) > 10 else 4
+    note = (
+        ""
+        if status == 3
+        else random.choice(
+            ["Cannot contact the customer", "Customer is unhappy with the order"]
+        )
+    )
     paymentMethod = random.choice([1, 2])
     shipper = getRamdomDriver()
     dateCreated = random_date()
@@ -79,10 +107,31 @@ def generate():
     newOrder.status = status
     newOrder.paymentMethod = paymentMethod
     newOrder.shipper = shipper
-    newOrder.dateCreated = dateCreated
     newOrder.consignee = newConsignee
-
+    newOrder.note = note
     newOrder.save()
+
+    newOrder.dateCreated = dateCreated
+    newOrder.save()
+
+    productGenerate(newOrder)
+
+
+def massGenerate():
+    consignors = User.objects.exclude(
+        Q(email__icontains="nhqtrong@gmail.com") | Q(staff=True)
+    )
+
+    for consignor in consignors:
+        generate(consignor.email)
+        generate(consignor.email)
+
+
+def deleteGenOrders():
+    orders = Order.objects.exclude(user__email__icontains="nhqtrong@gmail.com")
+
+    for order in orders:
+        order.delete()
 
 
 def run():
@@ -91,7 +140,8 @@ def run():
 
     # print(getRamdomDriver())
 
-    generate()
+    massGenerate()
+    # deleteGenOrders()
 
     # cons = User.objects.exclude(
     #     Q(email__icontains="nhqtrong@gmail.com") | Q(staff=True)

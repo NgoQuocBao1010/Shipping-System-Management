@@ -3,7 +3,7 @@
         <!-- Order Id -->
         <div class="order-container__header">
             <h1 class="title" v-if="order.id">
-                Order #{{ order.id }}
+                Order <span class="order-id">#{{ order.id }}</span> 
                 <i class="far fa-copy" @click="generatePreviewLink"></i>
                 <span
                     class="status"
@@ -87,6 +87,11 @@
                     <!-- Status -->
                     <div class="normal" v-if="order.id">
                         Status: <b>{{ statusCodes[order.status] }}</b>
+                    </div>
+
+                    <!-- Status -->
+                    <div class="normal" >
+                        Note: <b>{{ order.note }}</b>
                     </div>
 
                     <!-- Delivery time -->
@@ -305,7 +310,11 @@ export default {
             font-size: 2rem;
             display: flex;
             align-items: center;
-            gap: 2rem;
+
+            .order-id {
+                color: var(--primary-color);
+                margin: 0 10px;
+            }
 
             i {
                 font-size: 1.2rem;
@@ -374,7 +383,7 @@ export default {
                     margin-bottom: 0.8rem;
                 }
                 > * {
-                    margin-bottom: 0.5rem;
+                    margin-bottom: 0.8rem;
                 }
             }
         }

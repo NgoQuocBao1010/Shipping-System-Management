@@ -5,14 +5,16 @@
             <p class="title">Order's tracking</p>
             <div class="information">
                 <p>
-                    Company location
+                    Order Current location
                     <img src="../assets/markers/blue-marker.svg" alt="" />
                 </p>
                 <p>
                     Consignee location
                     <img src="../assets/markers/red-marker.svg" alt="" />
                 </p>
-                <!-- <p>Current location: ...</p> -->
+                <!-- <p>
+                    Estimated Distance: {{ distance }}
+                </p> -->
             </div>
         </div>
 
@@ -152,12 +154,11 @@ export default {
             routingControl.on("routesfound", (e) => {
                 /* Handle event when routes found */
                 this.routes = e.routes;
-
-                this.routingMarkers.forEach(marker => marker.openPopup())
+                this.routingMarkers.forEach(marker => marker.openPopup())  // Open all the popup
             });
         },
         orderFocus() {
-            this.mapObject.setView(this.center, 11, { animation: true });
+            this.mapObject.setView(this.center, 12, { animation: true });
         },
     },
     async created() {
@@ -196,6 +197,10 @@ export default {
 
                 img {
                     height: 40px;
+                }
+
+                i {
+                    font-size: 40px;
                 }
             }
         }

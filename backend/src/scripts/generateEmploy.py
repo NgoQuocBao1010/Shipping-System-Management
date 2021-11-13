@@ -32,16 +32,22 @@ def nameGenerator():
     return " ".join([firstName, midName, lastName])
 
 
-def emailGenerator(fullName):
+def emailGenerator(fullName, mode="user"):
     """Generate an email from a fullname"""
     fullName = unidecode.unidecode(fullName)  # Remove accent from text
     words = fullName.split(" ")
 
     name = "".join([word[0].lower() for word in words[:-1]])
     name += words[-1].lower()
-    userId = shortuuid.ShortUUID(alphabet="01345678").random(length=3)
 
-    email = f"{name}@gmail.com"
+    idLength = 4 if mode == "user" else 3
+    userId = shortuuid.ShortUUID(alphabet="01345678").random(length=idLength)
+
+    email = (
+        f"{name}{userId}@gmail.com"
+        if mode == "user"
+        else f"{name}K{userId}@kaz.company.com"
+    )
 
     return email
 
@@ -99,5 +105,5 @@ def updateDriverLicense():
 
 
 def run():
-    # createUser(length=10)
-    print("NO")
+    createUser(length=10)
+    # print("NO")

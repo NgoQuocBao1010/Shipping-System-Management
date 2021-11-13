@@ -172,7 +172,7 @@ export default {
     },
     async mounted() {
         this.toDate = this.getToday();
-        this.fromDate = moment().subtract(1, "months").format("YYYY-MM-DD");
+        this.fromDate = moment().subtract(1, "years").format("YYYY-MM-DD");
 
         await this.getOrderList();
     },
