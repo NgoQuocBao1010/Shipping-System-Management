@@ -12,7 +12,7 @@ const useLocalToken = () => {
 };
 
 export default {
-    /* Order API call */
+    // * Order Information API
     get(orderId) {
         /* Get detail of an order */
         useLocalToken();
@@ -66,7 +66,12 @@ export default {
         useLocalToken();
         return Repository.post(`${resource}/unassign/`, data);
     },
-    /* Price List API */
+    getReport() {
+        /* Get report data */
+        useLocalToken();
+        return Repository.get(`${resource}/reports/`);
+    },
+    // * Price List API
     getPrice(distance = null) {
         /* get the shipping price of given distance */
         const distanceInKm = distance / 1000;

@@ -46,7 +46,7 @@ def random_date():
     objects.
     """
     end = datetime.now()
-    start = end - timedelta(days=60)
+    start = end - timedelta(days=14)
 
     delta = end - start
     int_delta = (delta.days * 24 * 60 * 60) + delta.seconds
@@ -127,7 +127,7 @@ def massGenerate():
         generate(consignor.email)
 
 
-def deleteGenOrders():
+def deleteGeneratedOrders():
     orders = Order.objects.exclude(user__email__icontains="nhqtrong@gmail.com")
 
     for order in orders:
@@ -141,7 +141,7 @@ def run():
     # print(getRamdomDriver())
 
     massGenerate()
-    # deleteGenOrders()
+    # deleteGeneratedOrders()
 
     # cons = User.objects.exclude(
     #     Q(email__icontains="nhqtrong@gmail.com") | Q(staff=True)

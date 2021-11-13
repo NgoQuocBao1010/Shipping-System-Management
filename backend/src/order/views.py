@@ -5,6 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from datetime import datetime, timezone, timedelta
+from calendar import day_name
 
 from account.serializers import ProfileSerializer
 from account.permissions import AdminOnly
@@ -253,6 +254,22 @@ def ordersUnassign(request):
     )
 
 
+@api_view(["GET"])
+@permission_classes([IsAuthenticated, AdminOnly])
+def reports(request):
+    """Calculate analytics results for reports"""
+    data = {}
+
+    today = datetime.now()
+    dailyRecords = getDateRecords(today)
+    data.update({"daily": dailyRecords})
+
+    last7Records = getPast7DaysRecords()
+    data.update({"last7Days": last7Records})
+
+    return Response(status=status.HTTP_200_OK, data=data)
+
+
 # Utils Functions
 def filterOrders(request, orderQuery):
     """Filter order from get method"""
@@ -343,3 +360,69 @@ def unassignedOrder(orderId):
     order.save()
 
     return True
+
+
+def getDateRecords(date):
+    """Count orders on the daily"""
+    startTime = date.replace(hour=0, minute=0, tzinfo=timezone.utc)
+    endTime = date.replace(hour=23, minute=59, tzinfo=timezone.utc)
+
+    orders = Order.objects.filter(dateCreated__range=(startTime, endTime))
+
+    return {
+        "processing": orders.filter(status=1).count(),
+        "delivering": orders.filter(status=2).count(),
+        "delivered": orders.filter(status=3).count(),
+        "failed": orders.filter(status=4).count(),
+    }
+
+
+def getPast7DaysRecords():
+    """
+    Retrieve last 7 days orders records
+
+    Format:
+    {
+        "categories": [ ...days ],
+        "series": [
+            {
+                "name": {order.status}
+                "data": { data for each categories }
+            }, ...
+        ]
+    }
+    """
+
+    from pprint import pprint
+
+    startDate = datetime.now().replace(tzinfo=timezone.utc) - timedelta(days=6)
+    orders = Order.objects.filter(dateCreated__gte=startDate)
+
+    weekDays = []
+    processingCount = []
+    deliveringCount = []
+    deliveredCount = []
+    failedCount = []
+
+    for day in range(7):
+        date = startDate + timedelta(days=day)
+
+        weekDays.append(day_name[date.weekday()])
+        dateRecords = getDateRecords(date)
+
+        processingCount.append(dateRecords.get("processing"))
+        deliveringCount.append(dateRecords.get("delivering"))
+        deliveredCount.append(dateRecords.get("delivered"))
+        failedCount.append(dateRecords.get("failed"))
+
+    formattedData = {
+        "categories": weekDays,
+        "series": [
+            {"name": "Processing", "data": processingCount},
+            {"name": "Delivering", "data": deliveringCount},
+            {"name": "Delivered", "data": deliveredCount},
+            {"name": "Failed", "data": failedCount},
+        ],
+    }
+
+    return formattedData

@@ -6,9 +6,7 @@
             <UnauthNav
                 v-if="
                     !showNav &&
-                    !['Login', 'Register', 'ResetPassword'].includes(
-                        $route.name
-                    )
+                    !['Login', 'Register', 'ResetPassword'].includes($route.name)
                 "
             />
             <router-view class="container__content" :key="$route.path" />
@@ -181,7 +179,7 @@ input::-webkit-calendar-picker-indicator {
 
 .close,
 .order-failed {
-    background-color: rgb(238, 78, 78);
+    background-color: #ee4e4e;
 }
 
 .role {

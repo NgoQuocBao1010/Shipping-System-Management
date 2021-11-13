@@ -6,6 +6,7 @@ urlpatterns = [
     path("shipping-money/", views.shippingPrice, name="shippingPrice"),
     path("price-edit/<str:id>/", views.priceEdit, name="priceEdit"),
     # Order
+    path("reports/", views.reports, name="reports"),
     path("list/", views.ordersList, name="ordersList"),
     path("detail/<str:id>/", views.order, name="order"),
     path("preview/<str:id>/", views.orderPreview, name="orderPreview"),

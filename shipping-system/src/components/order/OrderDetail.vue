@@ -3,12 +3,9 @@
         <!-- Order Id -->
         <div class="order-container__header">
             <h1 class="title" v-if="order.id">
-                Order <span class="order-id">#{{ order.id }}</span> 
+                Order <span class="order-id">#{{ order.id }}</span>
                 <i class="far fa-copy" @click="generatePreviewLink"></i>
-                <span
-                    class="status"
-                    :class="'order-' + statusCodes[order.status]"
-                >
+                <span class="status" :class="'order-' + statusCodes[order.status]">
                     {{ statusCodes[order.status] }}
                 </span>
             </h1>
@@ -45,11 +42,7 @@
                         </div>
                         <div class="address">
                             {{ consignorWard }},
-                            {{
-                                $store.getters.district(
-                                    order.consignor.districtId
-                                ).name
-                            }}
+                            {{ $store.getters.district(order.consignor.districtId).name }}
                         </div>
                     </div>
                 </div>
@@ -67,11 +60,7 @@
                         </div>
                         <div class="address">
                             {{ consigneeWard }},
-                            {{
-                                $store.getters.district(
-                                    order.consignee.districtId
-                                ).name
-                            }}
+                            {{ $store.getters.district(order.consignee.districtId).name }}
                         </div>
                     </div>
                 </div>
@@ -90,8 +79,8 @@
                     </div>
 
                     <!-- Status -->
-                    <div class="normal" >
-                        Note: <b>{{ order.note }}</b>
+                    <div class="normal">
+                        Note: <b>{{ order.note || "No note" }}</b>
                     </div>
 
                     <!-- Delivery time -->
@@ -148,9 +137,7 @@
                         :key="index"
                     >
                         <div>{{ product.name }}</div>
-                        <div>
-                            {{ $func.formatMoneyToVND(product.price) }} VND
-                        </div>
+                        <div>{{ $func.formatMoneyToVND(product.price) }} VND</div>
                     </div>
                 </div>
             </div>
@@ -168,9 +155,7 @@
                     <p>
                         Shipping price:
                         <span class="money">
-                            {{
-                                this.$func.formatMoneyToVND(order.shippingPrice)
-                            }}
+                            {{ this.$func.formatMoneyToVND(order.shippingPrice) }}
                             VND
                         </span>
                     </p>
@@ -242,17 +227,12 @@ export default {
         },
         packagePrice() {
             let total = 0;
-            this.order.products.forEach(
-                (item) => (total += parseFloat(item.price))
-            );
+            this.order.products.forEach((item) => (total += parseFloat(item.price)));
 
             return total;
         },
         total() {
-            return (
-                parseFloat(this.order.shippingPrice) +
-                parseFloat(this.packagePrice)
-            );
+            return parseFloat(this.order.shippingPrice) + parseFloat(this.packagePrice);
         },
         estimatedTime() {
             let timeUnit = "days";
@@ -286,12 +266,8 @@ export default {
         },
     },
     async created() {
-        const wardObj = await this.$province.getWard(
-            this.order.consignor.wardId
-        );
-        const wardObj2 = await this.$province.getWard(
-            this.order.consignee.wardId
-        );
+        const wardObj = await this.$province.getWard(this.order.consignor.wardId);
+        const wardObj2 = await this.$province.getWard(this.order.consignee.wardId);
         this.consignorWard = wardObj.name;
         this.consigneeWard = wardObj2.name;
     },

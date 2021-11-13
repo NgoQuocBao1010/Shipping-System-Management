@@ -1,93 +1,163 @@
 <template>
     <div class="report">
-        <div class="report__content">
+        <div class="loading" v-if="!dataLoaded">
+            <loading-animation />
+        </div>
+        <div class="report__content" v-else>
+            <!-- Daily Reports -->
             <div class="daily">
                 <div class="title">Reports Today orders</div>
-                <div class="report-detail">
-                    <div class="row">
-                        <div class="column">
-                            <div class="column__header">Processing</div>
-                            <div class="column__order">
-                                <router-link to="#">0 orders</router-link>
-                            </div>
-                        </div>
-                        <div class="column">
-                            <div class="column__header">Delivering</div>
-                            <div class="column__order">
-                                <router-link to="#">0 orders</router-link>
-                            </div>
-                        </div>
+
+                <div class="information">
+                    <div class="category processing">
+                        <p class="name">Processing</p>
+                        <router-link to="#">
+                            <h2>{{ daily.processing }} Orders</h2>
+                        </router-link>
                     </div>
-                    <div class="row">
-                        <div class="column">
-                            <div class="column__header">Delivered</div>
-                            <div class="column__order">
-                                <router-link to="#">0 orders</router-link>
-                            </div>
-                        </div>
-                        <div class="column">
-                            <div class="column__header">Failed</div>
-                            <div class="column__order">
-                                <router-link to="#">0 orders</router-link>
-                            </div>
-                        </div>
+
+                    <div class="category delivering">
+                        <p class="name">Delivering</p>
+                        <router-link to="#">
+                            <h2>{{ daily.delivering }} Orders</h2>
+                        </router-link>
+                    </div>
+
+                    <div class="category delivered">
+                        <p class="name">Delivered</p>
+                        <router-link to="#">
+                            <h2>{{ daily.delivered }} Orders</h2>
+                        </router-link>
+                    </div>
+
+                    <div class="category failed">
+                        <p class="name">Failed</p>
+                        <router-link to="#">
+                            <h2>{{ daily.failed }} Orders</h2>
+                        </router-link>
                     </div>
                 </div>
             </div>
-            <div class="range">
+
+            <!-- Chart of orders -->
+            <div class="chart-wrapper">
                 <div class="select">
                     <i class="fas fa-caret-down"></i>
                     <select name="rangeOption" v-model="rangeOption">
-                        <option value="year">Number of Orders this year</option>
                         <option value="week">Number of Orders this week</option>
+                        <option value="year">Number of Orders this year</option>
                     </select>
                 </div>
-                <BarChart :rangeOption="rangeOption" />
+                <BarChart :data="charts.last7Days" />
             </div>
         </div>
     </div>
 </template>
 
 <script>
+import moment from "moment";
+
+import { RepositoryFactory } from "../../api/backend/Factory";
+const OrderAPI = RepositoryFactory.get("order");
+
 import BarChart from "../../components/BarChartReport.vue";
+import LoadingAnimation from "../../components/CircleAnimation.vue";
 
 export default {
     name: "Reports",
     components: {
+        LoadingAnimation,
         BarChart,
     },
     data() {
         return {
-            rangeOption: "year",
+            dataLoaded: false,
+
+            rangeOption: "week",
+            daily: null,
+            charts: {
+                last7Days: null,
+                allTime: null,
+            },
         };
     },
-    computed: {},
+    computed: {
+        today() {
+            return moment().format("YYYY-MM-DD");
+        },
+    },
     methods: {},
-    created() {},
+    async created() {
+        const { data } = await OrderAPI.getReport();
+        this.dataLoaded = true;
+
+        const { daily, last7Days } = data;
+        this.daily = daily;
+        this.charts.last7Days = last7Days;
+    },
 };
 </script>
 
 <style lang="scss" scoped>
 .report {
-    &__header {
-        margin-bottom: 0.8rem;
-
-        .title {
-            font-size: 1.5rem;
-        }
-    }
-
     &__content {
         padding: 2rem 0;
         display: flex;
-        flex-wrap: wrap;
+        flex-direction: column;
 
-        .range {
+        .daily {
+            padding: 1rem 2rem;
+            margin-bottom: 4rem;
+
+            .title {
+                font-size: 1.2rem;
+                font-weight: 900;
+                text-align: center;
+                margin-bottom: 2rem;
+            }
+
+            .information {
+                width: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: space-around;
+
+                .category {
+                    padding: 1rem 3rem;
+                    text-align: center;
+                    border-radius: 1rem;
+
+                    &.processing {
+                        background: #8fd6e1;
+                    }
+                    &.delivering {
+                        background: var(--secondary-color);
+                    }
+                    &.delivered {
+                        background: lightgreen;
+                    }
+                    &.failed {
+                        background: rgb(238, 78, 78);
+                    }
+
+                    p {
+                        font-weight: bold;
+                        margin-bottom: 1rem;
+                    }
+
+                    a {
+                        text-decoration: none;
+                        color: #fff;
+                    }
+                }
+            }
+        }
+
+        .chart-wrapper {
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            flex: 1 1 300px;
 
             .select {
                 position: relative;
@@ -110,50 +180,6 @@ export default {
                     transform: translateY(-50%);
                     font-size: 1.5rem;
                     z-index: -1;
-                }
-            }
-        }
-
-        .daily {
-            padding: 1rem 2rem;
-            flex: 1 1 300px;
-
-            .title {
-                font-size: 1.2rem;
-                font-weight: 900;
-                text-align: center;
-                margin-bottom: 2rem;
-            }
-
-            .report-detail {
-                background: var(--secondary-color);
-                border-radius: 20px;
-                padding: 1rem 2rem;
-
-                .row {
-                    display: flex;
-                    margin-bottom: 2rem;
-
-                    .column {
-                        flex: 1;
-                        font-weight: 600;
-
-                        &__order {
-                            font-weight: 900;
-                            font-size: 1.5rem;
-
-                            a {
-                                text-decoration: none;
-                                color: white;
-
-                                transition: 0.2s all ease;
-
-                                &:hover {
-                                    color: rgb(245, 238, 238);
-                                }
-                            }
-                        }
-                    }
                 }
             }
         }

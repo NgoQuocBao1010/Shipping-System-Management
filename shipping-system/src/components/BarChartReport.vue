@@ -18,7 +18,7 @@ export default {
         apexcharts: VueApexCharts,
     },
     props: {
-        rangeOption: String,
+        data: Object,
     },
     data() {
         return {
@@ -26,7 +26,7 @@ export default {
                 chart: {
                     type: "bar",
                     stacked: true,
-                    // stackType: "100%",
+                    fontFamily: "Quicksand, sans-serif",
                 },
                 responsive: [
                     {
@@ -41,9 +41,23 @@ export default {
                     },
                 ],
                 xaxis: {
-                    categories: null,
+                    style: {
+                        fontWeight: "bold",
+                        cssClass: "apexcharts-xaxis-label",
+                    },
                 },
-                colors: ["#1190CB", "#FF2626"],
+                tooltip: {
+                    y: {
+                        formatter: (count) => {
+                            return `${count} orders`;
+                        },
+                        style: {
+                            fontWeight: "bold",
+                            cssClass: "apexcharts-xaxis-label",
+                        },
+                    },
+                },
+                colors: ["#8fd6e1", "#7dccff", "#90ee90", "#ee4e4e"],
                 fill: {
                     opacity: 1,
                 },
@@ -51,88 +65,30 @@ export default {
                     position: "right",
                     offsetX: 0,
                     offsetY: 50,
+                    fontWeight: "700",
                 },
             },
-            series: null,
-            categories: null,
+            series: this.data.series,
         };
     },
-    watch: {
-        rangeOption(newVal, oldVal) {
-            this.generateChart();
-        },
-    },
     methods: {
-        getRandomInt(min, max) {
-            min = Math.ceil(min);
-            max = Math.floor(max);
-            return Math.floor(Math.random() * (max - min + 1)) + min;
-        },
-        generateRandomIntArr(length, minLimit, maxLimit) {
-            let arr = [];
-
-            for (let i = 0; i < length; i++) {
-                arr.push(this.getRandomInt(minLimit, maxLimit));
-            }
-
-            return arr;
-        },
         generateChart() {
-            const rangeCategories = {
-                year: [
-                    "January",
-                    "February",
-                    "March",
-                    "April",
-                    "May",
-                    "June",
-                    "July",
-                    "August",
-                    "September",
-                    "October",
-                    "November",
-                    "December",
-                ],
-                week: [
-                    "Monday",
-                    "Tuesday",
-                    "Wednesday",
-                    "Thursday",
-                    "Friday",
-                    "Saturday",
-                    "Sunday",
-                ],
-            };
-
-            this.categories = rangeCategories[this.rangeOption];
-
             this.chartOptions = {
                 ...this.chartOptions,
                 ...{
                     xaxis: {
-                        categories: this.categories,
+                        categories: this.data.categories,
+                        labels: {
+                            style: {
+                                fontWeight: 700,
+                                cssClass: "apexcharts-xaxis-label",
+                            },
+                        },
                     },
                 },
             };
 
-            this.series = [
-                {
-                    name: "Delivered",
-                    data: this.generateRandomIntArr(
-                        this.categories.length,
-                        5,
-                        20
-                    ),
-                },
-                {
-                    name: "Failed",
-                    data: this.generateRandomIntArr(
-                        this.categories.length,
-                        1,
-                        10
-                    ),
-                },
-            ];
+            this.series = this.data.series;
         },
     },
     created() {
@@ -140,15 +96,12 @@ export default {
     },
 };
 </script>
+
 <style lang="scss" scoped>
 .wrapper {
     width: 100%;
     min-width: 500px;
-    max-width: 700px;
-
-    .title {
-        background: lightcoral;
-    }
+    max-width: 900px;
 
     button {
         background: #26e6a4;
