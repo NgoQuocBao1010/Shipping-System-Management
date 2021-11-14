@@ -71,6 +71,11 @@ export default {
             series: this.data.series,
         };
     },
+    watch: {
+        data() {
+            this.generateChart();
+        },
+    },
     methods: {
         generateChart() {
             this.chartOptions = {

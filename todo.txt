@@ -6,7 +6,7 @@ Front End
 - Thêm phần thể hiện trạng thái tài xế trong profile X
 - Thêm phần sửa, đánh dấu đã giao trang quản lý đơn hàng X
 - Viết trang Home, 404, Unauth. X
-- Trang báo cáo
+- Trang báo cáo X
 - Hoàn thành demo mobile app cho tài xế
 
 

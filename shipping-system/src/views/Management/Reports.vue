@@ -41,14 +41,16 @@
 
             <!-- Chart of orders -->
             <div class="chart-wrapper">
+                <!-- Select range of other -->
                 <div class="select">
                     <i class="fas fa-caret-down"></i>
                     <select name="rangeOption" v-model="rangeOption">
-                        <option value="week">Number of Orders this week</option>
-                        <option value="year">Number of Orders this year</option>
+                        <option value="week">This Week Records</option>
+                        <option value="year">This Month Records</option>
                     </select>
                 </div>
-                <BarChart :data="charts.last7Days" />
+
+                <ColumnChart :data="chartData" />
             </div>
         </div>
     </div>
@@ -60,14 +62,14 @@ import moment from "moment";
 import { RepositoryFactory } from "../../api/backend/Factory";
 const OrderAPI = RepositoryFactory.get("order");
 
-import BarChart from "../../components/BarChartReport.vue";
+import ColumnChart from "../../components/reports/ColumnChart.vue";
 import LoadingAnimation from "../../components/CircleAnimation.vue";
 
 export default {
     name: "Reports",
     components: {
         LoadingAnimation,
-        BarChart,
+        ColumnChart,
     },
     data() {
         return {
@@ -77,6 +79,7 @@ export default {
             daily: null,
             charts: {
                 last7Days: null,
+                thisMonth: null,
                 allTime: null,
             },
         };
@@ -85,15 +88,25 @@ export default {
         today() {
             return moment().format("YYYY-MM-DD");
         },
+        chartData() {
+            return this.rangeOption === "week"
+                ? this.charts.last7Days
+                : this.charts.thisMonth;
+        },
     },
     methods: {},
     async created() {
         const { data } = await OrderAPI.getReport();
         this.dataLoaded = true;
 
-        const { daily, last7Days } = data;
+        const { daily, last7Days, thisMonth, allTime } = data;
         this.daily = daily;
-        this.charts.last7Days = last7Days;
+
+        this.charts = {
+            last7Days,
+            thisMonth,
+            allTime,
+        };
     },
 };
 </script>

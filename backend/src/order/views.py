@@ -258,14 +258,29 @@ def ordersUnassign(request):
 @permission_classes([IsAuthenticated, AdminOnly])
 def reports(request):
     """Calculate analytics results for reports"""
+    allOrders = Order.objects.all()
+
     data = {}
+    data.update(
+        {
+            "allTime": {
+                "processing": allOrders.filter(status=1).count(),
+                "delivering": allOrders.filter(status=2).count(),
+                "delivered": allOrders.filter(status=3).count(),
+                "failed": allOrders.filter(status=4).count(),
+            }
+        }
+    )
 
     today = datetime.now()
-    dailyRecords = getDateRecords(today)
+    dailyRecords = getDateRecords(today, allOrders)
     data.update({"daily": dailyRecords})
 
-    last7Records = getPast7DaysRecords()
+    last7Records = getPast7DaysRecords(allOrders)
     data.update({"last7Days": last7Records})
+
+    thisMonth = getMonthRecords(allOrders)
+    data.update({"thisMonth": thisMonth})
 
     return Response(status=status.HTTP_200_OK, data=data)
 
@@ -362,12 +377,12 @@ def unassignedOrder(orderId):
     return True
 
 
-def getDateRecords(date):
+def getDateRecords(date, allOrders):
     """Count orders on the daily"""
     startTime = date.replace(hour=0, minute=0, tzinfo=timezone.utc)
     endTime = date.replace(hour=23, minute=59, tzinfo=timezone.utc)
 
-    orders = Order.objects.filter(dateCreated__range=(startTime, endTime))
+    orders = allOrders.filter(dateCreated__range=(startTime, endTime))
 
     return {
         "processing": orders.filter(status=1).count(),
@@ -377,7 +392,7 @@ def getDateRecords(date):
     }
 
 
-def getPast7DaysRecords():
+def getPast7DaysRecords(allOrders):
     """
     Retrieve last 7 days orders records
 
@@ -392,11 +407,7 @@ def getPast7DaysRecords():
         ]
     }
     """
-
-    from pprint import pprint
-
     startDate = datetime.now().replace(tzinfo=timezone.utc) - timedelta(days=6)
-    orders = Order.objects.filter(dateCreated__gte=startDate)
 
     weekDays = []
     processingCount = []
@@ -408,7 +419,7 @@ def getPast7DaysRecords():
         date = startDate + timedelta(days=day)
 
         weekDays.append(day_name[date.weekday()])
-        dateRecords = getDateRecords(date)
+        dateRecords = getDateRecords(date, allOrders)
 
         processingCount.append(dateRecords.get("processing"))
         deliveringCount.append(dateRecords.get("delivering"))
@@ -417,6 +428,40 @@ def getPast7DaysRecords():
 
     formattedData = {
         "categories": weekDays,
+        "series": [
+            {"name": "Processing", "data": processingCount},
+            {"name": "Delivering", "data": deliveringCount},
+            {"name": "Delivered", "data": deliveredCount},
+            {"name": "Failed", "data": failedCount},
+        ],
+    }
+
+    return formattedData
+
+
+def getMonthRecords(allOrders):
+    """Get records from 4 weeks of the current month"""
+    startTime = datetime.now().replace(hour=0, minute=0, day=1, tzinfo=timezone.utc)
+
+    weekMonths = ["First Week", "Second Week", "Third Week", "Fourth Week"]
+    processingCount = []
+    deliveringCount = []
+    deliveredCount = []
+    failedCount = []
+
+    for _ in weekMonths:
+        endTime = startTime + timedelta(days=7)
+        orders = allOrders.filter(dateCreated__range=(startTime, endTime))
+
+        processingCount.append(orders.filter(status=1).count())
+        deliveringCount.append(orders.filter(status=2).count())
+        deliveredCount.append(orders.filter(status=3).count())
+        failedCount.append(orders.filter(status=4).count())
+
+        startTime = endTime
+
+    formattedData = {
+        "categories": weekMonths,
         "series": [
             {"name": "Processing", "data": processingCount},
             {"name": "Delivering", "data": deliveringCount},
