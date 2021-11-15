@@ -23,16 +23,13 @@
                 </div>
             </div>
 
+            <!-- Display all profile list -->
             <div class="content">
-                <transition name="fade">
-                    <div class="profile-cards" v-if="profileList">
-                        <EmployeeCard
-                            v-for="profile in profileList"
-                            :key="profile.id"
-                            :profile="profile"
-                        />
-                    </div>
-                </transition>
+                <component
+                    v-if="profileList"
+                    :is="displayComp"
+                    :profileList="profileList"
+                />
             </div>
         </div>
     </div>
@@ -40,19 +37,20 @@
 
 <script>
 import { mapState } from "vuex";
-import axios from "axios";
 
 import { RepositoryFactory } from "../../api/backend/Factory";
 const AccountAPI = RepositoryFactory.get("account");
 
-import EmployeeCard from "@/components/management/EmployeeCard.vue";
+import CardWrapper from "@/components/management/CardWrapper.vue";
+import CustomerTable from "@/components/management/CustomerTable.vue";
 import LoadingAnimation from "../../components/CircleAnimation.vue";
 
 export default {
     name: "Management",
     components: {
-        EmployeeCard,
         LoadingAnimation,
+        CustomerTable,
+        CardWrapper,
     },
     data() {
         return {
@@ -63,6 +61,11 @@ export default {
     },
     computed: {
         ...mapState(["token"]),
+        displayComp() {
+            return this.categories[this.selectedIndex] === "Employee"
+                ? "CardWrapper"
+                : "CustomerTable";
+        },
     },
     methods: {
         async changeCategory(index) {
@@ -81,7 +84,7 @@ export default {
 
                 this.profileList = data;
             } catch (e) {
-                console.log(e);
+                console.log(`[Management Page Error]: ${e}`);
             }
         },
     },
@@ -150,13 +153,6 @@ export default {
             display: flex;
             justify-content: center;
             align-items: center;
-
-            .profile-cards {
-                width: 100%;
-                display: flex;
-                flex-wrap: wrap;
-                gap: 3rem;
-            }
         }
     }
 }

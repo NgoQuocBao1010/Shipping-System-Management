@@ -91,8 +91,8 @@ def profileList(request):
 
     queries = {
         "employee": Profile.objects.filter(user__staff=True),
-        "consignor": Profile.objects.filter(user__staff=False),
-        "consignee": Profile.objects.filter(consignee=True),
+        "consignor": Profile.objects.filter(user__staff=False).order_by("-dateCreated"),
+        "consignee": Profile.objects.filter(consignee=True).order_by("-dateCreated"),
     }
 
     profiles = queries.get(query.lower())

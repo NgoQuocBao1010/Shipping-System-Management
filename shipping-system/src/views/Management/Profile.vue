@@ -4,12 +4,9 @@
         <div class="profile__header">
             <h1 class="title">
                 {{ email }}
-                <span
-                    class="role color"
-                    :class="role"
-                    style="text-transform: capitalize"
-                    >{{ role }}</span
-                >
+                <span class="role color" :class="role" style="text-transform: capitalize">
+                    {{ role }}
+                </span>
                 <button class="small" @click="signOut" v-if="isCurrentUser">
                     <i class="fas fa-sign-out-alt"></i>Logout
                 </button>
@@ -141,15 +138,12 @@
 
                             <!-- Error for validations -->
                             <p class="error" v-show="error">
-                                <i class="fas fa-exclamation-circle"></i> Please
-                                fill out all the input
+                                <i class="fas fa-exclamation-circle"></i> Please fill out
+                                all the input
                             </p>
 
                             <!-- Editing section -->
-                            <CircleAnimation
-                                class="animation"
-                                v-show="loadingData"
-                            />
+                            <CircleAnimation class="animation" v-show="loadingData" />
                             <div class="edit-buttons">
                                 <div
                                     class="btn small"
@@ -175,11 +169,7 @@
                 </Tab>
 
                 <!-- Table of orders for each user -->
-                <Tab
-                    title="Orders"
-                    iconClass="fas fa-box-open"
-                    v-if="role !== 'driver'"
-                >
+                <Tab title="Orders" iconClass="fas fa-box-open" v-if="role !== 'driver'">
                     <OrderTable :orders="orders" />
                 </Tab>
 
@@ -345,9 +335,7 @@ export default {
         this.districts = this.provinces;
 
         if (this.profile.districtId) {
-            this.wards = await this.$province.getWardList(
-                this.profile.districtId
-            );
+            this.wards = await this.$province.getWardList(this.profile.districtId);
         }
 
         this.loadingData = false;
@@ -388,8 +376,7 @@ export default {
         padding-bottom: 1rem;
         display: flex;
         flex-direction: column;
-        box-shadow: rgba(17, 17, 26, 0.05) 0px 1px 0px,
-            rgba(17, 17, 26, 0.1) 0px 0px 8px;
+        box-shadow: rgba(17, 17, 26, 0.05) 0px 1px 0px, rgba(17, 17, 26, 0.1) 0px 0px 8px;
         position: relative;
 
         .input {

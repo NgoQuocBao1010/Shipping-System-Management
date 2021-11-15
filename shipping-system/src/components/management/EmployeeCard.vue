@@ -26,8 +26,9 @@
                             name: 'OrderDetail',
                             params: { id: profile.orderId },
                         }"
-                        >Order {{ profile.orderId }}</router-link
                     >
+                        Order {{ profile.orderId }}
+                    </router-link>
                 </div>
             </div>
 
@@ -58,7 +59,7 @@
                         class="btn small"
                         v-if="profile.isStaff & !profile.isAdmin"
                     >
-                        <i class="fas fa-plus-circle"></i>Add Task
+                        <i class="fas fa-plus-circle"></i>Orders
                     </router-link>
 
                     <router-link
@@ -142,8 +143,7 @@ export default {
             padding: 2px 6px;
             border-top-left-radius: 25px;
             border-bottom-left-radius: 25px;
-            box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px,
-                rgba(0, 0, 0, 0.23) 0px 6px 6px;
+            box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
         }
 
         .header {
