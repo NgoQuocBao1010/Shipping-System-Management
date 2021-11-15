@@ -48,6 +48,7 @@ const searchLocation = async (address) => {
 export default {
     async search(address) {
         /* Return an object of longitude and latitude of an given address */
+        console.log(address);
         const location = await searchLocation(address);
 
         if (!location) {

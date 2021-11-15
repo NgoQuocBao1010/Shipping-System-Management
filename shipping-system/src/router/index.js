@@ -22,15 +22,14 @@ import NotFoundError from "../views/Error/404.vue";
 // Others
 import Home from "../views/Home.vue";
 import PriceShipping from "../views/PriceShipping.vue";
+import DriverTest from "../views/DriverTest.vue";
 
 import store from "../store/index";
 
 Vue.use(VueRouter);
 
 const routes = [
-    /* 
-        Routes required authentication
-    */
+    //    * Routes required authentication
     // Profile
     {
         path: "/profile/:email",
@@ -125,6 +124,19 @@ const routes = [
             adminOnly: true,
         },
     },
+    // Driver Update Location
+    // ! Testing page
+    {
+        path: "/location",
+        name: "DriverTest",
+        component: DriverTest,
+        meta: {
+            name: "Driver Test Location",
+            authOnly: true,
+            adminOnly: true,
+        },
+    },
+    // * Error page, access for all kind of user
     // Unauthorized
     {
         path: "/unauthorized",
@@ -157,9 +169,7 @@ const routes = [
             easy: true,
         },
     },
-    /* 
-        Guest visist routes
-    */
+    // * Guest visist routes
     // Home
     {
         path: "/",
@@ -222,6 +232,8 @@ const routes = [
             nonAuthOnly: true,
         },
     },
+    // * Catch non-existance path
+    { path: "/:pathMatch(.*)*", component: NotFoundError },
 ];
 
 const router = new VueRouter({

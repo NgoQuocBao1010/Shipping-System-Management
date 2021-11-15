@@ -8,7 +8,7 @@ from datetime import datetime, timezone, timedelta
 from calendar import day_name
 
 from account.serializers import ProfileSerializer
-from account.permissions import AdminOnly
+from account.permissions import AdminOnly, StaffOnly
 from account.models import Profile
 from .models import Order, ProductOrder, ShipDistance
 from .serializers import ShipDistanceSerializer, OrderSerializer, OrderPreviewSerializer
@@ -283,6 +283,27 @@ def reports(request):
     data.update({"thisMonth": thisMonth})
 
     return Response(status=status.HTTP_200_OK, data=data)
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated, StaffOnly])
+def orderUpdateLocation(request, id):
+    """ Update location of the order """
+
+    try:
+        order = Order.objects.get(id=id)
+    except Order.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    
+    locationJSONString = request.data.get("location")
+
+    if locationJSONString:
+        order.location = locationJSONString
+        order.save()
+    else:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    return Response(status=status.HTTP_200_OK)
 
 
 # Utils Functions

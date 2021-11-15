@@ -71,6 +71,11 @@ export default {
         useLocalToken();
         return Repository.get(`${resource}/reports/`);
     },
+    updateLocation({ orderId = null, data = null }) {
+        /* Update the location of the order correspond to the device location */
+        useLocalToken();
+        return Repository.post(`${resource}/location/${orderId}/`, data);
+    },
     // * Price List API
     getPrice(distance = null) {
         /* get the shipping price of given distance */

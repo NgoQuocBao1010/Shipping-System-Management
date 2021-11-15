@@ -92,15 +92,13 @@ export default {
             initialZoom: null,
             initialCenter: null,
             routingMarkers: [],
+            orderLocation: null,
         };
     },
     computed: {
         ...mapState(["currentLocation"]),
         center() {
-            return [
-                this.currentLocation.latitude,
-                this.currentLocation.longitude,
-            ];
+            return [this.currentLocation.latitude, this.currentLocation.longitude];
         },
         mapObject() {
             return this.$refs.map.mapObject;
@@ -113,10 +111,12 @@ export default {
                 this.consigneeAddress
             ); // Get consignee location
 
+            this.orderLocation = JSON.parse(this.order.location);
+
             // Routing process configuration
             const routingControl = L.Routing.control({
                 waypoints: [
-                    L.latLng(this.center),
+                    L.latLng(this.orderLocation),
                     L.latLng({ lat: latitude, lon: longitude }),
                 ],
                 fitSelectedRoutes: true,
@@ -145,7 +145,6 @@ export default {
 
                     this.routingMarkers.push(marker);
                     return marker;
-                    
                 },
             }).addTo(this.mapObject);
 
@@ -154,11 +153,11 @@ export default {
             routingControl.on("routesfound", (e) => {
                 /* Handle event when routes found */
                 this.routes = e.routes;
-                this.routingMarkers.forEach(marker => marker.openPopup())  // Open all the popup
+                this.routingMarkers.forEach((marker) => marker.openPopup()); // Open all the popup
             });
         },
         orderFocus() {
-            this.mapObject.setView(this.center, 12, { animation: true });
+            this.mapObject.setView(this.orderLocation, 12, { animation: true });
         },
     },
     async created() {

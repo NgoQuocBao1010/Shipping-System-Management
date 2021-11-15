@@ -16,4 +16,4 @@ Front End
 - Thêm phần số lượng vào phần sản phẩm khi đặt hàng create order
 
 Backend
-- Custom id cho Order
+- Custom id cho Order X

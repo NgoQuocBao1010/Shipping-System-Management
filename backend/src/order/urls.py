@@ -13,4 +13,5 @@ urlpatterns = [
     path("create/", views.orderCreateApi, name="orderCreate"),
     path("unassign/", views.ordersUnassign, name="ordersUnassign"),
     path("assign/", views.ordersAssign, name="ordersAssign"),
+    path("location/<str:id>/", views.orderUpdateLocation, name="orderUpdateLocation"),
 ]
