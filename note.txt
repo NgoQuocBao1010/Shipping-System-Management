@@ -1,0 +1,2 @@
+chrome://inspect/#devices to open dev tools when running emulator
+https://stackoverflow.com/questions/6760585/accessing-localhostport-from-android-emulator - accessing localhost from android emulator

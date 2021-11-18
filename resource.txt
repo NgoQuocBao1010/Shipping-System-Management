@@ -29,3 +29,12 @@ Công cụ:
     https://openrouteservice.org/dev/#/home
 11. Year quater
     https://fundsnetservices.com/quarter-q1-q2-q3-q4#:~:text=Calendar%20Quarter%20Dates,-Calendar%20quarter%20dates&text=Q1%20First%20Quarter%3A%20January%201st,Quarter%3A%20October%201st%20%E2%80%93%20December%2031st
+
+
+
+- Reports resources
+https://developer.mozilla.org/en-US/docs/Learn/Server-side/Django/Introduction - django
+https://www.upgrad.com/blog/django-rest-framework/ - drf
+https://en.wikipedia.org/wiki/Leaflet_(software) -leaflet
+leaflet.com -leaflet
+https://www.liedman.net/leaflet-routing-machine/ leaflet routing
