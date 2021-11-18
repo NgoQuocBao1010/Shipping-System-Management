@@ -21,6 +21,8 @@
 
             <button class="btn">Login</button>
         </form>
+
+        {{ token }}
     </div>
 </template>
 <script>
@@ -33,13 +35,21 @@ export default {
             email: "",
             password: "",
         },
+        token: "",
     }),
     methods: {
         async login() {
             try {
                 const url = `http://10.0.2.2:8000/account/login`;
                 const response = await axios.post(url, this.user);
-                const authToken = response.data.auth_token;
+                this.token = response.data.auth_token;
+
+                this.$q.notify({
+                    type: "positive",
+                    message: `Login successfully`,
+                    position: "top",
+                    timeout: 1000,
+                });
             } catch (e) {
                 console.log(e);
             }
