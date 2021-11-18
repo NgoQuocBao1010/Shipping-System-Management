@@ -1,7 +1,7 @@
 <template>
     <div class="wrapper">
         <img src="../assets/Color logo - no background.png" alt="" class="logo" />
-        <form action="" @submit.prevent="login">
+        <form action="" @submit.prevent="verify">
             <div class="input">
                 <q-icon name="account_circle"></q-icon>
                 <input
@@ -21,35 +21,37 @@
 
             <button class="btn">Login</button>
         </form>
-
-        {{ token }}
     </div>
 </template>
 <script>
 import axios from "axios";
+import { mapActions } from "vuex";
 
 export default {
     name: "Login",
     data: () => ({
         user: {
-            email: "",
-            password: "",
+            email: "driver@kaz.company.com",
+            password: "kaz123",
         },
-        token: "",
     }),
     methods: {
-        async login() {
+        ...mapActions(["login"]),
+        async verify() {
             try {
                 const url = `http://10.0.2.2:8000/account/login`;
                 const response = await axios.post(url, this.user);
-                this.token = response.data.auth_token;
+                const authToken = response.data.auth_token;
 
+                await this.login(authToken);
                 this.$q.notify({
                     type: "positive",
                     message: `Login successfully`,
                     position: "top",
                     timeout: 1000,
                 });
+
+                this.$router.replace({ name: "home" });
             } catch (e) {
                 console.log(e);
             }

@@ -29,7 +29,6 @@ export default new Vuex.Store({
         },
         updateProfile(state, profile) {
             /* Update profile state, store user information */
-
             state.user = profile;
         },
         logout(state) {

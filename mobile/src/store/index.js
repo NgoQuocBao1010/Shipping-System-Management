@@ -1,9 +1,8 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
+import Vue from "vue";
+import Vuex from "vuex";
+import axios from "axios";
 
-// import example from './module-example'
-
-Vue.use(Vuex)
+Vue.use(Vuex);
 
 /*
  * If not building with SSR mode, you can
@@ -15,15 +14,56 @@ Vue.use(Vuex)
  */
 
 export default function (/* { ssrContext } */) {
-  const Store = new Vuex.Store({
-    modules: {
-      // example
-    },
+    const Store = new Vuex.Store({
+        state: {
+            authenticated: false,
+            token: false,
+            user: null,
+        },
+        mutations: {
+            authenticate(state, token) {
+                // Authenticate: Store auth token
+                state.authenticated = true;
+                state.token = token;
+                console.log("Global store: Authenticated");
+            },
+            updateProfile(state, profile) {
+                /* Update profile state, store user information */
+                state.user = profile;
+            },
+            logout(state) {
+                state.authenticated = false;
+                state.token = null;
+                state.user = null;
+                this.$router.replace({ name: "login" });
+            },
+        },
+        actions: {
+            async login(context, token) {
+                // API call to get user token and information
+                try {
+                    const response = await axios.get(
+                        "http://10.0.2.2:8000/account/verify",
+                        {
+                            headers: {
+                                Authorization: `Token ${token}`,
+                            },
+                        }
+                    );
 
-    // enable strict mode (adds overhead!)
-    // for dev mode only
-    strict: process.env.DEBUGGING
-  })
+                    if (response.status === 200) {
+                        context.commit("authenticate", token);
+                        context.commit("updateProfile", response.data);
+                    }
+                    return true;
+                } catch (e) {
+                    console.log("Error login in: ", e);
+                    return false;
+                }
+            },
+        },
+        strict: process.env.DEBUGGING,
+    });
 
-  return Store
+    return Store;
 }

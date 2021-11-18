@@ -44,6 +44,7 @@ def random_date():
     """
     This function will return a random datetime between two datetime
     objects.
+    2 weeks from now
     """
     end = datetime.now()
     start = end - timedelta(days=14)
