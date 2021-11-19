@@ -1,8 +1,7 @@
 <template>
     <div class="wrapper">
         <h1 class="header">
-            <span style="color: var(--primary-color)">Editting Mode</span> for
-            Order
+            <span style="color: var(--primary-color)">Editting Mode</span> for Order
             {{ id }}
 
             <button class="small" @click="deleteOrder">
@@ -28,11 +27,7 @@
                             {{ order.consignor.address }}
                         </div>
                         <div>
-                            {{
-                                $store.getters.district(
-                                    order.consignor.districtId
-                                ).name
-                            }}
+                            {{ $store.getters.district(order.consignor.districtId).name }}
                         </div>
                     </div>
                 </div>
@@ -49,11 +44,7 @@
                             {{ order.consignee.address }}
                         </div>
                         <div>
-                            {{
-                                $store.getters.district(
-                                    order.consignee.districtId
-                                ).name
-                            }}
+                            {{ $store.getters.district(order.consignee.districtId).name }}
                         </div>
                     </div>
                 </div>
@@ -145,9 +136,9 @@ export default {
         "order.shipperInfo.id"(newVal, oldVal) {
             if (newVal) {
                 this.editOrder({ driverId: newVal });
-                this.$toast.success("Order updated!", {
-                    duration: 2000,
-                });
+                // this.$toast.success("Order updated!", {
+                //     duration: 2000,
+                // });
             }
         },
     },
@@ -164,7 +155,7 @@ export default {
 
                     if (status === 200) {
                         this.$router.replace({ name: "Orders" });
-                        this.$toast.info(`Order #${this.id} has been deleted`);
+                        this.$toast.warning(`Order #${this.id} has been deleted`);
                     }
                 } catch (e) {
                     console.log(e);

@@ -155,11 +155,7 @@
                     </span>
                 </div>
                 <div class="inputs one-row">
-                    <div
-                        class="column"
-                        v-for="(product, index) in products"
-                        :key="index"
-                    >
+                    <div class="column" v-for="(product, index) in products" :key="index">
                         <!-- Product Name -->
                         <div class="row">
                             <label>Product Name</label>
@@ -193,8 +189,8 @@
                     </div>
                 </div>
                 <div class="errors" v-show="error.products">
-                    Please fill out all the information, value of each product
-                    should be bigger than 10.000 VND
+                    Please fill out all the information, value of each product should be
+                    bigger than 10.000 VND
                     <i class="fas fa-exclamation-circle"></i>
                 </div>
             </div>
@@ -224,14 +220,14 @@
                             />
                         </div>
                         <!-- Shipping Type -->
-                        <div class="row">
+                        <!-- <div class="row">
                             <Dropdown
                                 v-model="shipping"
                                 :options="shippingOptions"
                                 label="Shipping Type"
                                 :noSearch="true"
                             />
-                        </div>
+                        </div> -->
                     </div>
                     <div class="column">
                         <div class="row">
@@ -253,9 +249,7 @@
                 <div class="errors">
                     <i
                         class="fas fa-exclamation-circle"
-                        v-show="
-                            error.consignor || error.consignee || error.products
-                        "
+                        v-show="error.consignor || error.consignee || error.products"
                     ></i>
                 </div>
                 <Loading v-show="loading" />
@@ -454,22 +448,15 @@ export default {
 
                 return;
             }
-            Object.keys(this.error).forEach(
-                (field) => (this.error[field] = null)
-            ); // Set all error to null
+            Object.keys(this.error).forEach((field) => (this.error[field] = null)); // Set all error to null
 
             this.loading = true; // Trigger loading animation
 
             // Get consignee location and estimate the shipping distance
-            const location = await LocationAPI.search(
-                this.consignee.fullAddress
-            );
+            const location = await LocationAPI.search(this.consignee.fullAddress);
             console.log("Done getting location", location);
             const routing = location
-                ? await LocationAPI.estimateDistance(
-                      this.currentLocation,
-                      location
-                  )
+                ? await LocationAPI.estimateDistance(this.currentLocation, location)
                 : null;
             console.log("Done routing", routing);
             const estimatedPrice = routing
@@ -542,8 +529,7 @@ export default {
             /* Format the price as user typing */
             const value = e.target.value;
 
-            if (value)
-                this.products[index].price = /^\d+$/.test(value) ? value : 0;
+            if (value) this.products[index].price = /^\d+$/.test(value) ? value : 0;
 
             // this.products[index].price = this.$func.formatMoneyToVND(
             //     this.products[index].price
@@ -551,8 +537,7 @@ export default {
         },
     },
     created() {
-        const { fullName, phone, address, districtId, wardId, ...rest } =
-            this.user;
+        const { fullName, phone, address, districtId, wardId, ...rest } = this.user;
 
         this.consignor = {
             fullName,

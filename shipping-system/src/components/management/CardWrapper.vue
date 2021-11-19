@@ -35,8 +35,8 @@ export default {
     .profile-cards {
         margin: auto;
         width: 100%;
-        display: flex;
-        flex-wrap: wrap;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
         gap: 1rem;
     }
 }
