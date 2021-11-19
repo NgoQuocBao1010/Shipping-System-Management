@@ -21,15 +21,18 @@
             <!-- Body -->
             <tbody v-else>
                 <tr v-for="order in orders" :key="order.id" class="assign">
-                    <td>{{ order.id }}</td>
+                    <td>
+                        <router-link
+                            :to="{ name: 'OrderDetail', params: { id: order.id } }"
+                        >
+                            {{ order.id }}
+                        </router-link>
+                    </td>
                     <td>{{ order.dateCreated }}</td>
                     <td>{{ order.consignor.email }}</td>
                     <td>
                         {{ order.consignee.address }},
-                        {{
-                            $store.getters.district(order.consignee.districtId)
-                                .name
-                        }}
+                        {{ $store.getters.district(order.consignee.districtId).name }}
                     </td>
                     <td>
                         <div :class="'order-' + statusCodes[order.status]">
@@ -143,6 +146,11 @@ export default {
         overflow: hidden;
         box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
         position: relative;
+
+        a {
+            text-decoration: none;
+            color: #222;
+        }
 
         thead tr {
             background-color: var(--primary-color);
