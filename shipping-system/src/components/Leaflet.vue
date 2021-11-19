@@ -157,7 +157,10 @@ export default {
             });
         },
         orderFocus() {
-            this.mapObject.setView(this.orderLocation, 12, { animation: true });
+            const currentZoom = this.mapObject._zoom;
+            this.mapObject.setView(this.orderLocation, currentZoom + 2, {
+                animation: true,
+            });
         },
     },
     async created() {
