@@ -36,10 +36,7 @@
             </div>
 
             <!-- Submit -->
-            <router-link
-                class="forgot-password"
-                :to="{ name: 'ResetPassword' }"
-            >
+            <router-link class="forgot-password" :to="{ name: 'ResetPassword' }">
                 Forgot your password?
             </router-link>
             <button type="submit">Sign In</button>
@@ -76,7 +73,7 @@ export default {
                     password: this.password,
                 };
 
-                const url = `http://127.0.0.1:8000/account/login`;
+                const url = `https://127.0.0.1:8000/account/login`;
                 const response = await axios.post(url, formInfo);
                 const authToken = response.data.auth_token;
 

@@ -48,7 +48,7 @@ export default new Vuex.Store({
             // API call to get user token and information
             try {
                 const response = await axios.get(
-                    "http://127.0.0.1:8000/account/verify",
+                    "https://127.0.0.1:8000/account/verify",
                     {
                         headers: {
                             Authorization: `Token ${token}`,

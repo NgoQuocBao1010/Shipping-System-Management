@@ -38,9 +38,7 @@
                 </div>
                 <div v-show="error" class="error">{{ this.errorMsg }}</div>
             </div>
-            <button class="register-btn" @click.prevent="register">
-                Register
-            </button>
+            <button class="register-btn" @click.prevent="register">Register</button>
             <div class="angle"></div>
         </form>
         <div class="background"></div>
@@ -90,7 +88,7 @@ export default {
             };
 
             try {
-                const url = "http://127.0.0.1:8000/account/register";
+                const url = "https://127.0.0.1:8000/account/register";
                 const response = await axios.post(url, registerInfo);
 
                 if (response.status === 200) {
@@ -99,12 +97,9 @@ export default {
                         params: { newUserCreated: true, newEmail: this.email },
                     });
 
-                    this.$toast.success(
-                        "Your accout is successfully created!",
-                        {
-                            duration: 4000,
-                        }
-                    );
+                    this.$toast.success("Your accout is successfully created!", {
+                        duration: 4000,
+                    });
                 }
             } catch (e) {
                 if (e.response.status === 400) {
@@ -118,8 +113,7 @@ export default {
             return /\d/.test(password) && password.length >= 5 ? true : false;
         },
         validateEmail(email) {
-            const re =
-                /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
             return re.test(String(email).toLowerCase());
         },
     },
