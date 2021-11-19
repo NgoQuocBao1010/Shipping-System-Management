@@ -2,3 +2,9 @@ chrome://inspect/#devices to open dev tools when running emulator
 https://stackoverflow.com/questions/6760585/accessing-localhostport-from-android-emulator - accessing localhost from android emulator
 https://stackoverflow.com/questions/2279647/how-to-emulate-gps-location-in-the-android-emulator - Figure out a way to set location on emulator
 quasar dev -m cordova -T android - mobile dev
+
+https://timonweb.com/django/https-django-development-server-ssl-certificate/ - Updrade django localhost to https
+
+Commands:
+- quasar dev -m cordova -T android [mobile dev]
+- python manage.py runserver_plus --cert-file cert.pem --key-file key.pem [Django localhost https]

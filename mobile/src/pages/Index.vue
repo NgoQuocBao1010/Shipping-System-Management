@@ -26,7 +26,12 @@
             </ul>
 
             <OrderTable :orders="orders" />
+
+            <button class="small" @click="updateLocation">Update Your Location</button>
         </div>
+
+        {{ latitude }} {{ longitude }}
+        {{ error.message }}
     </div>
 </template>
 
@@ -59,6 +64,14 @@ export default {
             },
         ],
         selectedIndex: 0,
+
+        // location
+        latitude: null,
+        longitude: null,
+        error: {
+            message: null,
+            code: null,
+        },
     }),
     computed: {
         ...mapState(["user", "token"]),
@@ -72,7 +85,7 @@ export default {
         async getOrderList() {
             /* Get list of order depends on chosen category */
             const { status } = this.tabs[this.selectedIndex].query;
-            const url = `http://10.0.2.2:8000/order/list/?status=${status}&shipper=${this.user.id}`;
+            const url = `https://10.0.2.2:8000/order/list/?status=${status}&shipper=${this.user.id}`;
 
             try {
                 const { data } = await axios.get(url, {
@@ -86,6 +99,25 @@ export default {
             } catch (e) {
                 console.log(e);
             }
+        },
+        updateLocation() {
+            var options = {
+                enableHighAccuracy: true,
+                maximumAge: 3600000,
+            };
+            const result = navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    this.latitude = position.coords.latitude;
+                    this.longitude = position.coords.longitude;
+                },
+                (error) => {
+                    if (error) {
+                        this.error = error;
+                        console.log(error);
+                    }
+                },
+                options
+            );
         },
     },
     async created() {
@@ -139,6 +171,12 @@ p {
                 border-bottom: 2px solid var(--primary-color);
             }
         }
+    }
+
+    button {
+        display: block;
+        margin: 0 auto;
+        margin-top: 1rem;
     }
 }
 </style>

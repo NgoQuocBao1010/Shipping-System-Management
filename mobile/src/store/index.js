@@ -43,7 +43,7 @@ export default function (/* { ssrContext } */) {
                 // API call to get user token and information
                 try {
                     const response = await axios.get(
-                        "http://10.0.2.2:8000/account/verify",
+                        "https://10.0.2.2:8000/account/verify",
                         {
                             headers: {
                                 Authorization: `Token ${token}`,
