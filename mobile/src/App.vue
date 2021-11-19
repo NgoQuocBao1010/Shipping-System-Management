@@ -1,6 +1,8 @@
 <template>
     <div id="q-app">
-        <router-view />
+        <transition name="fade">
+            <router-view />
+        </transition>
     </div>
 </template>
 
@@ -58,5 +60,14 @@ button {
         border-radius: 5px;
         font-size: 12px;
     }
+}
+
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 0.5s ease-in;
+}
+.fade-enter,
+.fade-leave-to {
+    opacity: 0;
 }
 </style>

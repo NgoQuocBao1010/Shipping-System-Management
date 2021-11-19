@@ -92,9 +92,9 @@ def ordersList(request):
 
     orders = Order.objects.all().order_by("-dateCreated")
 
-    if not request.user.is_admin:  # if not admin
+    if not request.user.is_staff:  # if not staff member
         orders = orders.filter(user=request.user)
-    else:  # if the user is admin
+    else:  # if the user is staff member
         # Filter orders on profile
         profileId = request.GET.get("profileId")
         if profileId and profileId.isnumeric():
@@ -288,13 +288,13 @@ def reports(request):
 @api_view(["POST"])
 @permission_classes([IsAuthenticated, StaffOnly])
 def orderUpdateLocation(request, id):
-    """ Update location of the order """
+    """Update location of the order"""
 
     try:
         order = Order.objects.get(id=id)
     except Order.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
-    
+
     locationJSONString = request.data.get("location")
 
     if locationJSONString:

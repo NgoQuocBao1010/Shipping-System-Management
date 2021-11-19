@@ -47,7 +47,7 @@ export default {
                 this.$q.notify({
                     type: "positive",
                     message: `Login successfully`,
-                    position: "top",
+                    position: "bottom",
                     timeout: 1000,
                 });
 
