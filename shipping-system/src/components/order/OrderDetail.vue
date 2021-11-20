@@ -251,6 +251,7 @@ export default {
 
             return `${time} ${timeUnit}`;
         },
+        estimatedDistance() {},
     },
     methods: {
         generatePreviewLink() {

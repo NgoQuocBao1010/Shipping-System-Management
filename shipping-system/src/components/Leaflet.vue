@@ -153,6 +153,8 @@ export default {
             routingControl.on("routesfound", (e) => {
                 /* Handle event when routes found */
                 this.routes = e.routes;
+                console.log(this.routes[0].summary.totalTime);
+                console.log(this.order.deliverTime);
                 this.routingMarkers.forEach((marker) => marker.openPopup()); // Open all the popup
             });
         },
