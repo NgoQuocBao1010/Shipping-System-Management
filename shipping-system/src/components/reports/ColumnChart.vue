@@ -106,7 +106,7 @@ export default {
 .wrapper {
     width: 100%;
     min-width: 500px;
-    max-width: 900px;
+    max-width: 700px;
 
     button {
         background: #26e6a4;

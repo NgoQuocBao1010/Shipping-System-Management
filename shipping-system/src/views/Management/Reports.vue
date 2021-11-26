@@ -6,8 +6,7 @@
         <div class="report__content" v-else>
             <!-- Daily Reports -->
             <div class="daily">
-                <div class="title">Reports Today orders</div>
-
+                <div class="header">Today Reports</div>
                 <div class="information">
                     <div class="category processing">
                         <p class="name">Processing</p>
@@ -36,21 +35,51 @@
                             <h2>{{ daily.failed }} Orders</h2>
                         </router-link>
                     </div>
+
+                    <div class="category revenue">
+                        <p class="name">Revenue</p>
+                        <router-link to="#">
+                            <h2>{{ $func.formatMoneyToVND(daily.revenue) }} VND</h2>
+                        </router-link>
+                    </div>
                 </div>
             </div>
 
             <!-- Chart of orders -->
             <div class="chart-wrapper">
-                <!-- Select range of other -->
-                <div class="select">
-                    <i class="fas fa-caret-down"></i>
-                    <select name="rangeOption" v-model="rangeOption">
-                        <option value="week">This Week Records</option>
-                        <option value="year">This Month Records</option>
-                    </select>
+                <div class="headers">
+                    Orders Reports
+
+                    <ul class="ranges">
+                        <li
+                            :class="{ active: rangeOption === 'week' }"
+                            @click="rangeOption = 'week'"
+                        >
+                            This week
+                        </li>
+                        <li
+                            :class="{ active: rangeOption === 'month' }"
+                            @click="rangeOption = 'month'"
+                        >
+                            This month
+                        </li>
+                        <li
+                            :class="{ active: rangeOption === 'allTime' }"
+                            @click="rangeOption = 'allTime'"
+                        >
+                            All time
+                        </li>
+                    </ul>
                 </div>
 
-                <ColumnChart :data="chartData" />
+                <div class="information">
+                    <component :is="chartComp" :data="chartData"></component>
+
+                    <p>
+                        Total Revenue
+                        <span>{{ $func.formatMoneyToVND(chartData.revenue) }} VND</span>
+                    </p>
+                </div>
             </div>
         </div>
     </div>
@@ -63,6 +92,7 @@ import { RepositoryFactory } from "../../api/backend/Factory";
 const OrderAPI = RepositoryFactory.get("order");
 
 import ColumnChart from "../../components/reports/ColumnChart.vue";
+import BarChart from "../../components/reports/BarChart.vue";
 import LoadingAnimation from "../../components/CircleAnimation.vue";
 
 export default {
@@ -70,6 +100,7 @@ export default {
     components: {
         LoadingAnimation,
         ColumnChart,
+        BarChart,
     },
     data() {
         return {
@@ -91,7 +122,12 @@ export default {
         chartData() {
             return this.rangeOption === "week"
                 ? this.charts.last7Days
-                : this.charts.thisMonth;
+                : this.rangeOption === "month"
+                ? this.charts.thisMonth
+                : this.charts.allTime;
+        },
+        chartComp() {
+            return this.rangeOption !== "allTime" ? "ColumnChart" : "BarChart";
         },
     },
     methods: {},
@@ -119,25 +155,27 @@ export default {
         flex-direction: column;
 
         .daily {
-            padding: 1rem 2rem;
-            margin-bottom: 4rem;
+            width: 100%;
+            border-radius: 5px;
+            margin-bottom: 3em;
 
-            .title {
+            .header {
+                padding: 0.5em;
                 font-size: 1.2rem;
-                font-weight: 900;
-                text-align: center;
-                margin-bottom: 2rem;
+                font-weight: bold;
+                border-bottom: 2px solid var(--primary-color);
+                margin-bottom: 0.5em;
             }
 
             .information {
                 width: 100%;
                 display: flex;
                 align-items: center;
-                justify-content: space-around;
+                gap: 1rem;
 
                 .category {
+                    flex: 1;
                     padding: 1rem 3rem;
-                    text-align: center;
                     border-radius: 1rem;
 
                     &.processing {
@@ -147,15 +185,22 @@ export default {
                         background: var(--secondary-color);
                     }
                     &.delivered {
-                        background: lightgreen;
+                        background: rgb(69, 182, 69);
                     }
                     &.failed {
                         background: rgb(238, 78, 78);
+                    }
+                    &.revenue {
+                        background: rgb(226, 226, 53);
                     }
 
                     p {
                         font-weight: bold;
                         margin-bottom: 1rem;
+                    }
+
+                    h2 {
+                        font-size: 1.2rem;
                     }
 
                     a {
@@ -167,32 +212,62 @@ export default {
         }
 
         .chart-wrapper {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            width: 100%;
+            margin: 2rem auto;
+            padding: 1rem;
+            border-radius: 1rem;
+            box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px,
+                rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
 
-            .select {
-                position: relative;
-                cursor: pointer;
+            .headers {
+                display: flex;
+                align-items: center;
+                font-size: 1.4rem;
+                font-weight: bold;
+                color: var(--primary-color);
+                margin-bottom: 2rem;
+                border-bottom: 3px solid var(--primary-color);
 
-                select {
-                    padding: 1rem 2rem;
-                    font-size: 1.2rem;
-                    font-weight: 900;
-                    width: max-content;
+                .ranges {
+                    height: 30px;
+                    margin-left: auto;
+                    display: flex;
+                    gap: 2rem;
                     cursor: pointer;
-                    border-radius: 10000px;
-                    background: transparent;
-                }
 
-                i {
-                    position: absolute;
-                    right: 10px;
-                    top: 50%;
-                    transform: translateY(-50%);
-                    font-size: 1.5rem;
-                    z-index: -1;
+                    li {
+                        list-style: none;
+                        font-size: 1rem;
+                        padding: 0.3em 1em;
+                        border-top-right-radius: 15px;
+                        border-top-left-radius: 15px;
+                        transition: all 0.3s ease;
+
+                        &.active {
+                            background: var(--primary-color);
+                            color: #fff;
+                        }
+                    }
+                }
+            }
+
+            .information {
+                display: flex;
+                justify-content: space-around;
+
+                p {
+                    width: 250px;
+                    font-weight: bold;
+                    font-size: 1.3rem;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+
+                    span {
+                        color: var(--primary-color);
+                        font-size: 1.4rem;
+                    }
                 }
             }
         }
