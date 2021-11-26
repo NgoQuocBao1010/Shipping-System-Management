@@ -268,6 +268,7 @@ def reports(request):
                 "delivering": allOrders.filter(status=2).count(),
                 "delivered": allOrders.filter(status=3).count(),
                 "failed": allOrders.filter(status=4).count(),
+                "revenue": calculateRevenue(allOrders),
             }
         }
     )
@@ -410,6 +411,7 @@ def getDateRecords(date, allOrders):
         "delivering": orders.filter(status=2).count(),
         "delivered": orders.filter(status=3).count(),
         "failed": orders.filter(status=4).count(),
+        "revenue": calculateRevenue(orders),
     }
 
 
@@ -435,6 +437,7 @@ def getPast7DaysRecords(allOrders):
     deliveringCount = []
     deliveredCount = []
     failedCount = []
+    revenue = 0
 
     for day in range(7):
         date = startDate + timedelta(days=day)
@@ -446,6 +449,7 @@ def getPast7DaysRecords(allOrders):
         deliveringCount.append(dateRecords.get("delivering"))
         deliveredCount.append(dateRecords.get("delivered"))
         failedCount.append(dateRecords.get("failed"))
+        revenue += dateRecords.get("revenue")
 
     formattedData = {
         "categories": weekDays,
@@ -455,6 +459,7 @@ def getPast7DaysRecords(allOrders):
             {"name": "Delivered", "data": deliveredCount},
             {"name": "Failed", "data": failedCount},
         ],
+        "revenue": revenue,
     }
 
     return formattedData
@@ -462,14 +467,14 @@ def getPast7DaysRecords(allOrders):
 
 def getMonthRecords(allOrders):
     """Get records from 4 weeks of the current month"""
-    startTime = datetime.now().replace(hour=0, minute=0, day=1, tzinfo=timezone.utc)
-
     weekMonths = ["First Week", "Second Week", "Third Week", "Fourth Week"]
     processingCount = []
     deliveringCount = []
     deliveredCount = []
     failedCount = []
+    revenue = 0
 
+    startTime = datetime.now().replace(hour=0, minute=0, day=1, tzinfo=timezone.utc)
     for _ in weekMonths:
         endTime = startTime + timedelta(days=7)
         orders = allOrders.filter(dateCreated__range=(startTime, endTime))
@@ -478,6 +483,7 @@ def getMonthRecords(allOrders):
         deliveringCount.append(orders.filter(status=2).count())
         deliveredCount.append(orders.filter(status=3).count())
         failedCount.append(orders.filter(status=4).count())
+        revenue += calculateRevenue(orders)
 
         startTime = endTime
 
@@ -489,6 +495,17 @@ def getMonthRecords(allOrders):
             {"name": "Delivered", "data": deliveredCount},
             {"name": "Failed", "data": failedCount},
         ],
+        "revenue": revenue,
     }
 
     return formattedData
+
+
+def calculateRevenue(orders):
+    """Calculate revenue from a number of orders"""
+    totalRevenue = 0
+
+    for order in orders:
+        totalRevenue += order.shippingPrice if order.status == 3 else 0
+
+    return totalRevenue
