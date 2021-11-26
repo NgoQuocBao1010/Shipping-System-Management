@@ -47,7 +47,7 @@ def random_date():
     2 weeks from now
     """
     end = datetime.now()
-    start = end - timedelta(days=14)
+    start = end - timedelta(days=21)
 
     delta = end - start
     int_delta = (delta.days * 24 * 60 * 60) + delta.seconds
