@@ -5,11 +5,7 @@
             <span>Kaz Shipping System</span>
             <i class="fas fa-shipping-fast icon"></i> price list
 
-            <button
-                v-if="$store.getters.isAdmin"
-                class="small"
-                @click="editPriceObj(-1)"
-            >
+            <button v-if="$store.getters.isAdmin" class="small" @click="editPriceObj(-1)">
                 <i class="fas fa-plus-circle"></i>Add Price
             </button>
         </div>
@@ -22,7 +18,6 @@
                     <tr>
                         <th>Distance</th>
                         <th>Price</th>
-                        <th>Estimated Time to Shipped</th>
                         <th v-if="$store.getters.isAdmin">Edit / Delete</th>
                     </tr>
                 </thead>
@@ -33,16 +28,11 @@
                             In {{ price.upperLimit }} kilometer range
                         </td>
                         <td v-else>
-                            {{ price.lowerLimit }} -
-                            {{ price.upperLimit }} kilometer
+                            {{ price.lowerLimit }} - {{ price.upperLimit }} kilometer
                         </td>
                         <td>{{ $func.formatMoneyToVND(price.price) }} VND</td>
-                        <td>Less than 1 day</td>
                         <td v-if="$store.getters.isAdmin">
-                            <i
-                                class="fas fa-edit"
-                                @click="editPriceObj(index)"
-                            ></i>
+                            <i class="fas fa-edit" @click="editPriceObj(index)"></i>
                             <i
                                 class="fas fa-minus-circle"
                                 @click="deletePrice(index)"
@@ -75,18 +65,11 @@
                     </p>
 
                     <div class="buttons-container">
-                        <button
-                            type="submit"
-                            class="small"
-                            @click.prevent="submit"
-                        >
+                        <button type="submit" class="small" @click.prevent="submit">
                             Save
                         </button>
 
-                        <button
-                            class="small close"
-                            @click.prevent="edit = false"
-                        >
+                        <button class="small close" @click.prevent="edit = false">
                             Close
                         </button>
                     </div>
