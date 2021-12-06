@@ -1,0 +1,144 @@
+- Quản lý nhân viên:
+    
+    + Quản lý nhân viên - Quản lý, Driver
+        -> Profile -> xem các thông tin các nhân
+        -> Driver thì demo chức năng phân công đơn hàng
+
+    + Quản lý người đặt hàng 
+        -> Profile -> các đơn hàng đã đặt
+        -> Xem các đơn hàng đã đặt
+    
+    + Quản lý người nhận hàng
+        -> Xem thông tin đơn hàng của người được nhận
+
+
+- Quản lý đơn giá vận chuyển:
+
+    Đơn giá vận chuyển sẽ phụ thuộc vào độ dài đường đi từ công ty đến người nhận
+
+    + Thêm
+    + Sửa
+    + Xóa
+
+
+- Chức năng quản lý các đơn hàng:
+
+    + Lọc đơn hàng theo 
+        -> trạng thái đơn hàng
+            * Đang xử lý (vừa mới đặt hàng xong)
+            * Đang vận chuyển
+            * Đã giao hàng
+            * Giao hàng không thành công
+        
+        -> người thanh toán của đơn hàng đó
+        -> thời gian đặt hàng
+
+        -> Có thể tìm kiếm đơn hàng bằng id của nó sử dụng thanh tìm kiếm ở trên
+    
+
+    + Chọn vào một đơn hàng để đến với quản lý chi tiết của một đơn hàng
+
+
+- Chi tiết của một đơn hàng:
+
+    + Thông tin:
+        - Người đặt hàng, người nhận hàng
+        - Trạng thái đơn hàng
+
+        - Thông tin liên quan đến đơn hàng
+            -> Ngày đặt
+            -> người thanh toán
+            -> Thông tin tài xế vận chuyển đơn hàng nếu có khi đơn hành đã qua giai đoạn xử lý
+
+            -> Hành động của khách hàng khi nhận hàng:
+                + Có được thử hàng hay không
+                + Chỉ được xem trước thôi hoặc là không được xem
+        
+
+        - Những sản phẩm trong đơn hàng đó: 
+            -> Sản phẩm là gì
+            -> Giá tiền của sản phẩm đó
+        
+
+        - Giá tiền của đơn hàng:
+            -> Tiền của sản phẩm trong đơn hàng cộng với giá vận chuyển
+    
+
+- Theo dõi đơn hàng sử dụng Leaflet Routing Machine:
+    
+    Màu xanh là vị trí đơn hàng
+    Màu đỏ là ước tính vị trí của người nhận
+
+    ** Đơn hàng chỉ được theo dõi trong giai đoạn vận chuyển,
+
+    Khi đơn hàng vừa được phân công cho tài xế thì vị trí của đơn hàng sẽ được cập nhật lên map cùng với vị trí của công ty
+
+    Sau đó, vị trí của đơn hàng là vị trí của tài xế
+
+    Trong quá trình giao hàng, tài xế có thể cập nhật vị trí của mình và hệ thống sẽ cập nhật vị trí của đơn hàng đó (tính năng này em sẽ demo kỹ hơn ở phần sau)
+
+
+    + Bấm nút theo dõi kỹ hơn vị trí đơn hàng
+
+
+- Báo cáo thống kê
+
+    Thống kê số lượng các đơn hàng và số tiền vận chuyển kiếm được các đơn hàng đã vận chuyển thành công
+
+    + Thống kê trong ngày: 
+        + Đơn hàng đang xử lý
+        + Đơn hàng đang vận chuyển
+        + Đơn hàng đang đã giao
+        + Đơn hàng thất bại
+
+        + Số tiền vận chuyển kiếm được trong ngày đó.
+    
+    Các biểu đồ, đồ thị
+    + Thống kê trong 7 ngày gần nhất
+        -> Hover lên các bar để highlight số lượng
+        -> Đi kèm với Số tiền kiếm được các đơn hàng đã vận chuyển thành công
+
+    + Thống kê trong thàng: Chia ra làm 4 tuần trong tháng
+
+    + Thống kê từ trước đến giờ ...
+
+
+- Đây là các chức năng chính của hệ thống
+
+- Hệ thống cũng hỗ trợ sử dụng cho khách hàng để có thể đặt hàng
+
+- Sau đây em xin demo quá trình một đơn hàng được đặt
+
+    (Nói sơ qua về giao diện người dùng) 
+        -> Đặt hàng
+        -> Quản lý đơn hàng đã đặt
+        -> Xem bảng giá
+    
+    
+    ** Đặt hàng
+    (Nên điền trước các trường thông tin)
+
+    Giới thiệu lại qua các thông tin:
+        - Thông tin người đặt và nhận hàng
+        - Thông tin sản phẩm
+
+        - Người thanh toán
+        - Khánh hàng có được xem trước đơn hàng ...
+        - Ghi chú khi giao hàng
+    
+
+        -> Nhấn đặt hàng:
+            + Hệ thống sẽ xác định vào địa chỉ người nhân
+            + Tính toán khoảng cách người nhận và công ty -> có được khoảng cách
+            + Gọi API về backend Tính toán giá vận chuyển
+        
+    
+    
+    -> (Giao đơn hàng đó cho tài xế Driver)
+    -> (Cho thầy người dùng đã có thể theo dõi vị trí đơn hàng)
+    
+    -> (Sử dụng emulator điện thoại)
+    Demo cập nhật vị trí
+
+    -> (Cho thầy người dùng đã có thể theo dõi vị trí đơn hàng được cập nhật)
+    

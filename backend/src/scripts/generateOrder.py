@@ -47,7 +47,7 @@ def random_date():
     2 weeks from now
     """
     end = datetime.now()
-    start = end - timedelta(days=21)
+    start = end - timedelta(days=14)
 
     delta = end - start
     int_delta = (delta.days * 24 * 60 * 60) + delta.seconds
@@ -65,6 +65,7 @@ def productGenerate(order):
         {"name": "Table", "price": 250_000},
         {"name": "Clothes", "price": 400_000},
         {"name": "Books", "price": 2_500_000},
+        {"name": "Dell Laptop", "price": 12_990_000},
     ]
 
     product = random.choice(DUMP_PRODUCTS)
@@ -92,7 +93,7 @@ def generate(email="ntklinh@gmail.com"):
 
     # Order's information
     consignor = User.objects.get(email__icontains=email)
-    status = 3 if random.randint(0, 101) > 10 else 4
+    status = 3 if random.randint(0, 201) > 10 else 4
     note = (
         ""
         if status == 3
