@@ -30,6 +30,7 @@ const searchLocation = async (address) => {
 
         if (data.length > 0) {
             const { lat, lon } = data[0];
+            console.log(lat, lon);
 
             return {
                 latitude: parseFloat(lat),
