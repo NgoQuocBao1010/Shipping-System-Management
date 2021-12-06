@@ -6,7 +6,7 @@
                 <tr>
                     <th class="id">ID</th>
                     <th class="infor">Consignee</th>
-                    <th class="address">Address</th>
+                    <th class="address">Status</th>
                 </tr>
             </thead>
 
@@ -22,7 +22,7 @@
                         <p>{{ order.consignee.fullName }}</p>
                         <p>({{ order.consignee.phone }})</p>
                     </td>
-                    <td>Somewhere</td>
+                    <td class="status">{{ orderStatus[order.status] }}</td>
                 </tr>
             </tbody>
         </table>
@@ -39,7 +39,14 @@ export default {
             require: false,
         },
     },
-    data: () => ({}),
+    data: () => ({
+        orderStatus: {
+            1: "processing",
+            2: "delivering",
+            3: "delivered",
+            4: "failed",
+        },
+    }),
     created() {
         console.log(this.orders);
     },
@@ -110,6 +117,10 @@ export default {
                             font-size: 10px;
                         }
                     }
+                }
+
+                td.status {
+                    text-transform: capitalize;
                 }
 
                 &.assign {
