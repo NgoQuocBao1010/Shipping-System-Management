@@ -22,12 +22,14 @@
             </router-link>
             <i class="fas fa-bell notification"></i>
             <router-link
+                class="profile-link"
                 :to="{
                     name: 'Profile',
                     params: { email: $store.getters.email },
                 }"
             >
                 <img class="avatar" src="../assets/test/user-icon.jpg" alt="" />
+                <i v-if="$store.getters.isAdmin" class="fas fa-crown"></i>
             </router-link>
         </div>
     </div>
@@ -175,10 +177,21 @@ export default {
             cursor: pointer;
         }
 
-        .avatar {
-            max-height: 40px;
-            aspect-ratio: 1 / 1;
-            border-radius: 50%;
+        .profile-link {
+            position: relative;
+
+            .avatar {
+                max-height: 40px;
+                aspect-ratio: 1 / 1;
+                border-radius: 50%;
+            }
+
+            i {
+                position: absolute;
+                color: var(--primary-color);
+                left: -10px;
+                top: 0;
+            }
         }
     }
 }
