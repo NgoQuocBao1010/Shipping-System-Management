@@ -207,9 +207,12 @@ export default {
                     cursor: initial;
                 }
 
-                &:hover {
+                a {
+                    transition: 0.2s ease all;
+                }
+
+                &:hover a {
                     color: var(--primary-color);
-                    background-color: #f3f3f3;
                 }
 
                 &:last-of-type {
