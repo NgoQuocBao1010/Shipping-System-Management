@@ -47,14 +47,6 @@ button {
         font-size: 0.8rem;
     }
 
-    &:focus {
-        outline: none;
-    }
-
-    &:hover {
-        background-color: var(--secondary-color);
-    }
-
     &.small {
         padding: 0.5rem 1rem;
         border-radius: 5px;
