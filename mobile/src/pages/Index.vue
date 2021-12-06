@@ -7,7 +7,7 @@
                 <p>Full name: {{ user.fullName }}</p>
                 <p>Phone Number: {{ user.phone }}</p>
                 <p>Driver License: {{ user.driverLicense }}</p>
-                <p>Delivering Orders: {{ delveringOrders }}</p>
+                <p>Delivering Orders: {{ delveringOrders.length }}</p>
             </div>
         </div>
 
@@ -23,15 +23,22 @@
                 >
                     {{ tab.name }}
                 </li>
+
+                <span class="refresh" @click="getOrderList">
+                    <q-icon name="refresh"></q-icon>
+                </span>
             </ul>
 
             <OrderTable :orders="orders" />
 
-            <button class="small" @click="updateLocation">Update Your Location</button>
+            <button
+                v-if="orders.length > 0 && selectedIndex === 0"
+                class="small"
+                @click="confirmUpdateLocation"
+            >
+                Update Your Location
+            </button>
         </div>
-
-        {{ latitude }} {{ longitude }}
-        {{ error.message }}
     </div>
 </template>
 
@@ -53,10 +60,6 @@ export default {
             {
                 name: "Delivering",
                 query: { status: 2 },
-            },
-            {
-                name: "Processing",
-                query: { status: 1 },
             },
             {
                 name: "History",
@@ -95,29 +98,97 @@ export default {
                 });
                 this.orders = data;
 
-                if (this.selectedIndex === 0) this.delveringOrders = data.length;
+                if (this.selectedIndex === 0) {
+                    this.delveringOrders = this.orders.map((order) => order.id);
+                }
             } catch (e) {
                 console.log(e);
             }
         },
-        updateLocation() {
-            var options = {
-                enableHighAccuracy: true,
-                maximumAge: 3600000,
-            };
+        confirmUpdateLocation() {
+            this.$q.notify({
+                message: "Are you sure to update your location?",
+                color: "primary",
+                actions: [
+                    {
+                        label: "Update",
+                        color: "yellow",
+                        handler: () => {
+                            this.getCurrentPos();
+                        },
+                    },
+                    {
+                        label: "Dismiss",
+                        color: "white",
+                        handler: () => {
+                            /* ... */
+                        },
+                    },
+                ],
+                timeout: 1500,
+            });
+        },
+        getCurrentPos() {
             const result = navigator.geolocation.getCurrentPosition(
                 (position) => {
-                    this.latitude = position.coords.latitude;
-                    this.longitude = position.coords.longitude;
+                    const { latitude, longitude } = position.coords;
+                    const data = JSON.stringify({
+                        lat: latitude,
+                        lon: longitude,
+                    });
+
+                    for (let i = 0; i < this.delveringOrders.length; i++) {
+                        const orderId = this.delveringOrders[i];
+                        this.updateLocation(orderId, data);
+                    }
                 },
                 (error) => {
                     if (error) {
                         this.error = error;
                         console.log(error);
+                        this.$q.notify({
+                            type: "negative",
+                            message: `An error has occured while trying to update your position`,
+                            position: "bottom",
+                            timeout: 1000,
+                        });
                     }
                 },
-                options
+                {
+                    enableHighAccuracy: true,
+                    maximumAge: 3600000,
+                }
             );
+        },
+        async updateLocation(orderId, data) {
+            try {
+                const url = `https://10.0.2.2:8000/order/location/${orderId}/`;
+
+                const response = await axios.post(
+                    url,
+                    { location: data },
+                    {
+                        headers: {
+                            Authorization: `Token ${this.token}`,
+                        },
+                    }
+                );
+
+                this.$q.notify({
+                    type: "positive",
+                    message: `Your location has been updated`,
+                    position: "bottom",
+                    timeout: 1000,
+                });
+            } catch (e) {
+                console.log(e);
+                this.$q.notify({
+                    type: "negative",
+                    message: `An error has occured while trying to update your position`,
+                    position: "bottom",
+                    timeout: 1000,
+                });
+            }
         },
     },
     async created() {
@@ -158,7 +229,9 @@ p {
     .navigation {
         margin-bottom: 1rem;
         display: flex;
+        align-items: center;
         gap: 2rem;
+        position: relative;
 
         li {
             list-style: none;
@@ -170,6 +243,20 @@ p {
             &.active {
                 border-bottom: 2px solid var(--primary-color);
             }
+        }
+
+        .refresh {
+            position: absolute;
+            right: 0;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--primary-color);
+            color: #fff;
+            font-weight: bold;
         }
     }
 

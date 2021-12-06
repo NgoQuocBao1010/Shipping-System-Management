@@ -22,7 +22,6 @@ import NotFoundError from "../views/Error/404.vue";
 // Others
 import Home from "../views/Home.vue";
 import PriceShipping from "../views/PriceShipping.vue";
-import DriverTest from "../views/DriverTest.vue";
 
 import store from "../store/index";
 
@@ -120,18 +119,6 @@ const routes = [
         component: DriverAdminis,
         meta: {
             name: "Driver Administrator",
-            authOnly: true,
-            adminOnly: true,
-        },
-    },
-    // Driver Update Location
-    // ! Testing page
-    {
-        path: "/location",
-        name: "DriverTest",
-        component: DriverTest,
-        meta: {
-            name: "Driver Test Location",
             authOnly: true,
             adminOnly: true,
         },
