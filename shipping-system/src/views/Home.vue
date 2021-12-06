@@ -13,14 +13,14 @@
                 <i class="fas fa-money-check-alt"></i>
                 <p>Pricing List</p>
             </a>
-            <router-link :to="{ name: 'Login' }" class="stuff">
-                <i class="fas fa-cubes"></i>
-                <p>Manage Orders</p>
-            </router-link>
+            <a href="#contact" class="stuff">
+                <i class="fas fa-address-book"></i>
+                <p>Contacts</p>
+            </a>
         </section>
 
         <section>
-            <PriceShipping id="price" class="price" />
+            <PriceShipping class="price" />
         </section>
     </div>
 </template>
@@ -71,6 +71,7 @@ export default {
         padding: 2rem 0;
         display: flex;
         justify-content: space-around;
+        margin-bottom: 100px;
 
         .stuff {
             flex: 1 1 40%;

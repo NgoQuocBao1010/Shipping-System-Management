@@ -1,5 +1,18 @@
 <template>
     <div class="wrapper">
+        <div class="header" id="contact">
+            <span>Kaz Shipping System</span>
+            <p>
+                Address: 100C, B20 street, Hưng Phú Residental Area, Cái Răng district,
+                Cần Thơ city, Việt Nam
+            </p>
+            <p>Contact: baoB1809677@student.ctu.edu.vn</p>
+        </div>
+
+        <div class="map-container">
+            <CompanyMap />
+        </div>
+
         <!-- Header -->
         <div class="header">
             <span>Kaz Shipping System</span>
@@ -11,7 +24,7 @@
         </div>
 
         <!-- Main content -->
-        <div class="content">
+        <div class="content" id="price">
             <!-- Table of pricing list -->
             <table>
                 <thead>
@@ -85,7 +98,12 @@ import { required, minLength } from "vuelidate/lib/validators";
 import { RepositoryFactory } from "../api/backend/Factory";
 const OrderAPI = RepositoryFactory.get("order");
 
+import CompanyMap from "../components/CompanyMap.vue";
+
 export default {
+    components: {
+        CompanyMap,
+    },
     data() {
         return {
             prices: null,
@@ -177,6 +195,14 @@ export default {
 
 <style lang="scss" scoped>
 .wrapper {
+    .map-container {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 100px;
+    }
+
     .header {
         font-size: 2rem;
         font-weight: bold;
@@ -184,6 +210,11 @@ export default {
 
         span {
             color: var(--primary-color);
+        }
+
+        p {
+            font-size: 1.2rem;
+            margin: 10px 0;
         }
 
         .icon {
