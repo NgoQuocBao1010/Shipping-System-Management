@@ -95,9 +95,7 @@ export default {
     watch: {
         selectVal(newVal, oldVal) {
             this.$emit("change", newVal);
-            this.displayValue = this.options.find(
-                (obj) => obj.id === newVal
-            ).name;
+            this.displayValue = this.options.find((obj) => obj.id === newVal).name;
         },
         value(newVal, oldVal) {
             if (!newVal) {
@@ -114,10 +112,7 @@ export default {
             const newVal = e.target.value;
 
             this.filterArr = this.options.filter((obj) => {
-                return obj.name
-                    .trim()
-                    .toLowerCase()
-                    .includes(newVal.toLowerCase());
+                return obj.name.trim().toLowerCase().includes(newVal.toLowerCase());
             });
         },
         updateValue(value, index) {
@@ -130,12 +125,9 @@ export default {
 
             this.$refs.options.scrollTop = 0;
         },
-        toggleDropdown() {
-            console.log("Clicked");
-        },
     },
     created() {
-        this.filterArr = this.options;
+        this.filterArr = this.options.slice(0);
 
         if (this.all) {
             this.filterArr.push({
