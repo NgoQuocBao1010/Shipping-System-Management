@@ -7,19 +7,10 @@
     <img src="screenshots/logo/Color logo - no background.png" alt="Logo" width="60%">
   </a>
 
-  <h3 align="center">Kaz Delivery System</h3>
+  <h3 align="center">Kaz Delivery Management System</h3>
 
   <p align="center">
-    An awesome README template to jumpstart your projects!
-    <br />
-    <a href="https://github.com/othneildrew/Best-README-Template"><strong>Explore the docs »</strong></a>
-    <br />
-    <br />
-    <a href="https://github.com/othneildrew/Best-README-Template">View Demo</a>
-    ·
-    <a href="https://github.com/othneildrew/Best-README-Template/issues">Report Bug</a>
-    ·
-    <a href="https://github.com/othneildrew/Best-README-Template/issues">Request Feature</a>
+    A Kaz delivery management system provides basis functional for a delivery company
   </p>
 </div>
 
