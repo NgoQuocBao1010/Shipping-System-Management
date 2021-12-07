@@ -14,4 +14,5 @@ urlpatterns = [
     path("unassign/", views.ordersUnassign, name="ordersUnassign"),
     path("assign/", views.ordersAssign, name="ordersAssign"),
     path("location/<str:id>/", views.orderUpdateLocation, name="orderUpdateLocation"),
+    path("finish/<str:id>/", views.orderFinish, name="orderFinish"),
 ]

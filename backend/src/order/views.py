@@ -307,6 +307,23 @@ def orderUpdateLocation(request, id):
     return Response(status=status.HTTP_200_OK)
 
 
+@api_view(["POST"])
+@permission_classes([IsAuthenticated, StaffOnly])
+def orderFinish(request, id):
+    try:
+        order = Order.objects.get(id=id)
+    except Order.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    orderStatus = request.data.get("status")
+
+    if orderStatus:
+        order.status = 3
+        order.save()
+
+    return Response(status=status.HTTP_200_OK)
+
+
 # Utils Functions
 def filterOrders(request, orderQuery):
     """Filter order from get method"""
