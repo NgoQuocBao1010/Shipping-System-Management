@@ -83,6 +83,16 @@
                         Note: <b>{{ order.note || "No note" }}</b>
                     </div>
 
+                    <!-- Distance -->
+                    <div class="normal" v-if="order.id">
+                        Estimate distance:
+                        <b>{{ displayDistance(order.estimateDistance) }}</b>
+                    </div>
+
+                    <div class="normal" v-if="!order.id && distance">
+                        Estimate distance: <b>{{ displayDistance(distance) }}</b>
+                    </div>
+
                     <!-- Delivery time -->
                     <div class="normal" v-if="order.id && order.status === 2">
                         Estimate Deliver time: <b>Around {{ estimatedTime }}</b>
@@ -210,6 +220,10 @@ export default {
     },
     props: {
         order: Object,
+        distance: {
+            required: false,
+            default: null,
+        },
     },
     computed: {
         ...mapState(["orders"]),
@@ -251,7 +265,6 @@ export default {
 
             return `${time} ${timeUnit}`;
         },
-        estimatedDistance() {},
     },
     methods: {
         generatePreviewLink() {
@@ -264,6 +277,14 @@ export default {
             navigator.clipboard.writeText(orderPreviewLink.href);
 
             this.$toast.info("Copy to clipboard");
+        },
+        displayDistance(distance) {
+            if (distance < 1000) return `${distance} m`;
+            else {
+                let newDistance = Math.floor(distance / 1000);
+
+                return `Around ${newDistance} km`;
+            }
         },
     },
     async created() {

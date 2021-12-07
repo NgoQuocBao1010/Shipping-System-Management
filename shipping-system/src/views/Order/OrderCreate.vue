@@ -219,15 +219,6 @@
                                 :noSearch="true"
                             />
                         </div>
-                        <!-- Shipping Type -->
-                        <!-- <div class="row">
-                            <Dropdown
-                                v-model="shipping"
-                                :options="shippingOptions"
-                                label="Shipping Type"
-                                :noSearch="true"
-                            />
-                        </div> -->
                     </div>
                     <div class="column">
                         <div class="row">
@@ -264,7 +255,7 @@
             @submit="placeOrder"
             @toggle="modal = !modal"
         >
-            <OrderDetail v-if="order" :order="order" />
+            <OrderDetail v-if="order" :order="order" :distance="distance" />
         </Modal>
     </div>
 </template>
@@ -369,6 +360,8 @@ export default {
             modal: false,
             // Loading Animation
             loading: false,
+
+            distance: null,
         };
     },
     computed: {
@@ -463,6 +456,8 @@ export default {
                 ? await this.estimatePrice(routing.distance)
                 : null;
             console.log("Done get the price", estimatedPrice);
+
+            this.distance = routing.distance;
 
             this.order = {
                 consignor: this.consignor,
