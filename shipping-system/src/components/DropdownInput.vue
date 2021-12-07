@@ -123,6 +123,13 @@ export default {
             this.filterArr = this.options.filter((obj) => obj !== value);
             this.filterArr = [value, ...this.filterArr];
 
+            if (this.all) {
+                this.filterArr.push({
+                    id: null,
+                    name: "All",
+                });
+            }
+
             this.$refs.options.scrollTop = 0;
         },
     },
