@@ -5,6 +5,10 @@ quasar dev -m cordova -T android - mobile dev
 
 https://timonweb.com/django/https-django-development-server-ssl-certificate/ - Updrade django localhost to https
 
+User Account:
+    ntplinh3138@gmail.com
+
 Commands:
 - quasar dev -m cordova -T android [mobile dev]
-- python manage.py runserver_plus --cert-file cert.pem --key-file key.pem [Django localhost https]
+- python manage.py runserver_plus --cert-file cert.pem --key-file key.pem [Django localhost https]\
+- python .\manage.py runscript generateOrder

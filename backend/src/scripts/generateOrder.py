@@ -127,6 +127,7 @@ def massGenerate():
     for consignor in consignors:
         generate(consignor.email)
         generate(consignor.email)
+        generate(consignor.email)
 
 
 def deleteGeneratedOrders():
