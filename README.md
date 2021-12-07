@@ -4,10 +4,10 @@
 <br />
 <div align="center">
   <a href="#">
-    <img src="screenshots/logo/Color logo - no background.png" alt="Logo" width="80%">
+    <img src="screenshots/logo/Color logo - no background.png" alt="Logo" width="60%">
   </a>
 
-  <h3 align="center">Best-README-Template</h3>
+  <h3 align="center">Kaz Delivery System</h3>
 
   <p align="center">
     An awesome README template to jumpstart your projects!
