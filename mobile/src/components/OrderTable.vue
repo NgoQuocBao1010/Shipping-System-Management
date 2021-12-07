@@ -6,7 +6,8 @@
                 <tr>
                     <th class="id">ID</th>
                     <th class="infor">Consignee</th>
-                    <th class="address">Status</th>
+                    <th v-if="history" class="address">Status</th>
+                    <th v-else class="address">Actions</th>
                 </tr>
             </thead>
 
@@ -22,7 +23,13 @@
                         <p>{{ order.consignee.fullName }}</p>
                         <p>({{ order.consignee.phone }})</p>
                     </td>
-                    <td class="status">{{ orderStatus[order.status] }}</td>
+                    <td v-if="history" class="status">{{ orderStatus[order.status] }}</td>
+                    <td v-else class="action">
+                        <div class="btn-small done" @click="finishOrder(order.id)">
+                            Done
+                        </div>
+                        <div class="btn-small fail">Failed</div>
+                    </td>
                 </tr>
             </tbody>
         </table>
@@ -30,12 +37,20 @@
 </template>
 
 <script>
+import axios from "axios";
+import { mapState } from "vuex";
+
 export default {
     name: "OrderTable",
     props: {
         orders: {
             type: Array,
             default: () => [],
+            require: false,
+        },
+        history: {
+            type: Boolean,
+            default: true,
             require: false,
         },
     },
@@ -47,8 +62,37 @@ export default {
             4: "failed",
         },
     }),
-    created() {
-        console.log(this.orders);
+    computed: {
+        ...mapState(["token"]),
+    },
+    methods: {
+        async finishOrder(orderId) {
+            /* Get list of order depends on chosen category */
+            const url = `https://10.0.2.2:8000/order/finish/${orderId}/`;
+
+            try {
+                const { data } = await axios.post(
+                    url,
+                    { status: true },
+                    {
+                        headers: {
+                            Authorization: `Token ${this.token}`,
+                        },
+                    }
+                );
+
+                this.$emit("done");
+
+                this.$q.notify({
+                    type: "positive",
+                    message: `Your order has been updated`,
+                    position: "bottom",
+                    timeout: 1000,
+                });
+            } catch (e) {
+                console.log(e);
+            }
+        },
     },
 };
 </script>
@@ -123,13 +167,28 @@ export default {
                     text-transform: capitalize;
                 }
 
-                &.assign {
-                    cursor: initial;
+                td.action {
+                    display: flex;
+                    align-items: center;
+
+                    .btn-small {
+                        font-size: 10px;
+                        padding: 2px 4px;
+                        margin: 0 2px;
+                        border-radius: 5px;
+
+                        &.done {
+                            background: limegreen;
+                        }
+
+                        &.fail {
+                            background: rgb(241, 77, 77);
+                        }
+                    }
                 }
 
-                &:hover {
-                    color: var(--primary-color);
-                    background-color: #f3f3f3;
+                &.assign {
+                    cursor: initial;
                 }
 
                 &:last-of-type {

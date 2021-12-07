@@ -29,7 +29,11 @@
                 </span>
             </ul>
 
-            <OrderTable :orders="orders" />
+            <OrderTable
+                :orders="orders"
+                :history="selectedIndex !== 0"
+                @done="getOrderList"
+            />
 
             <button
                 v-if="orders.length > 0 && selectedIndex === 0"
@@ -81,6 +85,7 @@ export default {
     },
     watch: {
         async selectedIndex() {
+            this.orders = [];
             await this.getOrderList();
         },
     },
