@@ -1,5 +1,7 @@
 import axios from "axios";
-import store from "../../store";
+
+const OPENSERVICE_API_KEY =
+    "5b3ce3597851110001cf6248f8c35fd1e82d4754933bf5d8fea33263";
 
 const cleanAddress = (address) => {
     /* Remove all prefix of address */
@@ -67,8 +69,7 @@ export default {
         try {
             const headers = {
                 Accept: "application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8",
-                Authorization:
-                    "5b3ce3597851110001cf6248f8c35fd1e82d4754933bf5d8fea33263",
+                Authorization: OPENSERVICE_API_KEY,
                 "Content-Type": "application/json; charset=utf-8",
             };
             const { data } = await axios.post(

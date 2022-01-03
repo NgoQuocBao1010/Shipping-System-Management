@@ -47,18 +47,23 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
+This project is actually for my prepration thesis from Can Tho University. This is a management system for a delivery company. There are a lot of fundamental functionalities that implemented in order for a delivey company to manage their orders.
 
-There are many great README templates available on GitHub; however, I didn't find one that really suited my needs so I created this enhanced one. I want to create a README template so amazing that it'll be the last one you ever need -- I think this is it.
+Here are some of the basis required feature:
+* Orders Management (status, date created, ...)
+<P align="center"><img src="screenshots/web/order.png" alt="Logo" width="70%"></p>
 
-Here's why:
-* Your time should be focused on creating something amazing. A project that solves a problem and helps others
-* You shouldn't be doing the same tasks over and over like creating a README from scratch
-* You should implement DRY principles to the rest of your life :smile:
+* Statiscal and Financial Report 💲
+<P align="center"><img src="screenshots/web/report.png" alt="Logo" width="70%"></p>
 
-Of course, no one template will serve all projects since your needs may be different. So I'll be adding more in the near future. You may also suggest changes by forking this repo and creating a pull request or opening an issue. Thanks to all the people have contributed to expanding this template!
+* Order tracking 🚚 (implement Leaflet Routing Machine)
+<P align="center"><img src="screenshots/web/order_tracking.png" alt="Logo" width="70%"></p>
 
-Use the `BLANK_README.md` to get started.
+Although the application is mainly built just for a manager of the company to manage the orders. I also built some additional functionalities for customers to use the system and a mobile version for the drivers of the company to demonstrate how the tracking order's location
+functionality work.
+Here's a brief look of the mobile version 📱:
+<P align="center"><img src="screenshots/mobile/demo.jpg" alt="Logo" height="500px"></p>
+
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -66,16 +71,16 @@ Use the `BLANK_README.md` to get started.
 
 ### Built With
 
-This section should list any major frameworks/libraries used to bootstrap your project. Leave any add-ons/plugins for the acknowledgements section. Here are a few examples.
+For front end (including Mobile)
+* [Vue.js v2](https://vuejs.org/)
+* [Quasar.js v1](https://vuejs.org/)
 
-* [Next.js](https://nextjs.org/)
-* [React.js](https://reactjs.org/)
-* [Vue.js](https://vuejs.org/)
-* [Angular](https://angular.io/)
-* [Svelte](https://svelte.dev/)
-* [Laravel](https://laravel.com)
-* [Bootstrap](https://getbootstrap.com)
-* [JQuery](https://jquery.com)
+For the backend API
+* [Python](https://python.org/)
+* [Django](https://docs.djangoproject.com/)
+* [Django Rest Framework](https://www.django-rest-framework.org/)
+
+
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -89,29 +94,53 @@ To get a local copy up and running follow these simple example steps.
 
 ### Prerequisites
 
-This is an example of how to list things you need to use the software and how to install them.
-* npm
-  ```sh
-  npm install npm@latest -g
-  ```
+For the web application to work, you only need to focus on the backend and the shipping-system folder.
 
 ### Installation
 
-_Below is an example of how you can instruct your audience on installing and setting up your app. This template doesn't rely on any external dependencies or services._
 
-1. Get a free API Key at [https://example.com](https://example.com)
-2. Clone the repo
+1. Clone the repo and change to that folder
    ```sh
-   git clone https://github.com/your_username_/Project-Name.git
+   git clone https://github.com/NgoQuocBao1010/Shipping-System-Management.git
    ```
-3. Install NPM packages
-   ```sh
-   npm install
-   ```
-4. Enter your API in `config.js`
-   ```js
-   const API_KEY = 'ENTER YOUR API';
-   ```
+
+2. Install packages for the backend
+    * Change folder to backend folder
+      ```sh
+      cd backend
+
+      pip install -r requirements.txt
+      ```
+    
+    * Create certificate for Django to update Django localhost to HTTPS: Follow this [instruction](https://timonweb.com/django/https-django-development-server-ssl-certificate/). (You can take a look at my folder for reference)
+
+    * Run the HTTPS server
+      ```sh
+        cd src
+
+        python manage.py runserver_plus --cert-file cert.pem --key-file key.pem
+      ```
+
+
+3. Install packages for the frontend
+    * Change folder to shippping-system and install packages via npm
+      ```sh
+      cd shipping-system
+
+      npm install
+      ```
+    * Get a free API Key for OpenRouteService (API for calculating distance between 2 locations) at [their website](https://openrouteservice.org/dev/#/home).
+
+    * Update the API in "./shipping-system/src/api/routing/location.js"
+      ```js
+      const OPENSERVICE_API_KEY =
+      "YOUR_API_KEY";
+      ```
+    
+    * Run the frontend server
+      ```sh
+      npm run serve
+      ```
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -120,26 +149,8 @@ _Below is an example of how you can instruct your audience on installing and set
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+As the introduction indicated, the main purpose of this project is for delivery management, after the installation successfully, you can exploring around the application to enjoy all of its functionalities.
 
-_For more examples, please refer to the [Documentation](https://example.com)_
-
-<p align="right">(<a href="#top">back to top</a>)</p>
-
-
-
-<!-- ROADMAP -->
-## Roadmap
-
-- [x] Add Changelog
-- [x] Add back to top links
-- [ ] Add Additional Templates w/ Examples
-- [ ] Add "components" document to easily copy & paste sections of the readme
-- [ ] Multi-language Support
-    - [ ] Chinese
-    - [ ] Spanish
-
-See the [open issues](https://github.com/othneildrew/Best-README-Template/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -166,7 +177,7 @@ Don't forget to give the project a star! Thanks again!
 <!-- LICENSE -->
 ## License
 
-Distributed under the MIT License. See `LICENSE.txt` for more information.
+Distributed under the MIT License.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -175,9 +186,9 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Your Name - [@your_twitter](https://twitter.com/your_username) - email@example.com
+Ngô Hồng Quốc Bảo - [@NgoQuocBao](https://twitter.com/ngohquocbao1010)
 
-Project Link: [https://github.com/your_username/repo_name](https://github.com/your_username/repo_name)
+Project Link: [https://github.com/NgoQuocBao1010/Shipping-System-Management](https://github.com/NgoQuocBao1010/Shipping-System-Management)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -185,25 +196,6 @@ Project Link: [https://github.com/your_username/repo_name](https://github.com/yo
 
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
-
-This awesome README temaplate is from [Best README Template](https://github.com/othneildrew/Best-README-Template)
+This awesome README temaplate is from [Best README Template](https://github.com/othneildrew/Best-README-Template). ♥
 
 <p align="right">(<a href="#top">back to top</a>)</p>
-
-
-
-<!-- MARKDOWN LINKS & IMAGES -->
-<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/othneildrew/Best-README-Template.svg?style=for-the-badge
-[contributors-url]: https://github.com/othneildrew/Best-README-Template/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/othneildrew/Best-README-Template.svg?style=for-the-badge
-[forks-url]: https://github.com/othneildrew/Best-README-Template/network/members
-[stars-shield]: https://img.shields.io/github/stars/othneildrew/Best-README-Template.svg?style=for-the-badge
-[stars-url]: https://github.com/othneildrew/Best-README-Template/stargazers
-[issues-shield]: https://img.shields.io/github/issues/othneildrew/Best-README-Template.svg?style=for-the-badge
-[issues-url]: https://github.com/othneildrew/Best-README-Template/issues
-[license-shield]: https://img.shields.io/github/license/othneildrew/Best-README-Template.svg?style=for-the-badge
-[license-url]: https://github.com/othneildrew/Best-README-Template/blob/master/LICENSE.txt
-[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/othneildrew
-[product-screenshot]: images/screenshot.png
